@@ -1,0 +1,35 @@
+# Course Learning Outcomes (CLOs)
+- Understand data structures and their use
+- Select efficient and appropriate data structures for different applications
+
+# Weekly Course Outline
+## Week 1
+- Introduction
+## Week 2
+- Time Complexity Analysis and Asymptotic Bounds
+## Week 3
+- Review of Pointers and class Templates
+- Linked Lists: Singly linked lists, doubly linked lists, circular lists and corresponding iterators
+- Skip List (optional)
+## Week 4
+- Stacks (Expression Evaluation), Queues
+## Week 5
+- Recursion with Time complexity Analysis
+## Week 6
+- Trees: Binary trees and their traversals, Binary search trees (Insertion, Deletion and Search)
+## Week 7
+- Height Balanced Binary Search Trees (AVL Trees)
+- Priority Queues Or Heaps and heap sort
+## Week 8
+- Data compression and Huffman coding
+## Week 9
+- Hashing: Hash tables and hash functions, Collision resolution methods, Universal hashing
+- Bit vectors and bloom filters
+## Week 10
+- Graph: Breadth first search and Depth first search, Finding Paths, Cycles
+
+# Recommended Books
+- Mark Allen Weiss, Data structures and algorithm analysis, Pearson Education, 2007
+- Adam Drozdek, Data structures and algorithms in C++, Course technology, 2004
+- Nell Dale, C++ Plus Data Structures, 3rd Edition, Jones and Bartlett, 2003
+- Michael T. Goodrich, Roberto Tamassia and David M. Mount, Data structures and algorithms, 2nd Edition, John Wiley & Sons, 2011

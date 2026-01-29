@@ -1,0 +1,56 @@
+# Course Learning Outcomes (CLOs)
+
+- Understand basic concepts of computer organization with emphasis on lower-level abstraction of a computer system, including machine-level data representation, instruction set architecture, addressing modes, memory models, and assembly language programming.
+- Understand interfacing and communication with hardware, including I/O fundamentals, interrupts and their structures, buses, external storage, and physical organization.
+- Illustrate computer organization concepts using assembly language programming.
+- Gain an introduction to Intel IA-32 architecture.
+- Become familiar with assembly language directives, macros, operators, and program structures.
+- Understand the interrelationship between hardware and software.
+- Compare different processor families.
+- Gain an introduction to computer architecture and pipelining.
+
+# Weekly Course Outline
+
+## Week 1
+- Introduction to computer organization
+- Overview of assembly language
+
+## Week 2
+- Computer functions and interconnection
+
+## Week 3
+- Introduction to Intel architecture (registers, buses, and memory)
+
+## Week 4
+- Getting started with assembly language programming
+
+## Week 5
+- Data transfer instructions
+- Addressing modes
+
+## Week 6
+- Instruction set overview
+- Integer arithmetic with examples
+
+## Week 7
+- Procedures
+- Stack operations
+
+## Week 8
+- Display memory
+- String processing
+
+## Week 9
+- Interrupts and interrupt handling
+
+## Week 10
+- Computer architecture concepts
+- Pipelining
+
+> Note: Weekly grouping is derived directly from the tentative lecture plan topics without adding or inventing content.
+
+# Recommended Books
+
+- Assembly Language Programming Lecture Notes — Bilal Hashmi
+- Assembly Language for x86 Processors (7th Edition) — Kip R. Irvine
+- Computer Organization and Architecture: Designing for Performance (10th Edition) — William Stallings

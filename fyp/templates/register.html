@@ -1,9 +1,900 @@
-<h2>Register</h2>
-<form method="post">
-  {% csrf_token %}
-  <input type="text" name="username" placeholder="Username" required><br>
-  <input type="password" name="password" placeholder="Password" required><br>
-  <input type="password" name="confirm" placeholder="Confirm Password" required><br>
-  <button type="submit">Register</button>
-</form>
-<a href="{% url 'login' %}">Login</a>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - LearnPath AI</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  {% include '_theme_vars.html' %}
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, var(--background) 0%, var(--background) 50%, var(--secondary) 100%);
+      color: var(--foreground);
+      min-height: 100vh;
+      transition: all 0.3s ease;
+    }
+
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      width: 100%;
+      border-bottom: 1px solid var(--border);
+      background-color: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+    }
+
+    [data-theme="dark"] .header {
+      background-color: rgba(2, 8, 23, 0.95);
+    }
+
+    .logo-container {
+      height: 40px;
+      width: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--chart-1) 0%, var(--chart-3) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 8px;
+    }
+
+    .logo-container i {
+      color: white;
+      font-size: 20px;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      color: var(--foreground);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .theme-toggle:hover {
+      background-color: var(--secondary);
+    }
+
+    .card-custom {
+      background-color: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    [data-theme="dark"] .card-custom {
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-header-custom {
+      padding: 24px 24px 8px 24px;
+      border-bottom: none;
+      background-color: transparent;
+    }
+
+    .card-body-custom {
+      padding: 24px;
+    }
+
+    .form-label-custom {
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: var(--foreground);
+      display: block;
+    }
+
+    .input-group-custom {
+      position: relative;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted-foreground);
+      z-index: 10;
+    }
+
+    .form-control-custom {
+      width: 100%;
+      padding: 12px 16px 12px 40px;
+      background-color: var(--input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--foreground);
+      font-size: 16px;
+      transition: all 0.2s ease;
+    }
+
+    .form-control-custom:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--muted-foreground);
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .password-toggle:hover {
+      color: var(--foreground);
+    }
+
+    .btn-custom {
+      padding: 12px 24px;
+      border-radius: var(--radius);
+      font-weight: 500;
+      transition: all 0.2s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary-custom {
+      background-color: var(--primary);
+      color: var(--primary-foreground);
+    }
+
+    .btn-primary-custom:hover {
+      background-color: #2563eb;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(59, 130, 246, 0.2);
+    }
+
+    .btn-outline-custom {
+      background-color: transparent;
+      color: var(--foreground);
+      border: 1px solid var(--border);
+    }
+
+    .btn-outline-custom:hover {
+      background-color: var(--secondary);
+    }
+
+    .btn-link-custom {
+      background: none;
+      border: none;
+      color: var(--primary);
+      padding: 0;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .btn-link-custom:hover {
+      text-decoration: underline;
+    }
+
+    .checkbox-custom {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      border: 2px solid var(--border);
+      background-color: var(--input);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .checkbox-custom.checked {
+      background-color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .checkbox-custom.checked i {
+      color: white;
+      font-size: 12px;
+    }
+
+    .separator {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 24px 0;
+    }
+
+    .separator::before,
+    .separator::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .separator span {
+      padding: 0 16px;
+      color: var(--muted-foreground);
+      font-size: 14px;
+      text-transform: uppercase;
+    }
+
+    .benefit-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 16px;
+      background-color: var(--secondary);
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+
+    .benefit-icon {
+      padding: 8px;
+      background-color: rgba(59, 130, 246, 0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .benefit-icon i {
+      color: var(--primary);
+      font-size: 20px;
+    }
+
+    .image-container {
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    }
+
+    .image-container img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .back-btn {
+      background: none;
+      border: none;
+      color: var(--foreground);
+      padding: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .back-btn:hover {
+      color: var(--primary);
+    }
+
+    .badge-custom {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background-color: var(--secondary);
+      color: var(--foreground);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .animate-fade-in {
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    .animate-slide-in-left {
+      animation: slideInLeft 0.5s ease forwards;
+    }
+
+    .animate-slide-in-right {
+      animation: slideInRight 0.5s ease forwards 0.2s;
+      opacity: 0;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .error-message {
+      color: var(--destructive);
+      font-size: 14px;
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .error-message i {
+      font-size: 12px;
+    }
+
+    .password-match-error {
+      border-color: var(--destructive) !important;
+    }
+
+    .btn-disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-disabled:hover {
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    @media (max-width: 992px) {
+      .left-side {
+        display: none;
+      }
+    }
+
+    /* Additional styles for register page */
+    .register-success {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .register-success-content {
+      background-color: var(--card);
+      padding: 40px;
+      border-radius: var(--radius);
+      text-align: center;
+      max-width: 400px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .register-success-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: rgba(34, 197, 94, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+
+    .register-success-icon i {
+      color: #22c55e;
+      font-size: 30px;
+    }
+
+    /* Form validation styles */
+    .form-control-custom.error {
+      border-color: var(--destructive);
+    }
+
+    .form-control-custom.valid {
+      border-color: #22c55e;
+    }
+
+    .validation-icon {
+      position: absolute;
+      right: 40px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: none;
+    }
+
+    .validation-icon.valid {
+      color: #22c55e;
+      display: block;
+    }
+
+    .validation-icon.error {
+      color: var(--destructive);
+      display: block;
+    }
+  </style>
+</head>
+
+<body data-theme="light">
+  <!-- Header -->
+  <header class="header">
+    <div class="container py-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+          <a href="#" class="navbar-brand d-flex align-items-center">
+            <i class="fas fa-graduation-cap text-danger me-2"></i>
+            <strong>LearnPath AI</strong>
+          </a>
+        </div>
+
+        <button class="theme-toggle" id="themeToggle">
+          <i class="fas fa-moon" id="themeIcon"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="container px-4 py-12">
+    <div class="row justify-content-center max-w-6xl mx-auto">
+      <!-- Left Side - Benefits -->
+      <div class="col-lg-6 left-side animate-slide-in-left">
+        <button class="back-btn" id="backBtn">
+          <i class="fas fa-arrow-left"></i>
+          Back to Home
+        </button>
+
+        <div class="mb-4">
+          <span class="badge-custom">
+            <i class="fas fa-sparkles"></i>
+            Join 50,000+ Learners
+          </span>
+        </div>
+
+        <h2 class="mb-4 display-5 fw-bold">Start Your Learning Journey Today</h2>
+        <p class="text-muted mb-5 fs-5">
+          Create your free account and get access to personalized learning paths powered by AI.
+        </p>
+
+        <div class="image-container mb-5">
+          <img
+            src="https://images.unsplash.com/photo-1639741660848-a07ebe5e2ce0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlZHVjYXRpb24lMjBncmFkdWF0aW9uJTIwc3VjY2Vzc3xlbnwxfHx8fDE3NjA0NTU5OTh8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
+            alt="Education success" class="img-fluid">
+        </div>
+
+        <div class="benefits-list">
+          <div class="benefit-item">
+            <div class="benefit-icon">
+              <i class="fas fa-bolt"></i>
+            </div>
+            <div>
+              <h5 class="mb-1">Instant Access</h5>
+              <p class="text-muted mb-0">Start learning immediately after signing up</p>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon">
+              <i class="fas fa-shield-alt"></i>
+            </div>
+            <div>
+              <h5 class="mb-1">Secure & Private</h5>
+              <p class="text-muted mb-0">Your data is protected with encryption</p>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon">
+              <i class="fas fa-award"></i>
+            </div>
+            <div>
+              <h5 class="mb-1">Free Trial</h5>
+              <p class="text-muted mb-0">No credit card required to get started</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Side - Form -->
+      <div class="col-lg-6 col-md-8 animate-slide-in-right">
+        <button class="back-btn d-lg-none" id="backBtnMobile">
+          <i class="fas fa-arrow-left"></i>
+          Back to Home
+        </button>
+
+        <div class="card-custom">
+          <div class="card-header-custom">
+            <h2 class="mb-2">Create an Account</h2>
+            <p class="text-muted mb-0">Enter your information to get started</p>
+          </div>
+          <div class="card-body-custom">
+            <form method="post" class="needs-validation" novalidate id="registerForm">
+              {% csrf_token %}
+
+              <!-- Django form errors -->
+              {% if form.errors %}
+              <div class="alert alert-danger mb-4">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                Please correct the errors below.
+              </div>
+              {% endif %}
+
+              <!-- Username Field -->
+              <div class="mb-4">
+                <label for="username" class="form-label-custom">Username</label>
+                <div class="input-group-custom">
+                  <i class="input-icon fas fa-user"></i>
+                  <input type="text" class="form-control-custom {% if form.username.errors %}error{% endif %}"
+                    id="username" name="username" placeholder="johndoe" required
+                    value="{% if form.username.value %}{{ form.username.value }}{% endif %}">
+                  <span class="validation-icon">
+                    <i class="fas fa-check valid"></i>
+                    <i class="fas fa-times error"></i>
+                  </span>
+                </div>
+                {% if form.username.errors %}
+                <div class="error-message">
+                  <i class="fas fa-exclamation-circle"></i>
+                  {{ form.username.errors.0 }}
+                </div>
+                {% endif %}
+              </div>
+
+              <!-- Password Field -->
+              <div class="mb-4">
+                <label for="password" class="form-label-custom">Password</label>
+                <div class="input-group-custom">
+                  <i class="input-icon fas fa-lock"></i>
+                  <input type="password" class="form-control-custom {% if form.password.errors %}error{% endif %}"
+                    id="password" name="password" placeholder="••••••••" required>
+                  <button type="button" class="password-toggle" id="togglePassword">
+                    <i class="fas fa-eye" id="passwordIcon"></i>
+                  </button>
+                  <span class="validation-icon">
+                    <i class="fas fa-check valid"></i>
+                    <i class="fas fa-times error"></i>
+                  </span>
+                </div>
+                {% if form.password.errors %}
+                <div class="error-message">
+                  <i class="fas fa-exclamation-circle"></i>
+                  {{ form.password.errors.0 }}
+                </div>
+                {% endif %}
+              </div>
+
+              <!-- Confirm Password Field -->
+              <div class="mb-4">
+                <label for="confirm" class="form-label-custom">Confirm Password</label>
+                <div class="input-group-custom">
+                  <i class="input-icon fas fa-lock"></i>
+                  <input type="password"
+                    class="form-control-custom {% if form.confirm.errors %}error{% endif %} {% if form.password.value and form.confirm.value and form.password.value != form.confirm.value %}password-match-error{% endif %}"
+                    id="confirm" name="confirm" placeholder="••••••••" required>
+                  <button type="button" class="password-toggle" id="toggleConfirmPassword">
+                    <i class="fas fa-eye" id="confirmPasswordIcon"></i>
+                  </button>
+                  <span class="validation-icon">
+                    <i class="fas fa-check valid"></i>
+                    <i class="fas fa-times error"></i>
+                  </span>
+                </div>
+                {% if form.confirm.errors %}
+                <div class="error-message">
+                  <i class="fas fa-exclamation-circle"></i>
+                  {{ form.confirm.errors.0 }}
+                </div>
+                {% endif %}
+                <div class="error-message" id="passwordMatchError" style="display: none;">
+                  <i class="fas fa-exclamation-circle"></i>
+                  Passwords do not match
+                </div>
+              </div>
+
+              <!-- Terms Agreement -->
+              <div class="d-flex align-items-start mb-4">
+                <div class="checkbox-custom me-3" id="termsCheckbox">
+                  <i class="fas fa-check"></i>
+                </div>
+                <label class="text-muted small cursor-pointer">
+                  I agree to the
+                  <button type="button" class="btn-link-custom small" id="termsLink">
+                    Terms of Service
+                  </button>
+                  and
+                  <button type="button" class="btn-link-custom small" id="privacyLink">
+                    Privacy Policy
+                  </button>
+                </label>
+              </div>
+
+              <!-- Submit Button -->
+              <button type="submit" class="btn-custom btn-primary-custom w-100 mb-4" id="submitBtn">
+                <i class="fas fa-check-circle me-2"></i>
+                Create Account
+              </button>
+            </form>
+
+            <!-- Divider -->
+            <div class="separator">
+              <span>Or sign up with</span>
+            </div>
+
+            <!-- Social Signup -->
+            <div class="row g-3 mb-4">
+              <div class="col-4">
+                <button class="btn-custom btn-outline-custom w-100">
+                  <i class="fab fa-chrome"></i>
+                </button>
+              </div>
+              <div class="col-4">
+                <button class="btn-custom btn-outline-custom w-100">
+                  <i class="fab fa-github"></i>
+                </button>
+              </div>
+              <div class="col-4">
+                <button class="btn-custom btn-outline-custom w-100">
+                  <i class="fab fa-linkedin"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Login Link -->
+            <div class="text-center">
+              <span class="text-muted">Already have an account? </span>
+              <a href="{% url 'login' %}" class="btn-link-custom">
+                Sign in
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Terms of Service Modal -->
+  <div class="modal fade" id="termsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Terms of Service</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p>By using LearnPath AI, you agree to our Terms of Service. Please read them carefully.</p>
+          <!-- Add full terms content here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Privacy Policy Modal -->
+  <div class="modal fade" id="privacyModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Privacy Policy</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p>Your privacy is important to us. Learn how we protect your data.</p>
+          <!-- Add full privacy policy content here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Theme Toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    const body = document.body;
+
+    themeToggle.addEventListener('click', () => {
+      const currentTheme = body.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+      body.setAttribute('data-theme', newTheme);
+      themeIcon.className = newTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+
+      // Save preference to localStorage
+      localStorage.setItem('theme', newTheme);
+    });
+
+    // Load saved theme
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    body.setAttribute('data-theme', savedTheme);
+    themeIcon.className = savedTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+
+    // Password toggles
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordIcon = document.getElementById('passwordIcon');
+    const passwordInput = document.getElementById('password');
+
+    const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+    const confirmPasswordIcon = document.getElementById('confirmPasswordIcon');
+    const confirmInput = document.getElementById('confirm');
+
+    togglePassword.addEventListener('click', () => {
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      passwordIcon.className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+    });
+
+    toggleConfirmPassword.addEventListener('click', () => {
+      const type = confirmInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      confirmInput.setAttribute('type', type);
+      confirmPasswordIcon.className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+    });
+
+    // Terms checkbox
+    const termsCheckbox = document.getElementById('termsCheckbox');
+    let agreedToTerms = false;
+
+    termsCheckbox.addEventListener('click', () => {
+      termsCheckbox.classList.toggle('checked');
+      agreedToTerms = termsCheckbox.classList.contains('checked');
+      updateSubmitButton();
+    });
+
+    // Form elements
+    const passwordMatchError = document.getElementById('passwordMatchError');
+    const submitBtn = document.getElementById('submitBtn');
+    const registerForm = document.getElementById('registerForm');
+
+    // Check password match
+    function checkPasswordMatch() {
+      const password = passwordInput.value;
+      const confirm = confirmInput.value;
+
+      if (confirm && password !== confirm) {
+        confirmInput.classList.add('password-match-error');
+        passwordMatchError.style.display = 'flex';
+        return false;
+      } else {
+        confirmInput.classList.remove('password-match-error');
+        passwordMatchError.style.display = 'none';
+        return true;
+      }
+    }
+
+    // Update submit button state
+    function updateSubmitButton() {
+      const passwordMatch = checkPasswordMatch();
+
+      if (agreedToTerms && passwordMatch) {
+        submitBtn.classList.remove('btn-disabled');
+        submitBtn.disabled = false;
+      } else {
+        submitBtn.classList.add('btn-disabled');
+        submitBtn.disabled = true;
+      }
+    }
+
+    // Event listeners for password fields
+    passwordInput.addEventListener('input', updateSubmitButton);
+    confirmInput.addEventListener('input', updateSubmitButton);
+
+    // Initialize button state
+    updateSubmitButton();
+
+    // Button event handlers
+    document.getElementById('backBtn').addEventListener('click', () => {
+      window.location.href = '/';
+    });
+
+    document.getElementById('backBtnMobile').addEventListener('click', () => {
+      window.location.href = '/';
+    });
+
+    document.getElementById('termsLink').addEventListener('click', () => {
+      const termsModal = new bootstrap.Modal(document.getElementById('termsModal'));
+      termsModal.show();
+    });
+
+    document.getElementById('privacyLink').addEventListener('click', () => {
+      const privacyModal = new bootstrap.Modal(document.getElementById('privacyModal'));
+      privacyModal.show();
+    });
+
+    // Form validation
+    registerForm.addEventListener('submit', (event) => {
+      // Client-side validation
+      if (!agreedToTerms) {
+        event.preventDefault();
+        alert('Please agree to the Terms of Service and Privacy Policy');
+        return;
+      }
+
+      if (!checkPasswordMatch()) {
+        event.preventDefault();
+        alert('Passwords do not match. Please check and try again.');
+        return;
+      }
+
+      // If validation passes, form will submit normally
+      // Django will handle server-side validation
+    });
+
+    // Real-time validation indicators
+    function setupValidation(field) {
+      field.addEventListener('input', function () {
+        const isValid = this.checkValidity() && this.value.length > 0;
+        const parent = this.parentElement;
+        const validationIcon = parent.querySelector('.validation-icon');
+
+        if (isValid) {
+          this.classList.remove('error');
+          this.classList.add('valid');
+          validationIcon.querySelector('.valid').style.display = 'block';
+          validationIcon.querySelector('.error').style.display = 'none';
+        } else if (this.value.length > 0) {
+          this.classList.remove('valid');
+          this.classList.add('error');
+          validationIcon.querySelector('.valid').style.display = 'none';
+          validationIcon.querySelector('.error').style.display = 'block';
+        } else {
+          this.classList.remove('valid', 'error');
+          validationIcon.querySelector('.valid').style.display = 'none';
+          validationIcon.querySelector('.error').style.display = 'none';
+        }
+      });
+    }
+
+    // Setup validation for all form fields
+    const formFields = document.querySelectorAll('.form-control-custom');
+    formFields.forEach(setupValidation);
+
+    // Initialize animations
+    document.addEventListener('DOMContentLoaded', () => {
+      document.body.classList.add('animate-fade-in');
+
+      // Check for existing form errors
+      if (document.querySelector('.error')) {
+        const firstError = document.querySelector('.error');
+        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  </script>
+</body>
+
+</html>

@@ -10,6 +10,8 @@ class Course(models.Model):
     level_required = models.CharField(max_length=100)
     language = models.CharField(max_length=50)
     outline = models.TextField()  # generated outline
+    outline_score = models.IntegerField(default=0, help_text="Outline quality score (0-100)")
+    is_predefined = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -122,13 +124,54 @@ class UserProgress(models.Model):
         return f"{self.user.username} - {self.course.title}"
 
     def get_progress_percentage(self):
-        total_weeks = self.course.weeks.count()
+        """Calculate overall course progress percentage (for entire course)"""
+        # Count total days across all weeks
+        total_days = sum(week.days.count() for week in self.course.weeks.all())
         total_quizzes = sum(week.quizzes.count() for week in self.course.weeks.all())
         total_assignments = sum(week.assignments.count() for week in self.course.weeks.all())
 
         completed_count = len(self.completed_days) + len(self.completed_quizzes) + len(self.completed_assignments)
-        total_items = (total_weeks * 6) + total_quizzes + total_assignments  # 6 days per week assumed
+        total_items = total_days + total_quizzes + total_assignments
 
         if total_items == 0:
             return 0
         return min(100, (completed_count / total_items) * 100)
+    
+    def get_week_progress_percentage(self, week):
+        """Calculate progress for a specific week"""
+        total_days = week.days.count()
+        total_quizzes = week.quizzes.count()
+        total_assignments = week.assignments.count()
+        
+        # Get all day IDs in this week
+        week_day_ids = set(d.id for d in week.days.all())
+        week_quiz_ids = set(q.id for q in week.quizzes.all())
+        week_assignment_ids = set(a.id for a in week.assignments.all())
+        
+        # Count completed items in this week
+        completed_days = sum(1 for day_id in self.completed_days if int(day_id) in week_day_ids)
+        completed_quizzes = sum(1 for quiz_id in self.completed_quizzes if int(quiz_id) in week_quiz_ids)
+        completed_assignments = sum(1 for assign_id in self.completed_assignments if int(assign_id) in week_assignment_ids)
+        
+        completed_count = completed_days + completed_quizzes + completed_assignments
+        total_items = total_days + total_quizzes + total_assignments
+        
+        if total_items == 0:
+            return 0
+        return min(100, (completed_count / total_items) * 100)
+
+class ChatbotConversation(models.Model):
+    """Store chatbot conversations for each user per day"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    week_number = models.IntegerField()
+    day_number = models.IntegerField()
+    messages = models.JSONField(default=list)  # Store conversation history
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        unique_together = ['user', 'course', 'week_number', 'day_number']
+    
+    def __str__(self):
+        return f"{self.user.username} - Week {self.week_number}, Day {self.day_number}"

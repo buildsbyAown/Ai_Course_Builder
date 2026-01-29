@@ -1,0 +1,47 @@
+# Course Learning Outcomes (CLOs)
+- Understand the key concepts of Discrete Structures such as Sets, Permutations, Combinations, Relations, Graphs, etc.
+- Apply formal logic proofs and/or informal, but rigorous, logical reasoning.
+- Apply discrete structures into computing problems.
+- Differentiate various discrete structures.
+
+# Weekly Course Outline
+## Week 1
+- Introduction to discrete structures
+## Week 2
+- Propositional calculus, logical connectives and examples
+## Week 3
+- Propositional calculus continued, inference techniques
+## Week 4
+- First order logic: predicates and quantifiers, inference techniques
+## Week 5
+- Set theory: set operations, set relationships, Functions, classification and composition
+## Week 6
+- Midterm Exam 1
+## Week 6
+- Cardinality of sets, countable and uncountable sets
+## Week 7
+- Binary and n-ary Relations, representing Relations, closure, equivalence
+## Week 8
+- Proof techniques
+## Week 9
+- Proof techniques continued + Mathematical induction with examples
+## Week 10
+- Number theory: Euclidean algorithm, LCM, Fermat’s little theorem, Chinese remainder theorem, modular exponentiation
+## Week 11
+- Recurrence relation, homogenous and non-homogenous equations
+## Week 12
+- Midterm 2
+## Week 12
+- Introduction to counting, permutations, combinations, pigeon hole principle
+## Week 13
+- Combinatorics: Pascal’s Triangle, Pascal’s identity, Vandermonde identity
+## Week 14
+- Introduction to graphs
+## Week 15
+- Problems related to graphs
+
+# Recommended Books
+- Kenneth H. Rosen, Discrete Mathematics and Its Applications, seventh Edition, McGraw-Hill
+- Ralph P. Grimaldi, Discrete and Combinatorial Mathematics: An Applied Introduction, Fourth edition or later, Addison-Wesley
+- Winifred K. Grassman, Jean P. Tremblay, Logic and Discrete Mathematics: A Computer Science Perspective, International Edition (or edition 1 or later), Prentice Hall
+- Stuart Russell and Peter Norvig, Artificial Intelligence, A Modern Approach, Second edition or later, Pearson

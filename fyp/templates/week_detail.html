@@ -1,258 +1,1460 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>{{ week.title }} - {{ course.title }}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ week.title }} - {{ course.title }} | LearnPath AI</title>
+
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    {% include '_theme_vars.html' %}
+
     <style>
-        .day-card {
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
-            transition: transform 0.3s ease;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .day-card:hover {
-            transform: translateY(-2px);
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--background) 0%, var(--background) 50%, var(--secondary) 100%);
+            color: var(--foreground);
+            min-height: 100vh;
+            transition: all 0.3s ease;
         }
-        .video-container {
+
+        /* Header Styles */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            width: 100%;
+            border-bottom: 1px solid var(--border);
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        [data-theme="dark"] .header {
+            background-color: rgba(2, 8, 23, 0.95);
+        }
+
+        .logo-container {
+            height: 40px;
+            width: 40px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--chart-1) 0%, var(--chart-3) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+        }
+
+        .logo-container i {
+            color: white;
+            font-size: 20px;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: var(--foreground);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--secondary);
+        }
+
+        /* Week Header Section */
+        .week-header {
+            background: linear-gradient(135deg, var(--color-orange) 0%, var(--color-orange-dark) 100%);
+            color: white;
+            padding: 2rem 0;
+            border-radius: 0 0 var(--radius) var(--radius);
             position: relative;
-            border-radius: 10px;
             overflow: hidden;
+        }
+
+        .week-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+        }
+
+        .breadcrumb-custom {
+            background: transparent;
+            padding: 0;
             margin-bottom: 1rem;
         }
+
+        .breadcrumb-custom .breadcrumb-item a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .breadcrumb-custom .breadcrumb-item a:hover {
+            color: white;
+        }
+
+        .breadcrumb-custom .breadcrumb-item.active {
+            color: white;
+            font-weight: 500;
+        }
+
+        .breadcrumb-custom .breadcrumb-item+.breadcrumb-item::before {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-card .icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.75rem;
+            font-size: 1.25rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .stat-card .label {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.75rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        /* Main Content Layout - Two Panels */
+        .main-content-wrapper {
+            display: flex;
+            min-height: calc(100vh - 200px);
+            margin-top: 1rem;
+        }
+
+        /* Left Panel - Days List */
+        .left-panel {
+            width: 400px;
+            background: var(--card);
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            height: calc(100vh - 150px);
+            position: sticky;
+            top: 120px;
+        }
+
+        /* Progress Section in Left Panel */
+        .progress-section {
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 1.5rem;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .progress-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--foreground);
+        }
+
+        .progress-percentage {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, #7c3aed 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .progress {
+            height: 10px;
+            border-radius: 10px;
+            background-color: var(--secondary);
+            overflow: hidden;
+            margin-bottom: 0.75rem;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, var(--color-orange) 0%, var(--color-orange-dark) 50%, var(--color-warning) 100%);
+            border-radius: 10px;
+            transition: width 1s ease-in-out;
+        }
+
+        .progress-hint {
+            color: var(--muted-foreground);
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Days List in Left Panel */
+        .days-list {
+            padding: 0.5rem;
+        }
+
+        .day-sidebar-item {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .day-sidebar-item:hover {
+            background-color: var(--secondary);
+        }
+
+        .day-sidebar-item.active {
+            background-color: var(--primary);
+            color: white;
+            border-left: 4px solid var(--accent-foreground);
+        }
+
+        .day-sidebar-item.active .day-sidebar-number,
+        .day-sidebar-item.active .day-sidebar-title,
+        .day-sidebar-item.active .day-sidebar-duration {
+            color: white;
+        }
+
+        .day-sidebar-item.completed {
+            border-left: 4px solid var(--color-orange);
+        }
+
+        .day-sidebar-number {
+            width: 36px;
+            height: 36px;
+            background: var(--secondary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 0.875rem;
+            flex-shrink: 0;
+        }
+
+        .day-sidebar-item.completed .day-sidebar-number {
+            background: var(--color-orange);
+            color: white;
+        }
+
+        .day-sidebar-item.active .day-sidebar-number {
+            background: var(--foreground);
+            color: var(--background);
+        }
+
+        .day-sidebar-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .day-sidebar-title {
+            font-weight: 600;
+            color: var(--foreground);
+            font-size: 0.9375rem;
+            margin-bottom: 0.25rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .day-sidebar-duration {
+            color: var(--muted-foreground);
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .day-sidebar-item.active .day-sidebar-duration {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Right Panel - Day Content */
+        .right-panel {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+            height: calc(100vh - 150px);
+        }
+
+        /* Enhanced Video Container */
+        .video-container {
+            position: relative;
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .video-container:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .video-link {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+        }
+
         .video-thumbnail {
             width: 100%;
-            height: 200px;
+            height: 400px;
             object-fit: cover;
-            cursor: pointer;
-            transition: transform 0.3s ease;
+            transition: transform 0.5s ease;
+            background: linear-gradient(135deg, var(--primary) 0%, #7c3aed 100%);
         }
-        .video-thumbnail:hover {
-            transform: scale(1.02);
+
+        .video-container:hover .video-thumbnail {
+            transform: scale(1.05);
         }
+
         .video-overlay {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.7) 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .play-button {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        .video-container:hover .video-overlay {
-            opacity: 1;
-        }
-        .play-button {
-            color: white;
-            font-size: 3rem;
-        }
-        .video-modal iframe {
-            width: 100%;
-            height: 400px;
-            border: none;
-        }
-        .completed-day {
-            border-left: 5px solid #28a745;
-        }
-        .learning-content {
-            line-height: 1.6;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
         }
 
-        .learning-content h5 {
-            color: #667eea;
-            margin-top: 1rem;
+        .play-button i {
+            color: #ff0000;
+            font-size: 2.5rem;
+            margin-left: 5px;
+        }
+
+        .play-button:hover {
+            transform: scale(1.1);
+            background: white;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+        }
+
+        .video-title {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .video-subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .youtube-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: #ff0000;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            z-index: 10;
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+        }
+
+        /* Day Content Header */
+        .day-content-header {
+            margin-bottom: 2rem;
+        }
+
+        .day-content-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--foreground);
             margin-bottom: 0.5rem;
         }
 
-        .learning-content ul, .learning-content ol {
+        .day-content-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--muted-foreground);
+            font-size: 0.875rem;
+        }
+
+        /* Learning Content */
+        .learning-content {
+            line-height: 1.8;
+            color: var(--foreground);
+            font-size: 1.0625rem;
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 2rem;
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .learning-content h1,
+        .learning-content h2,
+        .learning-content h3,
+        .learning-content h4,
+        .learning-content h5,
+        .learning-content h6 {
+            margin-top: 1.5rem;
             margin-bottom: 1rem;
-            padding-left: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .learning-content h2 {
+            font-size: 1.75rem;
+            border-bottom: 3px solid var(--secondary);
+            padding-bottom: 0.75rem;
+        }
+
+        .learning-content h3 {
+            font-size: 1.4rem;
+        }
+
+        .learning-content p {
+            margin-bottom: 1.25rem;
+            line-height: 1.8;
+        }
+
+        .learning-content strong,
+        .learning-content b {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .learning-content code {
+            background: var(--secondary);
+            color: var(--primary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+        }
+
+        .learning-content pre {
+            background: var(--secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .learning-content pre code {
+            background: none;
+            padding: 0;
+            color: var(--foreground);
+            font-size: 0.9rem;
+        }
+
+        .learning-content h5 {
+            color: var(--primary);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--secondary);
+        }
+
+        .learning-content ul,
+        .learning-content ol {
+            margin-bottom: 1.5rem;
+            padding-left: 1.75rem;
         }
 
         .learning-content li {
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.75rem;
+            position: relative;
         }
 
-        .learning-content strong {
-            color: #495057;
+        .learning-content ul li::before {
+            content: '•';
+            color: var(--primary);
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+
+        .learning-content ol {
+            counter-reset: list-counter;
+        }
+
+        .learning-content ol li {
+            counter-increment: list-counter;
+        }
+
+        .learning-content ol li::before {
+            content: counter(list-counter) '.';
+            color: var(--primary);
+            font-weight: bold;
+            display: inline-block;
+            width: 1.5em;
+            margin-left: -1.5em;
+        }
+
+        .learning-content blockquote {
+            border-left: 4px solid var(--primary);
+            margin: 1.5rem 0;
+            padding-left: 1.5rem;
+            color: var(--muted-foreground);
+            font-style: italic;
+            background: var(--secondary);
+            padding: 1rem 1rem 1rem 1.5rem;
+            border-radius: 4px;
+        }
+
+        .learning-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .learning-content th,
+        .learning-content td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .learning-content th {
+            background: var(--secondary);
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .learning-content tr:hover {
+            background: var(--secondary);
+        }
+
+        .learning-content a {
+            color: var(--primary);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--primary);
+            transition: all 0.2s ease;
+        }
+
+        .learning-content a:hover {
+            color: var(--accent);
+            text-decoration: underline;
+        }
+
+        .learning-content hr {
+            margin: 2rem 0;
+            border: none;
+            height: 2px;
+            background: var(--secondary);
+        }
+
+        .learning-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+
+        /* Buttons */
+        .btn-mark-complete {
+            background: linear-gradient(135deg, var(--color-orange) 0%, var(--color-orange-dark) 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: var(--radius);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        .btn-mark-complete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+            background: linear-gradient(135deg, var(--color-orange-dark) 0%, var(--color-orange) 100%);
+        }
+
+        .btn-completed {
+            background: var(--secondary);
+            color: var(--muted-foreground);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: var(--radius);
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1rem;
+            cursor: not-allowed;
+        }
+
+        .back-button {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 1rem 2rem;
+            border-radius: var(--radius);
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.1);
+        }
+
+        [data-theme="dark"] .back-button {
+            background: var(--secondary);
+            color: var(--primary-foreground);
+            border-color: var(--primary);
+        }
+
+        .back-button:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+            text-decoration: none;
+        }
+
+        /* Success Alert */
+        .success-alert {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.1) 0%, rgba(247, 147, 30, 0.05) 100%);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            color: #ff6b35;
+            padding: 1.25rem;
+            border-radius: var(--radius);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            animation: slideIn 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Custom button styles */
+        .btn-custom-outline {
+            background: transparent;
+            color: var(--foreground);
+            border: 1px solid var(--border);
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-custom-outline:hover {
+            background: var(--secondary);
+            border-color: var(--primary);
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* Navigation Buttons */
+        .day-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .main-content-wrapper {
+                flex-direction: column;
+            }
+
+            .left-panel {
+                width: 100%;
+                height: auto;
+                position: static;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .right-panel {
+                height: auto;
+            }
+
+            .video-thumbnail {
+                height: 250px;
+            }
+
+            .play-button {
+                width: 60px;
+                height: 60px;
+            }
+
+            .play-button i {
+                font-size: 1.75rem;
+            }
+
+            .video-title {
+                font-size: 1.25rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .progress-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
         }
     </style>
 </head>
-<body>
-    <div class="container mt-4">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
-                <li class="breadcrumb-item"><a href="{% url 'course_detail' course.id %}">{{ course.title }}</a></li>
-                <li class="breadcrumb-item active">{{ week.title }}</li>
-            </ol>
-        </nav>
-        
-        <div class="row mb-4">
-            <div class="col-md-8">
-                <h1>{{ week.title }}</h1>
-                <p class="lead text-muted">{{ week.content }}</p>
-            </div>
-            <div class="col-md-4 text-end">
-                <div class="card bg-light">
-                    <div class="card-body text-center">
-                        <h5 class="card-title">Week Progress</h5>
-                        <div class="h3 text-primary mb-0">
-                            {{ user_progress.get_progress_percentage|floatformat:1 }}%
-                        </div>
-                        <small class="text-muted">Overall Course Progress</small>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="row">
-            {% for day in days %}
-            <div class="col-lg-6">
-                <div class="card day-card {% if day.id in user_progress.completed_days %}completed-day{% endif %}" 
-                     id="day-{{ day.id }}">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <h4 class="card-title">Day {{ day.day_number }}: {{ day.title }}</h4>
-                            {% if day.id in user_progress.completed_days %}
-                                <span class="badge bg-success">
-                                    <i class="fas fa-check"></i> Completed
-                                </span>
-                            {% endif %}
-                        </div>
-                        
-                        {% if day.video_url and day.video_thumbnail %}
-                        <div class="video-container">
-                            <img src="{{ day.video_thumbnail }}" 
-                                 alt="Video thumbnail for {{ day.title }}" 
-                                 class="video-thumbnail"
-                                 data-bs-toggle="modal" 
-                                 data-bs-target="#videoModal{{ day.id }}">
-                            <div class="video-overlay" 
-                                 data-bs-toggle="modal" 
-                                 data-bs-target="#videoModal{{ day.id }}">
-                                <i class="fas fa-play play-button"></i>
-                            </div>
-                        </div>
-                        
-                        <!-- Video Modal -->
-                        <div class="modal fade" id="videoModal{{ day.id }}" tabindex="-1">
-                            <div class="modal-dialog modal-lg">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">Day {{ day.day_number }}: {{ day.title }}</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="video-modal">
-                                            <iframe src="{{ day.video_url }}" 
-                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                                    allowfullscreen>
-                                            </iframe>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {% endif %}
-                        
-                        <div class="card-text">
-                            {% if day.content %}
-                                {% if "<h5>" in day.content or "<ul>" in day.content or "<ol>" in day.content %}
-                                    {# Content is already in HTML format #}
-                                    {{ day.content|safe }}
-                                {% else %}
-                                    {# Content is plain text, format it nicely #}
-                                    <div class="learning-content">
-                                        {{ day.content|linebreaks }}
-                                    </div>
-                                {% endif %}
-                            {% else %}
-                                <div class="alert alert-info">
-                                    <i class="fas fa-info-circle"></i> Content for this day is being prepared.
-                                </div>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="mt-3">
-                            {% if day.id not in user_progress.completed_days %}
-                            <button class="btn btn-success mark-complete-btn" 
-                                    data-course-id="{{ course.id }}" 
-                                    data-day-id="{{ day.id }}">
-                                <i class="fas fa-check"></i> Mark as Complete
-                            </button>
-                            {% else %}
-                            <button class="btn btn-secondary" disabled>
-                                <i class="fas fa-check"></i> Completed
-                            </button>
-                            {% endif %}
-                        </div>
+<body data-theme="light">
+    <!-- Header -->
+    <header class="header">
+        <div class="container py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <div class="logo-container">
+                        <i class="fas fa-sparkles"></i>
+                    </div>
+                    <a href="{% url 'home' %}" class="navbar-brand d-flex align-items-center">
+                        <i class="fas fa-graduation-cap text-danger me-2"></i>
+                        <strong>LearnPath AI</strong>
+                    </a>
+                </div>
+
+                <div class="d-flex align-items-center gap-3">
+                    <button class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                    <a href="{% url 'dashboard' %}" class="btn-custom-outline">
+                        <i class="fas fa-user"></i>
+                        Dashboard
+                    </a>
+                    <a href="{% url 'course_detail' course.id %}" class="btn-custom-outline">
+                        <i class="fas fa-arrow-left me-1"></i>
+                        Back to Course
+                    </a>
+                    <a href="{% url 'logout' %}" class="btn-custom-outline" title="Logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Week Header -->
+    <div class="week-header">
+        <div class="container">
+            <nav aria-label="breadcrumb" class="breadcrumb-custom">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'course_detail' course.id %}">{{ course.title }}</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ week.title }}</li>
+                </ol>
+            </nav>
+
+            <h1 class="display-5 fw-bold mb-3">{{ week.title }}</h1>
+            <p class="lead mb-0 opacity-90">{{ course.description }}</p>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="label">Timeline</div>
+                    <div class="value">{{ days|length }} days</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="label">Total Duration</div>
+                    <div class="value">{{ days|length|add:"1" }} hours</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="label">Modules</div>
+                    <div class="value">{{ days|length }} modules</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="label">Completed</div>
+                    <div class="value">
+                        {% with completed_count=user_progress.completed_days|length %}
+                        {{ completed_count }}/{{ days|length }}
+                        {% endwith %}
                     </div>
                 </div>
             </div>
-            {% endfor %}
-        </div>
-        
-        <div class="text-center mt-4">
-            <a href="{% url 'course_detail' course.id %}" class="btn btn-outline-primary">
-                <i class="fas fa-arrow-left"></i> Back to Course Outline
-            </a>
         </div>
     </div>
 
+    <div class="container-fluid">
+        <div class="main-content-wrapper">
+            <!-- Left Panel - Days List -->
+            <div class="left-panel">
+                <div class="progress-section">
+                    <div class="progress-header">
+                        <div>
+                            <div class="progress-title">Week Progress</div>
+                            <div class="progress-hint">
+                                <i class="fas fa-info-circle"></i>
+                                Complete lessons to increase your progress
+                            </div>
+                        </div>
+                        <span class="progress-percentage" id="week-progress-percentage">{{ week_progress_percentage|floatformat:0 }}%</span>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar"
+                            style="width: {{ week_progress_percentage }}%"
+                            aria-valuenow="{{ week_progress_percentage }}" aria-valuemin="0"
+                            aria-valuemax="100" id="week-progress-bar">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="days-list">
+                    {% for day in days %}
+                    <div class="day-sidebar-item {% if forloop.first %}active{% endif %} {% if day.id in user_progress.completed_days %}completed{% endif %}"
+                        data-day-id="{{ day.id }}" onclick="loadDayContent({{ day.id }}, {{ forloop.counter0 }})">
+                        <div class="day-sidebar-number">
+                            {% if day.id in user_progress.completed_days %}
+                            <i class="fas fa-check"></i>
+                            {% else %}
+                            {{ forloop.counter }}
+                            {% endif %}
+                        </div>
+                        <div class="day-sidebar-info">
+                            <div class="day-sidebar-title">{{ day.title }}</div>
+                            <div class="day-sidebar-duration">
+                                <i class="fas fa-clock"></i>
+                                {{ course.hours_per_day|default:"2-3 hours" }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Right Panel - Day Content -->
+            <div class="right-panel" id="right-panel">
+                <!-- Day content will be loaded here dynamically -->
+                {% if days %}
+                {% with first_day=days.0 %}
+                <div class="day-content-header">
+                    <h1 class="day-content-title">{{ first_day.title }}</h1>
+                    <div class="day-content-meta">
+                        <span><i class="fas fa-clock"></i> {{ first_day.duration|default:"2-3 hours" }}</span>
+                        {% if first_day.id in user_progress.completed_days %}
+                        <span><i class="fas fa-check-circle text-success"></i> Completed</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Enhanced Video Section -->
+                {% if first_day.video_url %}
+                <div class="video-container">
+                    <a href="{{ first_day.video_url }}" target="_blank" rel="noopener noreferrer" class="video-link">
+                        <div class="youtube-badge">
+                            <i class="fab fa-youtube"></i>
+                            YouTube
+                        </div>
+                        {% if first_day.video_thumbnail %}
+                        <img src="{{ first_day.video_thumbnail }}" alt="Video for {{ first_day.title }}"
+                            class="video-thumbnail"
+                            onerror="this.src='https://images.unsplash.com/photo-1593305841991-05c297ba4575?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80'">
+                        {% else %}
+                        <div class="video-thumbnail"></div>
+                        {% endif %}
+                        <div class="video-overlay">
+                            <div class="play-button">
+                                <i class="fas fa-play"></i>
+                            </div>
+                            <div class="video-title">{{ first_day.title }}</div>
+                            <div class="video-subtitle">
+                                <i class="fas fa-external-link-alt"></i>
+                                Click to watch on YouTube
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+
+                <!-- Learning Content -->
+                <div class="learning-content" id="day-learning-content">
+                    {% if first_day.content %}
+                    {% if "<h5>" in first_day.content or "<ul>" in first_day.content or "<ol>" in first_day.content %}
+                                {{ first_day.content|safe }}
+                                {% else %}
+                                {{ first_day.content|linebreaks }}
+                                {% endif %}
+                                {% else %}
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle"></i>
+                                    Content for this day is being prepared. Check back soon!
+                                </div>
+                                {% endif %}
+                </div>
+
+                <!-- Mark Complete Button -->
+                <div class="mt-4">
+                    {% if first_day.id not in user_progress.completed_days %}
+                    <button class="btn-mark-complete mark-complete-btn" data-course-id="{{ course.id }}"
+                        data-day-id="{{ first_day.id }}" id="mark-complete-btn">
+                        <i class="fas fa-check"></i> Mark as Complete
+                    </button>
+                    {% else %}
+                    <button class="btn-completed" disabled>
+                        <i class="fas fa-check-circle"></i> Completed
+                    </button>
+                    {% endif %}
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="day-navigation">
+                    <button class="btn-custom-outline" id="prev-day-btn" style="visibility: hidden;">
+                        <i class="fas fa-chevron-left"></i> Previous Day
+                    </button>
+                    <button class="btn-custom-outline" id="next-day-btn">
+                        Next Day <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                {% endwith %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="activities-section mt-5">
+        <h3 class="mb-4"><i class="fas fa-tasks me-2"></i>Week Activities</h3>
+
+        <div class="row">
+            <!-- Quiz Card -->
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 border-primary">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-question-circle me-2"></i>Weekly Quiz</h5>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-title">{{ quiz.title }}</h6>
+                        <p class="card-text">
+                            Test your understanding of this week's topics with 5 multiple-choice questions.
+                            <br><small class="text-muted">Total Marks: {{ quiz.total_marks }}</small>
+                        </p>
+
+                        {% if quiz_submission %}
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <strong>Completed!</strong>
+                            Your score: {{ quiz_submission.score }}/{{ quiz.total_marks }}
+                            <br>
+                            <a href="{% url 'quiz_result' course.id week.week_number quiz.id %}"
+                                class="btn btn-sm btn-outline-success mt-2">
+                                View Result
+                            </a>
+                        </div>
+                        {% else %}
+                        <a href="{% url 'quiz_detail' course.id week.week_number quiz.id %}" class="btn btn-primary">
+                            <i class="fas fa-play-circle me-2"></i>Take Quiz
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Assignment Card -->
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 border-warning">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0"><i class="fas fa-pen-alt me-2"></i>Weekly Assignment</h5>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-title">{{ assignment.title }}</h6>
+                        <p class="card-text">
+                            {{ assignment.description|truncatewords:30 }}
+                            <br><small class="text-muted">Due: {{ assignment.due_date|date:"M d, Y" }}</small>
+                        </p>
+
+                        {% if assignment_submission %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-check me-2"></i>
+                            <strong>Submitted!</strong>
+                            {% if assignment_submission.grade %}
+                            Grade: {{ assignment_submission.grade }}/{{ assignment.max_marks }}
+                            {% else %}
+                            Awaiting grade
+                            {% endif %}
+                            <br>
+                            <a href="{% url 'assignment_detail' course.id week.week_number assignment.id %}"
+                                class="btn btn-sm btn-outline-info mt-2">
+                                View Submission
+                            </a>
+                        </div>
+                        {% else %}
+                        <a href="{% url 'assignment_detail' course.id week.week_number assignment.id %}"
+                            class="btn btn-warning">
+                            <i class="fas fa-upload me-2"></i>Submit Assignment
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.querySelectorAll('.mark-complete-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const courseId = this.dataset.courseId;
-                const dayId = this.dataset.dayId;
-                const button = this;
-                
-                fetch('/update-progress/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': '{{ csrf_token }}'
-                    },
-                    body: JSON.stringify({
-                        course_id: courseId,
-                        day_id: dayId
-                    })
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const body = document.body;
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+            body.setAttribute('data-theme', newTheme);
+            themeIcon.className = newTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+
+            localStorage.setItem('theme', newTheme);
+        });
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        body.setAttribute('data-theme', savedTheme);
+        themeIcon.className = savedTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+
+        // Store days data for JavaScript
+        const daysData = [
+            {% for day in days %}
+        {
+            id: {{ day.id }},
+            title: "{{ day.title|escapejs }}",
+            duration: "{{ day.duration|default:'2-3 hours'|escapejs }}",
+            video_url: "{{ day.video_url|default:''|escapejs }}",
+            video_thumbnail: "{{ day.video_thumbnail|default:''|escapejs }}",
+            content: `{{ day.content|safe|escapejs }}`,
+            completed: {% if day.id in user_progress.completed_days %}true{% else %}false{% endif %}
+        },
+        {% endfor %}
+        ];
+
+        let currentDayIndex = 0;
+
+        // Function to load day content
+        function loadDayContent(dayId, index) {
+            currentDayIndex = index;
+            
+            // Guard against invalid index
+            if (index < 0 || index >= daysData.length) {
+                console.error('Invalid day index:', index);
+                return;
+            }
+            
+            const day = daysData[index];
+
+            // Update active state in left panel
+            document.querySelectorAll('.day-sidebar-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`.day-sidebar-item[data-day-id="${dayId}"]`)?.classList.add('active');
+
+            // Update right panel content
+            const titleElement = document.querySelector('.day-content-title');
+            const metaElement = document.querySelector('.day-content-meta');
+            
+            if (titleElement) titleElement.textContent = day.title;
+            if (metaElement) {
+                metaElement.innerHTML = `
+                    <span><i class="fas fa-clock"></i> ${day.duration}</span>
+                    ${day.completed ? '<span><i class="fas fa-check-circle text-success"></i> Completed</span>' : ''}
+                `;
+            }
+
+            // Update video section
+            const videoContainer = document.querySelector('.video-container');
+            if (videoContainer) {
+                if (day.video_url) {
+                    videoContainer.style.display = 'block';
+                    videoContainer.innerHTML = `
+                        <a href="${day.video_url}" target="_blank" rel="noopener noreferrer" class="video-link">
+                            <div class="youtube-badge">
+                                <i class="fab fa-youtube"></i>
+                                YouTube
+                            </div>
+                            ${day.video_thumbnail ?
+                            `<img src="${day.video_thumbnail}" alt="Video for ${day.title}" class="video-thumbnail"
+                                     onerror="this.src='https://images.unsplash.com/photo-1593305841991-05c297ba4575?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80'">` :
+                            `<div class="video-thumbnail"></div>`
+                        }
+                            <div class="video-overlay">
+                                <div class="play-button">
+                                    <i class="fas fa-play"></i>
+                                </div>
+                                <div class="video-title">${day.title}</div>
+                                <div class="video-subtitle">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    Click to watch on YouTube
+                                </div>
+                            </div>
+                        </a>
+                    `;
+                } else {
+                    videoContainer.style.display = 'none';
+                }
+            }
+
+            // Update learning content
+            const learningContent = document.getElementById('day-learning-content');
+            if (learningContent) {
+                if (day.content && day.content.trim() !== '') {
+                    learningContent.innerHTML = day.content;
+                } else {
+                    learningContent.innerHTML = `
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            Content for this day is being prepared. Check back soon!
+                        </div>
+                    `;
+                }
+            }
+
+            // Update mark complete button
+            const markCompleteBtn = document.getElementById('mark-complete-btn');
+            if (markCompleteBtn) {
+                if (day.completed) {
+                    markCompleteBtn.outerHTML = `
+                        <button class="btn-completed" disabled>
+                            <i class="fas fa-check-circle"></i> Completed
+                        </button>
+                    `;
+                } else {
+                    markCompleteBtn.outerHTML = `
+                        <button class="btn-mark-complete mark-complete-btn" data-course-id="{{ course.id }}"
+                            data-day-id="${day.id}" id="mark-complete-btn">
+                            <i class="fas fa-check"></i> Mark as Complete
+                        </button>
+                    `;
+
+                    // Re-attach event listener
+                    const newBtn = document.getElementById('mark-complete-btn');
+                    if (newBtn) {
+                        newBtn.addEventListener('click', markCompleteHandler);
+                    }
+                }
+            }
+
+            // Update navigation buttons
+            const prevBtn = document.getElementById('prev-day-btn');
+            const nextBtn = document.getElementById('next-day-btn');
+            
+            if (prevBtn) prevBtn.style.visibility = index > 0 ? 'visible' : 'hidden';
+            if (nextBtn) nextBtn.style.visibility = index < daysData.length - 1 ? 'visible' : 'hidden';
+
+            // Scroll to top of right panel
+            const rightPanel = document.querySelector('.right-panel');
+            if (rightPanel) rightPanel.scrollTop = 0;
+        }
+
+        // Navigation button handlers
+        const prevDayBtn = document.getElementById('prev-day-btn');
+        const nextDayBtn = document.getElementById('next-day-btn');
+        
+        if (prevDayBtn) {
+            prevDayBtn.addEventListener('click', () => {
+                if (currentDayIndex > 0) {
+                    const prevDay = daysData[currentDayIndex - 1];
+                    loadDayContent(prevDay.id, currentDayIndex - 1);
+                }
+            });
+        }
+
+        if (nextDayBtn) {
+            nextDayBtn.addEventListener('click', () => {
+                if (currentDayIndex < daysData.length - 1) {
+                    const nextDay = daysData[currentDayIndex + 1];
+                    loadDayContent(nextDay.id, currentDayIndex + 1);
+                }
+            });
+        }
+
+        // Mark Complete Functionality
+        function markCompleteHandler(e) {
+            e.stopPropagation();
+            const courseId = this.dataset.courseId;
+            const dayId = this.dataset.dayId;
+            const button = this;
+            const dayIndex = daysData.findIndex(d => d.id == dayId);
+
+            // Show loading state
+            const originalHTML = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Marking...';
+            button.disabled = true;
+
+            fetch('/update-progress/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    course_id: courseId,
+                    day_id: dayId
                 })
+            })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        // Update button
-                        button.classList.remove('btn-success');
-                        button.classList.add('btn-secondary');
-                        button.innerHTML = '<i class="fas fa-check"></i> Completed';
+                        // Update UI
+                        button.className = 'btn-completed';
+                        button.innerHTML = '<i class="fas fa-check-circle"></i> Completed';
                         button.disabled = true;
-                        
-                        // Add completed style to card
-                        const dayCard = document.getElementById('day-' + dayId);
-                        dayCard.classList.add('completed-day');
-                        
+
+                        // Update daysData
+                        daysData[dayIndex].completed = true;
+
+                        // Update left panel
+                        const sidebarItem = document.querySelector(`.day-sidebar-item[data-day-id="${dayId}"]`);
+                        sidebarItem.classList.add('completed');
+                        const dayNumber = sidebarItem.querySelector('.day-sidebar-number');
+                        dayNumber.innerHTML = '<i class="fas fa-check"></i>';
+
                         // Show success message
-                        const alert = document.createElement('div');
-                        alert.className = 'alert alert-success alert-dismissible fade show';
-                        alert.innerHTML = `
-                            <strong>Success!</strong> Day marked as completed.
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        `;
-                        document.querySelector('.container').insertBefore(alert, document.querySelector('.container').firstChild);
+                        showSuccessMessage('Success! Day marked as completed.');
+
+                        // Update progress bar
+                        updateProgressBar();
+
+                    } else {
+                        // Restore button on error
+                        button.innerHTML = originalHTML;
+                        button.disabled = false;
+                        alert('Error: ' + (data.error || 'Failed to update progress'));
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
+                    button.innerHTML = originalHTML;
+                    button.disabled = false;
                     alert('Error updating progress. Please try again.');
                 });
-            });
+        }
+
+        // Attach initial event listener
+        document.addEventListener('DOMContentLoaded', () => {
+            const markCompleteBtn = document.getElementById('mark-complete-btn');
+            if (markCompleteBtn && !markCompleteBtn.disabled) {
+                markCompleteBtn.addEventListener('click', markCompleteHandler);
+            }
+        });
+
+        // Show success message
+        function showSuccessMessage(message) {
+            const alert = document.createElement('div');
+            alert.className = 'success-alert';
+            alert.innerHTML = `
+                <i class="fas fa-check-circle" style="font-size: 1.5rem;"></i>
+                <div>
+                    <strong style="font-size: 1.1rem;">${message}</strong><br>
+                    <small style="opacity: 0.9;">Your progress has been saved.</small>
+                </div>
+            `;
+
+            const rightPanel = document.querySelector('.right-panel');
+            rightPanel.insertBefore(alert, rightPanel.querySelector('.video-container'));
+
+            // Remove after 4 seconds
+            setTimeout(() => {
+                alert.style.opacity = '0';
+                alert.style.transform = 'translateY(-10px)';
+                setTimeout(() => alert.remove(), 300);
+            }, 4000);
+        }
+
+        // Update progress bar
+        function updateProgressBar() {
+            // Calculate new progress for the week
+            const completedCount = daysData.filter(day => day.completed).length;
+            const totalDays = daysData.length;
+            const newPercentage = Math.round((completedCount / totalDays) * 100);
+
+            // Update week progress bar
+            const progressBar = document.getElementById('week-progress-bar');
+            const progressPercentage = document.getElementById('week-progress-percentage');
+
+            if (progressBar) {
+                progressBar.style.width = `${newPercentage}%`;
+                progressBar.setAttribute('aria-valuenow', newPercentage);
+            }
+            
+            if (progressPercentage) {
+                progressPercentage.textContent = `${newPercentage}%`;
+            }
+
+            // Update completed count in stats
+            const completedValue = document.querySelector('.stat-card:nth-child(4) .value');
+            if (completedValue) {
+                completedValue.textContent = `${completedCount}/${totalDays}`;
+            }
+        }
+
+        // Auto-expand first day on load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add animation to progress bar
+            const progressBar = document.querySelector('.progress-bar');
+            if (progressBar) {
+                const width = progressBar.style.width;
+                progressBar.style.width = '0%';
+                setTimeout(() => {
+                    progressBar.style.width = width;
+                }, 300);
+            }
         });
     </script>
+    <!-- In week_detail.html, update the data attributes section -->
+<div id="chatbot-data" 
+     data-course-id="{{ course.id }}"
+     data-week-number="{{ week.week_number }}"
+     {% if day.day_number %}
+     data-day-number="{{ day.day_number }}"
+     data-day-title="{{ day.title|escapejs }}"
+     {% else %}
+     data-day-number="1"
+     data-day-title="Today's Lesson"
+     {% endif %}
+     style="display: none;">
+</div>
+    {% include 'chatbot_widget.html' %}
 </body>
+
 </html>

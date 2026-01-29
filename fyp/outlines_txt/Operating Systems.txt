@@ -1,0 +1,41 @@
+# Course Learning Outcomes (CLOs)
+Not provided in source
+
+# Weekly Course Outline
+Not provided in source (only a tentative lecture plan is given, without weekly structure)
+## Lecture Plan (Tentative)
+- Proceses, Process Communication, and Threads 
+  Introduction and Background  
+  Introduction to Process Management  
+  Fork, wait, execlp  
+  Inter-process Communication  
+  Linux pipeline  
+  Multithreading Models  
+  Thread Libraries  
+  Expoiting processing and I/O in parallel  
+- Scheduling and Synchronization 
+  Process Scheduling  
+  Basic Concepts  
+  Scheduling Algorithms  
+  Synchronization  
+  Critical Section Problem and its Solutions  
+  Semaphores  
+  Classical Problems  
+- Memory Management, and File Systems 
+  Memory Management  
+  Challenges  
+  Paging  
+  Virtual Memory  
+  Demand Paging  
+  Page Replacement Algorithms  
+  File System – Introduction  
+  Allocation Methods  
+  Free-Space Management  
+  Implementation  
+- Some Optional Topics if time permits 
+  (deadlocks, makefile, sockets, etc.)
+
+# Recommended Books
+- Operating System Concepts (Tenth Edition) by Silberschatz, Galvin, and Gagne
+- Operating Systems (Third Edition) by Gary Nutt
+- The Little Book of Semaphores (Second Edition) by Allen B. Downey

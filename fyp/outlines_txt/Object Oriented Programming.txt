@@ -1,0 +1,65 @@
+# Course Learning Outcomes (CLOs)
+- Understand dynamic memory management with pointers.
+- Understand principles of object oriented program.
+- Identify the objects & their relationships to build object oriented solution.
+- Model a solution for a given problem using object oriented principles.
+- Examine an object oriented solution.
+
+# Weekly Course Outline
+## Week 1
+- Pointers Introduction, Pointer variables and Initialization, Address of Operator, Dereferencing Operator.
+- Pointer Operations (Relational, Arithmetic) Use of Constant with Pointers.
+- Difference between a Pointer and a Reference.
+- Passing pointers to functions by value and by reference.
+
+## Week 2
+- Dynamic memory allocation using pointers and accessing dynamic memory.
+- Dynamic Variables new and delete operators.
+- Dynamic 1-dimensional arrays, Create, Delete, Grow and Shrink.
+- Example of programs using 1D dynamic allocation: e.g., mathematical sets union and intersection.
+
+## Week 3
+- Memory Leak and Dangling Pointers, Dynamic 1-dimensional char arrays for strings, string operations like search, concatenation etc.
+- Pointers Indirection.
+- Dynamic 2D allocation, matrices, CStrings etc.
+
+## Week 4
+- Structured Programming vs Object-oriented Programming, Principles of modularization, abstraction and encapsulation.
+- Objects vs Class, state vs behavior, access specifiers (Public, Private), Member functions (accessors, utilities, mutators etc).
+
+## Week 5
+- Constructors (default, overloaded), Function overloading.
+- Dynamic memory allocation and Object assignment, Parameter passing, Shallow vs Deep copy.
+
+## Week 6
+- Copy constructor, Destructors, this pointer, Cascaded function calls, static members, inline functions and other miscellaneous issues.
+
+## Week 7
+- Operator overloading using member functions (Unary operators).
+
+## Week 8
+- Operator overloading using non-member functions, concept of friendship, Unary operators, Pre and post increment, subscript operator.
+
+## Week 9
+- Part-whole relationships, Association/Aggregation, Composition, Implementation issues (constructor call sequence, initializer list, etc).
+
+## Week 10
+- Inheritance basics, Type of Inheritance, public, protected, private, Function Overriding and sub-typing details.
+
+## Week 11
+- Polymorphism introduction, Static vs dynamic binding details, virtual tables and virtual pointers, Polymorphism vs down casting, run-time type identification, dynamic cast.
+
+## Week 12
+- Pure-virtual functions, Abstract classes, Interfaces (optional), Multiple Inheritance and Diamond Problem, Multiplicity, Memory Management, Bi-directional relationships, Forward-class declarations issues.
+
+## Week 13
+- Template functions, Template classes, Template Specializations.
+
+## Week 14
+- Exception Handling, Introduction to STL, Iterators and Collections.
+
+# Recommended Books
+- C++ Programming: Program Design Including Data Structures, by D. S. Malik (8th Edition).
+- C++: How to Program? by Deitle & Deitle (9th Edition).
+- Problem Solving with C++, by Walter Savitch.
+- https://www.learncpp.com

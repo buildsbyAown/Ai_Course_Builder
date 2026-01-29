@@ -1,0 +1,100 @@
+# Course Learning Outcomes (CLOs)
+- To introduce the basic concepts in Computer/Machine Vision and to provide a reasonable insight into the problems, procedures, and techniques in the field.
+- To discuss the application and state of the art projects and research in Computer Vision.
+- To make students learn from programming assignments and get comfortable with vision-based solutions to various problems, developing in them the confidence to deal with Computer Vision applications.
+
+# Weekly Course Outline
+## Week 1-3
+- Background
+- Digital Image Representation
+- Fundamental Steps in Image Processing
+- Elements of Digital Image Processing Systems
+  * Acquisition
+  * Storage
+  * Processing
+  * Communication
+  * Display
+- Image Sampling and Quantization
+- Image Types and Applications
+
+## Week 3-4
+- Imaging systems Overview
+- Image Formation and Sensing
+  * Visible light imaging
+  * Imaging outside the Visible Range of the EM Spectrum
+  * Acoustic Imaging
+  * Electron Imaging
+  * Laser Imaging
+  * Computer Generated Images
+- CVIP (Computer Vision and Image Processing) tools
+- Image Representation
+  * Binary Images
+  * Gray-Scale Images
+  * Multispectral Images
+  * Digital Image File Formats
+
+## Week 5-7
+- Introduction to Digital Image Analysis
+- Preprocessing
+  * Region of Interest Image Geometry
+  * Arithmetic and Logic Operations
+  * Spatial Filters
+  * Image Quantization
+- Binary Image Analysis
+  * Thresholding via Histogram
+  * Connectivity and Labeling
+  * Basic Binary Object Features
+  * Binary Object Classification
+
+## Week 7-9
+- Segmentation and Edge/Line Detection
+- Edge/Line Detection
+  * Gradient Operators
+  * Compass Masks
+  * Advanced Edge Detectors
+  * Edges in Color Images
+  * Edge Detector Performance
+  * Hough Transform
+- Segmentation
+  * Region growing and Shrinking
+  * Clustering Techniques
+  * Boundary Detection
+  * Combined Segmentation Approaches
+  * Morphological Filtering
+
+## Week 10-12
+- Discrete Transforms
+- Introduction
+- Fourier Transform
+  * 1D Discrete Fourier Transform
+  * 2D Discrete Fourier Transform
+- Discrete Cosine Transform
+- Discrete Wavelet Transform
+- Filtering
+  * Lowpass Filters
+  * Highpass Filters
+  * Bandpass/Bandreject Filters
+
+## Week 13-15
+- Feature Analysis and Pattern Classification
+- Introduction and Overview
+- Feature Extraction
+  * Shape Features
+  * Histogram Features
+  * Color Features
+  * Spectral Features
+  * Texture Features
+- Feature Analysis
+  * Feature Vectors and Feature Spaces
+  * Distance and Similarity Measures
+  * Data Preprocessing
+- Pattern Classification
+  * Algorithm Development: Training and Testing methods
+  * Classification Algorithms and Methods
+
+# Recommended Books
+- Digital Image Processing and Analysis by Scott E. Umbaugh, CRC Press, Taylor & Francis, 2018
+- Fundamentals of Computer Vision by Mubarak Shah
+- Computer Vision Algorithms and Applications by Richard Szeliski, Springer, 2022
+- Practical Computer Vision using C by J. R. Parker, Johan Wiley & Sons Inc.
+- Digital Image Processing by Gonzalez R.C., Woods R.E., Pearson Education, 3rd Edition, 2008

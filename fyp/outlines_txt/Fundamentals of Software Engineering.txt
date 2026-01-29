@@ -1,0 +1,59 @@
+# Course Learning Outcomes (CLOs)
+- Understand the pros and cons of different SDLC models (C2)
+- Select suitable SDLC models for different project situations (C3)
+- Discuss key Software Engineering Principles (C2)
+- Describe different phases of software development (C2)
+- Apply the Divide and Conquer principle to decompose a software project into smaller work items (C3)
+- Describe the relationship of Software Engineering to Computer Science and Management Science disciplines (C2)
+
+# Weekly Course Outline
+## Week 1
+- Concepts of Software Engineering (SE), Need of SE, SE and System Engineering, History of SE, Application Domains
+- Readings: [1] Chapter 1, [2] Chapter 1, [3] Chapter 1
+## Week 2
+- Introduction of Software Lifecycle, Software Development Process, Agility and Process
+- Readings: [1] Chapter 1, [2] Chapter 1, [3] Chapter 2, 3
+## Week 3
+- Role of Software Engineer, Human Aspects of SE, Ethics and Social Responsibility
+- Readings: [1] Chapter 1, 10, [2] Chapter 1, 3, [3] Chapter 1, 5, 29
+## Week 4
+- SE and Business of Software Development, Open Source Software, Significance of Domain Knowledge, Relationship of SE to Other Disciplines
+- Readings: [1] Chapter 1, [2] Chapter 1, 3, [3] Chapter 1, [4] Chapter 9
+## Week 5
+- Phases of Software Lifecycle (Course’s Project Deliverables)
+- Readings: [1] Chapter 1, [2] Chapter 1, [3] Chapter 7, 8, 12, 19
+## Week 6
+- Mid I
+## Week 7
+- Project Vs. Product Vs. Process, SE Principles: Divide and Conquer, Rigor and Formality, Separation of Concerns, Modularity, Abstraction
+- Readings: [1] Chapter 3, [2] Chapter 2, [3] Chapter 2
+## Week 8
+- SE Principles: Anticipation of Change, Generality, Incrementality. Restructuring and Refactoring
+- Readings: [1] Chapter 3, [2] Chapter 2, [3] Chapter 2
+## Week 9
+- UI/UX Design, Nature and Qualities of Software, Quality in Different Application Domains
+- Readings: [1] Chapter 2, [2] Chapter 1, [3] Chapter 12
+## Week 10
+- Software Production Process, Software Process Models
+- Readings: [1] Chapter 7, [2] Chapter 5, [3] Chapter 4, 6
+## Week 11
+- Mid II
+## Week 12
+- Management Activities in SE
+- Readings: [1] Chapter 8, [2] Chapter 4, [3] Chapter 6, 31
+## Week 13
+- Management Activities in SE
+- Readings: [1] Chapter 8, [2] Chapter 4, [3] Chapter 6, 31
+## Week 14
+- Tools and Environments in Software Engineering. Latest paradigm in Software Engineering. Agile and Scrum
+- Readings: [1] Chapter 9 Additional Resources
+## Week 15
+- Tools and Environments in Software Engineering. Latest paradigm in Software Engineering
+- Readings: [1] Chapter 9 Additional Resources
+
+# Recommended Books
+- Carlo Ghezzi, Mehdi Jazayeri, Dino Mandrioli, Fundamentals of Software Engineering, 2nd Edition. Pearson
+- Dick Hamlet, Joe Maybee, The Engineering of Software: Technical Foundations for the Individual. Addison Wesley
+- Roger S. Pressman, Software Engineering A Practitioner’s Approach, 8th Edition. McGraw Hill
+- Ian Sommerville, Software Engineering
+- Sharri P. Fleeger, Joanne Atlee, Software Engineering: Theory and Practice

@@ -1,0 +1,63 @@
+# Course Learning Outcomes (CLOs)
+- The concept, background and importance of the term “software engineering,”
+- Well‐ known software development process models, their key practices, and their salient features
+- How to pick most suitable process models for the various types of projects
+- To estimate cost and effort of a software product
+- Requirements engineering process (elicitation, elaboration, modeling and specification of requirements)
+- To construct architectural, component and UI design of a software product
+- About various coding practices
+- To test a software application using various techniques like Black box testing (equivalence class partitioning and boundary value analysis) and white box testing (Basis path testing)
+- To deliver and deploy the constructed software program
+
+# Weekly Course Outline
+## Week 1
+- Course Introduction
+- SE Introduction
+- Software Process Models
+## Week 2
+- Software Process Models
+- Systems Engineering
+## Week 3
+- Systems Engineering
+- Requirements Engineering
+## Week 4
+- Requirements Engineering
+## Week 5
+- Requirements Engineering
+## Week 6
+- Mid I
+## Week 7
+- Architecture Design
+## Week 8
+- Architecture Design
+## Week 9
+- UI Design
+- Detailed Design: Principles
+## Week 10
+- Detailed Design: Principles
+- Component Based Design
+- Component Interfaces and Module Contracts
+## Week 11
+- Writing Programs
+- Testing
+## Week 12
+- Mid II
+## Week 13
+- Testing
+## Week 14
+- Delivering the System
+- Project Management
+## Week 15
+- Project Management
+- Group Presentations
+## Week 16
+- Project Presentations
+
+# Recommended Books
+- Roger S. Pressman, Software Engineering A Practitioner’s Approach, 9th Edition. McGrawHill
+- Shari PFleeger, Joanne Atlee, Software Engineering: Theory and Practice, 4th Edition
+- Ian Sommerville, Software Engineering, 10th Edition
+- Roger S. Pressman, Software Engineering A Practitioner’s Approach, 6th Edition. McGrawHill
+- Carlo Ghezzi, Mehdi Jazayeri, Dino Mandrioli, Fundamentals of Software Engineering, 2nd Edition. Pearson
+- Dick Hamlet, Joe Maybee, The Engineering of Software: Technical Foundations for the Individuals. Addison Wesley
+- Ivan Marsic, Software Engineering. Rutgers

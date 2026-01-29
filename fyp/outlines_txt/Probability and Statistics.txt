@@ -1,0 +1,109 @@
+# Course Learning Outcomes (CLOs)
+Not provided in source
+
+# Weekly Course Outline
+## Week 1,2
+- Introduction to Statistics
+- Basic Statistical Concepts (definition of Statistics, types, Characteristics, Applications, Importance)
+- Sample and Population Data, Observation and Variable, Discrete and Continuous Variables, Grouped and Ungrouped Data, Class type Data
+- Presentation of Data
+- Classification of Data
+- Tabulation Frequency Distribution
+- Graphical Representation of Data
+- Diagrams, Graphs
+- Measure of Central Tendency
+- Arithmetic Mean for Ungroup Data, Grouped Data and Specifically Class type Data
+- Properties of A.M
+
+## Week 3,4
+- Geometric Mean for Ungroup Data, Grouped Data and Specifically Class Type Data
+- Harmonic Mean for Ungroup Data, Grouped Data and Specifically Class Type Data
+- Median, Quartiles, Deciles and Percentiles for Ungroup Data, Grouped Data and Specifically Class Type Data
+- Mode for Ungroup Data, Grouped Data and Specifically Class Type Data
+- Advantages and Disadvantages of these averages
+- Measure of Dispersion
+- General Introduction containing meaning and need of measure of dispersion or scatter
+- Coefficient of Variation, Dispersion
+- Range, Inter quartile range, Semi inter quartile range, Mean Deviation, Standard Deviation and Variance for Ungroup Data, Grouped Data and Specifically Class Type Data
+- Properties of Variance
+- Skewness and Kurtosis
+- Coefficients of Skewness, Coefficients of Kurtosis
+
+## Week 5,6
+- Curve Fitting by Least Squares
+- Introduction
+- Fitting a straight line, second degree parabola and higher degree curves
+- Fitting exponential curves, other type of curves
+- Regression Analysis
+- Scattered diagram. Introduction to linear regression.
+- The simple linear regression
+
+## Week 7,8
+- Probability
+- Introduction: Sets, Subsets, Set operations, Vann Diagram, Cartesian Product of sets, Random Experiment, Sample space and their types, Events and their types.
+- Definitions of Probability
+- Classical Definition, Relative Frequency Definition
+- Laws of Probability
+- Addition Law of Probability, Conditional Law of Probability, Multiplication Law of Probability, Dependent and Independent Events, Total Probability Law and Baye’s Law of Probability with its application in Computer Science and Engineering.
+
+## Week 9,10
+- The concept of random variable
+- Types of random variables
+  - Discrete random variable
+  - Continuous random variable
+- The probability function
+- The probability density function
+- The probability distribution
+- Conditional pdf and conditional cdf
+- Important Discrete random variables
+  - Binomial random variable
+  - Poisson random variable
+  - Geometric random variable
+  - Multinomial random variable
+  - Discrete uniform random variable
+
+## Week 11,12
+- Important Continuous random variables
+  - Exponential random variable
+  - Uniform random variable
+  - Normal random variable
+  - Laplacian random variable
+  - Cauchy random variable
+  - Poisson random variable
+- The Expected value of a random variable
+- The Expected value of a function of a random variable
+- Mean and Variance of
+  - Binomial random variable
+  - Poisson random variable
+  - Geometric random variable
+  - Exponential random variable
+  - Uniform random variable
+  - Normal random variable
+
+## Week 13,14
+- Application of the expected value of a random variable
+- Moment generating function and Characteristic functions, its application in random variables.
+- The concept of multiple random variable
+- The joint probability function
+- The joint probability density function (Joint PDF)
+- The joint cumulative probability distribution (Joint CDF)
+- The joint probability distribution
+- Marginal probability density function of X and Y (Marginal PDFs)
+
+## Week 15
+- Expected value of a function of two random variables
+- The Covariance of two random variables
+- The Correlation of two random variables
+- Application of correlation and covariance of random variables
+
+## Week 16
+- Hypothesis Testing
+- Introduction (Null and Alternative Hypothesis, Simple and Composite Hypothesis, Test Statistic, Acceptance and Rejection Region, Type I and Type II Errors)
+- Testing of hypothesis using Z-test, Testing of hypothesis using t-test
+
+# Recommended Books
+- Probability and Random Processes by Leon Garcia
+- Probability and Stochastic Processes by Roy D. Yates, David J. Goodman
+- Probability and Statistics for Computer Scientists by Michael Baron (3rd Edition)
+- Introduction to Statistical Theory Part – I & II by Prof. Sher Muhammad Chaudhry
+- Introduction to Statistics by Walpole

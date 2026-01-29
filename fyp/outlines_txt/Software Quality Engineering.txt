@@ -1,0 +1,129 @@
+# Course Learning Outcomes (CLOs)
+- CLO1: Explain different views of quality
+- CLO2: Describe the fundamentals of measurement theory
+- CLO3: Understand the use of software quality related metrics in Software Quality Engineering
+- CLO4: Use quality management tools
+
+# Weekly Course Outline
+## Week 1
+- INTRODUCTION AND OVERVIEW
+- Definitions of Software, Quality, and Engineering
+- History of SE
+- Role of Software
+- Importance of Software Quality
+- Readings: Chapter 1
+
+## Week 2
+- BASIC SOFTWARE QUALITY CONCEPTS
+- Software Quality
+- Software Quality Problems & Causes
+- Software Quality Assurance
+- Software Quality Control
+- Readings: Chapter 2, Chapter 26 (26.1)
+
+## Week 3
+- SOFTWARE QUALITY FACTORS
+- McCall’s Factor Model - Operation Factors, Revision Factors, Transition Factors
+- Alternative Factor Models
+- Readings: Chapter 3
+
+## Week 4
+- COMPONENTS OF SQA SYSTEM
+- SQA Architecture
+- Pre-project Components
+- Life-cycle Components
+- Infrastructure Components
+- Management Components
+- Standards-related Components
+- Human Components
+- Considerations Affecting Use of SQA System Components
+- Readings: Chapter 4
+
+## Week 5
+- INTEGRATION OF SQA ACTIVITIES
+- Software Processes
+- Factors Affecting Intensity of SQA Activities
+- Readings: Chapter 7, Chapters 3 & 4
+
+## Week 6
+- PRE-PROJECT COMPONENTS
+- Contract Review
+- Readings: Chapter 5
+- MIDTERM EXAM 1
+
+## Week 7
+- REVIEWS
+- Formal Technical Reviews
+- Peer Reviews – Inspections and Walkthroughs
+- Expert Opinions
+- Readings: Chapter 8, Chapter 14, Chapter 26 (26.4)
+
+## Week 8
+- SOFTWARE TESTING – BASIC CONCEPTS & STRATEGIES
+- Definition and Objectives
+- Unit Testing
+- Integration Testing – Big Bang, Incremental (Bottom-up, Top-down)
+- Validation Testing
+- System Testing
+- Regression Testing
+- Smoke Testing
+- Alpha and Beta Testing
+- UAT
+- Readings: Chapter 9, Chapter 13
+
+## Week 9
+- SOFTWARE TESTING – TEST CLASSIFICATIONS
+- W.R.T. Testing Concept – BB, WB
+- W.R.T. Quality Factors – Operation (Correctness, Reliability, Efficiency, Integrity, Usability), Revision (Maintainability, Flexibility, Testability), Transition (Portability, Reusability, Interoperability)
+- Readings: Chapter 9
+
+## Week 10
+- SOFTWARE TESTING – TECHNIQUES
+- White Box – Code Coverage (Line, Branch, Path)
+- Basis Path Testing (Control Flow Graph, Cyclomatic Complexity), Loop Testing, Condition Testing, Qualification Testing
+- Readings: Chapter 9, Chapter 14
+
+## Week 11
+- SOFTWARE TESTING – IMPLEMENTATION
+- Testing Process
+- Test Case Design
+- Automated Testing
+- Debugging
+- Readings: Chapter 10, Chapter 13
+
+## Week 12
+- SOFTWARE TESTING – OO SOFTWARE
+- Strategies
+- Techniques
+- Readings: Chapters 13 & 14
+
+## Week 13
+- SOFTWARE CONFIGURATION MANAGEMENT
+- Terminology
+- SCM Tasks
+- Change Control
+- Release Management
+- Readings: Chapter 18, Chapter 27
+
+## Week 14
+- MEASUREMENT THEORY
+- Importance of Measurement
+- Measurement Scales
+- Readings: Chapters 1 and 2
+
+## Week 15
+- SOFTWARE QUALITY METRICS
+- Size Metrics
+- Process Metrics
+- Product Metrics
+- Implementation Limitations
+- Readings: Chapter 21
+
+## Week 16
+- PROJECT PRESENTATIONS
+
+# Recommended Books
+- Software Quality Assurance: From Theory to Implementation, Daniel Galin, 1st Edition, Pearson Education, 2004
+- Software Quality Engineering: Testing, Quality Assurance, and Quantifiable Improvement, Jeff Tian, 1st Edition, Wiley-IEEE Computer Society Press, 2005
+- Software Engineering: A Practitioner’s Approach, Roger S. Pressman, 6th Edition, McGraw-Hill, 2005
+- Software Metrics: A Rigorous & Practical Approach, Norman E. Fenton and Shari Lawrence Pfleeger, 2nd Edition, PWS Publishing Company, 1997

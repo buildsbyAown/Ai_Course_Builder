@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Profile - LearnPath AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    {% include '_theme_vars.html' %}
+    <style>
+        body { background: linear-gradient(135deg, var(--background) 0%, var(--secondary) 100%); color: var(--foreground); font-family: Inter, sans-serif; }
+        .container { max-width: 900px; }
+        .card-custom { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: 0 6px 20px rgba(0,0,0,0.04); }
+        .btn-primary-custom { background: linear-gradient(135deg, var(--color-orange) 0%, var(--color-orange-dark) 100%); border: none; color: #fff; }
+        .form-section { padding: 1.25rem; }
+        .profile-header { background: linear-gradient(135deg, var(--color-orange) 0%, var(--color-orange-dark) 100%); color: #fff; padding: 2rem; border-radius: calc(var(--radius) - 4px); }
+        .theme-toggle { background: none; border: none; cursor: pointer; font-size: 1.2rem; color: white; padding: 0.5rem; display: flex; align-items: center; justify-content: center; }
+        .theme-toggle:hover { opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="card card-custom p-0">
+            <div class="profile-header d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="mb-0">Your Profile</h2>
+                    <small>Manage your username and password</small>
+                </div>
+                <div>
+                    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                    <a href="{% url 'dashboard' %}" class="btn btn-light">Back</a>
+                </div>
+            </div>
+
+            <div class="p-4">
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+                {% endif %}
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="form-section">
+                            <h5>Change Username</h5>
+                            <form method="post" action="{% url 'profile' %}">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label class="form-label">Current Username</label>
+                                    <input type="text" class="form-control" value="{{ user.username }}" readonly>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">New Username</label>
+                                    <input type="text" name="new_username" class="form-control" placeholder="Choose a new username" required>
+                                </div>
+                                <button type="submit" name="update_username" class="btn btn-primary-custom">Update Username</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-section">
+                            <h5>Change Password</h5>
+                            <form method="post" action="{% url 'profile' %}">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label class="form-label">Current Password</label>
+                                    <input type="password" name="current_password" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">New Password</label>
+                                    <input type="password" name="new_password" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Confirm New Password</label>
+                                    <input type="password" name="confirm_password" class="form-control" required>
+                                </div>
+                                <button type="submit" name="update_password" class="btn btn-primary-custom">Update Password</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% include 'theme_toggle.html' %}
+</body>
+</html>

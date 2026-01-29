@@ -1,0 +1,35 @@
+# Course Learning Outcomes (CLOs)
+- Explain what is meant by “best”, “expected”, and “worst” case behavior of an algorithm
+- Identify the characteristics of data and/or other conditions or assumptions that lead to different behaviors
+- Determine informally the time and space complexity of simple algorithms
+- List and contrast standard complexity classes
+- Use big O, Omega, Theta notation formally to give asymptotic upper bounds on time and space complexity of algorithms
+- Use of the strategies (brute-force, greedy, divide-and-conquer, and dynamic programming) to solve an appropriate problem
+- Solve problems using graph algorithms, including single-source and all-pairs shortest paths, and at least one minimum spanning tree algorithm
+
+# Weekly Course Outline
+## Week 1
+- The role of algorithms in computers, Asymptotic functions and notations (Big-oh, big-omega, theta), best and worst case time complexity
+## Week 2-4
+- Divide and Conquer (maximum subarray sum, counting inversions, quicksort, merge sort) + Solving recurrences
+## Week 5
+- Lower bound for comparison based sorting, Sorting in linear time: Count Sort
+## Week 6-7
+- Dynamic Programming (maximum subarray, rod cutting, longest common subsequence, binary knapsack)
+## Week 8-9
+- Greedy Algorithms (Activity selection, fractional knapsack and Huffman codes)
+## Week 10
+- Introduction to graphs (revision of BFS, DFS) and their application (Cycle Detection, shortest paths, connected components etc.)
+## Week 11
+- Applications of DFS (topological sort, strongly connected components)
+## Week 12
+- Minimum Spanning Trees (MST) (Prim's Algorithm and Kruskal's Algorithm)
+## Week 13-14
+- Shortest Path Algorithms (Dijkstra's Algorithm, Bellman-Ford and Floyd Warshall Algorithm)
+
+# Recommended Books
+- Introduction to Algorithms by Cormen, Leiserson, Rivest, and Stein, 3rd Ed., MIT Press, 2001
+- Jon Kleinberg, Éva Tardos, Algorithm Design, Pearson/Addison-Wesley
+- Sanjoy Dasgupta, Christos Papadimitriou, Umesh Vazirani, Algorithms, McGraw-Hill Education
+- Algorithms in C++ by Robert Sedgewick, Addison-Wesley, 1992
+- Data Structures and Algorithms by Aho, Hopcroft, and Ullman

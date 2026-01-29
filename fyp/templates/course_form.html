@@ -1,119 +1,541 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Create Course</title>
+    <title>Create Course - LearnPath AI</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    {% include '_theme_vars.html' %}
     <style>
-        .card {
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            border: none;
-            border-radius: 10px;
+        body {
+            background: linear-gradient(to bottom right, var(--background), var(--background), rgba(241, 245, 249, 0.1));
+            color: var(--foreground);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
         }
-        .card-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 10px 10px 0 0 !important;
+
+        .header-custom {
+            backdrop-filter: blur(8px);
+            background-color: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid var(--border);
         }
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+        .gradient-icon {
+            background: linear-gradient(to bottom right, var(--chart-1), var(--chart-3));
+        }
+
+        .btn-custom-primary {
+            background-color: var(--primary);
+            color: var(--primary-foreground);
             border: none;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+        }
+
+        .btn-custom-primary:hover {
+            background-color: rgba(3, 2, 19, 0.9);
+        }
+
+        .card-custom {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(226, 232, 240, 0.5);
+            border-radius: 0.75rem;
+        }
+
+        .form-control-custom {
+            background-color: var(--input);
+            border: 1px solid rgba(226, 232, 240, 0.5);
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+        }
+
+        .form-control-custom:focus {
+            box-shadow: 0 0 0 2px rgba(3, 2, 19, 0.2);
+            border-color: var(--primary);
+        }
+
+        .info-section {
+            background: linear-gradient(to right, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+            border-radius: 0.5rem;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 1.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--chart-1);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+        }
+
+        .slider-container {
+            padding: 0.5rem 0;
+        }
+
+        .slider-value {
+            padding: 0.25rem 0.75rem;
+            background: linear-gradient(to right, rgba(59, 130, 246, 0.2), rgba(16, 185, 129, 0.2));
+            border-radius: 0.375rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .slider-ticks {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.25rem;
+            color: var(--muted-foreground);
+            font-size: 0.75rem;
+        }
+
+        .form-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-description {
+            color: var(--muted-foreground);
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .autocomplete-suggestions {
+            font-family: inherit;
+        }
+
+        .suggestion-item:hover {
+            background-color: var(--color-light-secondary, #f8f9fa);
+        }
+
+        .predefined-message {
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--foreground);
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .theme-toggle:hover {
+            opacity: 0.7;
         }
     </style>
 </head>
+
 <body>
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header text-center">
-                        <h3>Create Your Personalized Course</h3>
-                        <p class="mb-0">Let AI build a custom learning path just for you</p>
+    <!-- Header -->
+    <header class="header-custom sticky-top">
+        <div class="container py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <div class="gradient-icon d-flex align-items-center justify-content-center rounded-3 me-2"
+                        style="width: 40px; height: 40px;">
+                        <i class="fas fa-sparkles text-white"></i>
                     </div>
-                    <div class="card-body">
-                        <form method="POST">
-                            {% csrf_token %}
-                            {% if messages %}
-                                {% for message in messages %}
-                                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    <span class="fs-5 fw-semibold">LearnPath AI</span>
+                </div>
+
+                <div class="d-flex align-items-center gap-3">
+                    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary d-flex align-items-center gap-2">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Dashboard
+                    </a>
+                    <a href="{% url 'logout' %}" class="btn btn-outline-secondary d-flex align-items-center gap-2">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container px-4 py-8">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="row align-items-start">
+                    <!-- Left Column - Form -->
+                    <div class="col-lg-7 mb-5 mb-lg-0">
+                        <div class="card card-custom border-0">
+                            <div class="card-body p-5">
+                                <div class="text-center mb-5">
+                                    <h1 class="fw-bold mb-3">Build Your Learning Path</h1>
+                                    <p class="text-muted fs-5">
+                                        Tell us about your goals and we'll create a personalized course just for you
+                                    </p>
+                                </div>
+
+                                <form method="POST">
+                                    {% csrf_token %}
+
+                                    {% if messages %}
+                                    {% for message in messages %}
+                                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show"
+                                        role="alert">
                                         {{ message }}
                                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                                     </div>
-                                {% endfor %}
-                            {% endif %}
-                            
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="title" class="form-label">What do you want to learn?</label>
-                                    <input type="text" class="form-control" id="title" name="title" 
-                                           placeholder="e.g., Python Programming, Machine Learning, Web Development" required>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label for="duration" class="form-label">Duration (months)</label>
-                                    <input type="number" class="form-control" id="duration" name="duration" 
-                                           min="1" max="12" value="3" required>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label for="hours_per_day" class="form-label">Hours per day</label>
-                                    <input type="number" class="form-control" id="hours_per_day" name="hours_per_day" 
-                                           min="1" max="8" value="2" required>
-                                </div>
+                                    {% endfor %}
+                                    {% endif %}
+
+                                    <!-- Course Title -->
+                                    <div class="form-section">
+                                        <label for="title" class="form-label fw-semibold fs-5">
+                                            What do you want to learn?
+                                        </label>
+                                        <input type="text" class="form-control form-control-custom" id="title"
+                                            name="title"
+                                            placeholder="e.g., Python Programming, Machine Learning, Web Development"
+                                            required>
+                                    </div>
+
+                                    <div class="row">
+                                        <!-- Duration -->
+                                        <div class="col-md-6 form-section">
+                                            <label for="duration" class="form-label fw-semibold">Duration
+                                                (months)</label>
+                                            <input type="number" class="form-control form-control-custom" id="duration"
+                                                name="duration" min="1" max="12" value="3" required>
+                                        </div>
+
+                                        <!-- Hours per Day -->
+                                        <div class="col-md-6 form-section">
+                                            <label class="form-label fw-semibold">Hours per day</label>
+                                            <div class="slider-container">
+                                                <div class="slider-label">
+                                                    <span>Adjust your daily commitment</span>
+                                                    <span class="slider-value" id="hoursValue">2 hrs</span>
+                                                </div>
+                                                <input type="range" class="form-range" id="hoursSlider" min="1" max="8"
+                                                    step="1" value="2">
+                                                <div class="slider-ticks">
+                                                    <span>1 hr</span>
+                                                    <span>8 hrs</span>
+                                                </div>
+                                            </div>
+                                            <!-- Hidden field that gets submitted with the form -->
+                                            <input type="hidden" id="hours_per_day" name="hours_per_day" value="2">
+                                        </div>
+                                    </div>
+
+                                    <!-- Current Level -->
+                                    <div class="form-section">
+                                        <label for="level_has" class="form-label fw-semibold">Current Level</label>
+                                        <select class="form-select form-control-custom" id="level_has" name="level_has"
+                                            required>
+                                            <option value="beginner">Beginner (No experience)</option>
+                                            <option value="intermediate" selected>Intermediate (Some knowledge)</option>
+                                            <option value="advanced">Advanced (Comfortable with basics)</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Target Level -->
+                                    <div class="form-section">
+                                        <label for="level_required" class="form-label fw-semibold">Target Level</label>
+                                        <select class="form-select form-control-custom" id="level_required"
+                                            name="level_required" required>
+                                            <option value="intermediate">Intermediate</option>
+                                            <option value="advanced" selected>Advanced</option>
+                                            <option value="expert">Expert</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Course Language -->
+                                    <div class="form-section">
+                                        <label for="language" class="form-label fw-semibold">Course Language</label>
+                                        <select class="form-select form-control-custom" id="language" name="language"
+                                            required>
+                                            <option value="English" selected>English</option>
+                                            <option value="Spanish">Spanish</option>
+                                            <option value="French">French</option>
+                                            <option value="German">German</option>
+                                            <option value="Chinese">Chinese</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Submit Button -->
+                                    <div class="form-section mt-5">
+                                        <button type="submit" class="btn btn-custom-primary w-100 py-3 fs-5 fw-semibold"
+                                            id="submitButton">
+                                            Generate My Course
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
-                            
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="level_has" class="form-label">Current Level</label>
-                                    <select class="form-select" id="level_has" name="level_has" required>
-                                        <option value="beginner">Beginner (No experience)</option>
-                                        <option value="intermediate" selected>Intermediate (Some knowledge)</option>
-                                        <option value="advanced">Advanced (Comfortable with basics)</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="level_required" class="form-label">Target Level</label>
-                                    <select class="form-select" id="level_required" name="level_required" required>
-                                        <option value="intermediate">Intermediate</option>
-                                        <option value="advanced" selected>Advanced</option>
-                                        <option value="expert">Expert</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="language" class="form-label">Course Language</label>
-                                <select class="form-select" id="language" name="language" required>
-                                    <option value="English" selected>English</option>
-                                    <option value="Spanish">Spanish</option>
-                                    <option value="French">French</option>
-                                    <option value="German">German</option>
-                                    <option value="Chinese">Chinese</option>
-                                </select>
-                            </div>
-                            
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-primary btn-lg">
-                                    <span class="spinner-border spinner-border-sm d-none" role="status"></span>
-                                    Generate My Course
-                                </button>
-                            </div>
-                        </form>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="text-center mt-3">
-                    <a href="{% url 'dashboard' %}" class="text-decoration-none">← Back to Dashboard</a>
+
+                    <!-- Right Column - Info -->
+                    <div class="col-lg-5">
+                        <div class="ps-lg-4">
+                            <h3 class="fw-bold mb-4">AI-Powered Learning</h3>
+
+                            <div class="info-section mb-5">
+                                <h5 class="fw-bold mb-3">Create Your Course</h5>
+                                <p class="mb-0">
+                                    Build a personalized learning path tailored to your goals, schedule, and skill level
+                                </p>
+                            </div>
+
+                            <div class="stats-grid">
+                                <div class="stat-item">
+                                    <div class="stat-number">1000+</div>
+                                    <div class="stat-label">Skills Available</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-number">95%</div>
+                                    <div class="stat-label">Success Rate</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-number">AI-Powered</div>
+                                    <div class="stat-label">Personalization</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        document.querySelector('form').addEventListener('submit', function() {
-            const button = this.querySelector('button[type="submit"]');
-            const spinner = button.querySelector('.spinner-border');
-            button.disabled = true;
-            spinner.classList.remove('d-none');
-            button.innerHTML = 'Generating Your Course...';
+        // Update hours value display
+        function updateHoursValue(value) {
+            document.getElementById('hoursValue').textContent = value + ' hr' + (value > 1 ? 's' : '');
+            document.getElementById('hours_per_day').value = value;
+        }
+
+        // Initialize slider functionality
+        document.addEventListener('DOMContentLoaded', function () {
+            const slider = document.getElementById('hoursSlider');
+
+            // Set initial value
+            updateHoursValue(slider.value);
+
+            // Update on slider change
+            slider.addEventListener('input', function () {
+                updateHoursValue(this.value);
+            });
+
+            // Form submission loading state
+            document.querySelector('form').addEventListener('submit', function () {
+                const button = document.getElementById('submitButton');
+                button.disabled = true;
+                button.innerHTML = '<div class="spinner-border spinner-border-sm me-2" role="status"></div> Generating Your Course...';
+            });
         });
+
+        // Course title autocomplete functionality
+        document.addEventListener('DOMContentLoaded', function () {
+            const courseTitleInput = document.getElementById('title');
+            const suggestionsDiv = document.createElement('div');
+            suggestionsDiv.className = 'autocomplete-suggestions';
+            suggestionsDiv.style.cssText = `
+            position: absolute;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            width: 100%;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        `;
+            courseTitleInput.parentNode.appendChild(suggestionsDiv);
+
+            let debounceTimer;
+
+            courseTitleInput.addEventListener('input', function () {
+                clearTimeout(debounceTimer);
+                const query = this.value.trim();
+
+                if (query.length < 2) {
+                    suggestionsDiv.style.display = 'none';
+                    return;
+                }
+
+                debounceTimer = setTimeout(() => {
+                    fetch(`/search-courses/?q=${encodeURIComponent(query)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.results.length > 0) {
+                                suggestionsDiv.innerHTML = '';
+                                data.results.forEach(result => {
+                                    const suggestion = document.createElement('div');
+                                    suggestion.className = 'suggestion-item';
+                                    suggestion.style.cssText = `
+                                    padding: 8px 12px;
+                                    cursor: pointer;
+                                    border-bottom: 1px solid #f0f0f0;
+                                    transition: background 0.2s;
+                                `;
+                                    suggestion.innerHTML = `
+                                    <div style="font-weight: 500;">${result.name}</div>
+                                    <small style="color: #666; font-size: 0.85em;">
+                                        <i class="fas fa-check-circle me-1"></i>
+                                        ${result.match_type} match - Predefined outline available
+                                    </small>
+                                `;
+
+                                    suggestion.addEventListener('click', function () {
+                                        courseTitleInput.value = result.name;
+                                        suggestionsDiv.style.display = 'none';
+                                        // Show message about using predefined outline
+                                        showPredefinedMessage(result.name);
+                                    });
+
+                                    suggestion.addEventListener('mouseenter', function () {
+                                        this.style.backgroundColor = '#f5f5f5';
+                                    });
+
+                                    suggestion.addEventListener('mouseleave', function () {
+                                        this.style.backgroundColor = 'transparent';
+                                    });
+
+                                    suggestionsDiv.appendChild(suggestion);
+                                });
+                                suggestionsDiv.style.display = 'block';
+                            } else {
+                                suggestionsDiv.style.display = 'none';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching suggestions:', error);
+                            suggestionsDiv.style.display = 'none';
+                        });
+                }, 300);
+            });
+
+            // Hide suggestions when clicking outside
+            document.addEventListener('click', function (e) {
+                if (!courseTitleInput.contains(e.target) && !suggestionsDiv.contains(e.target)) {
+                    suggestionsDiv.style.display = 'none';
+                }
+            });
+
+            // Add predefined outline toggle
+            const form = document.querySelector('form');
+            const usePredefinedInput = document.createElement('input');
+            usePredefinedInput.type = 'hidden';
+            usePredefinedInput.name = 'use_predefined';
+            usePredefinedInput.value = 'true';
+            form.appendChild(usePredefinedInput);
+
+            // Add preview button
+            const submitButton = document.getElementById('submitButton');
+            const previewButton = document.createElement('button');
+            previewButton.type = 'button';
+            previewButton.id = 'previewButton';
+            previewButton.className = 'btn btn-outline-primary w-100 py-3 fs-5 fw-semibold mt-3';
+            previewButton.innerHTML = '<i class="fas fa-eye me-2"></i>Preview Outline First';
+            submitButton.parentNode.insertBefore(previewButton, submitButton);
+
+            // Add hidden field for show_outline
+            const showOutlineInput = document.createElement('input');
+            showOutlineInput.type = 'hidden';
+            showOutlineInput.name = 'show_outline';
+            showOutlineInput.value = 'false';
+            form.appendChild(showOutlineInput);
+
+            // Preview button handler
+            previewButton.addEventListener('click', function () {
+                showOutlineInput.value = 'true';
+                form.submit();
+            });
+
+            // Submit button handler
+            submitButton.addEventListener('click', function (e) {
+                e.preventDefault();
+                showOutlineInput.value = 'false';
+                form.submit();
+            });
+        });
+
+        function showPredefinedMessage(courseName) {
+            // Remove any existing message
+            const existingMessage = document.querySelector('.predefined-message');
+            if (existingMessage) {
+                existingMessage.remove();
+            }
+
+            const message = document.createElement('div');
+            message.className = 'predefined-message alert alert-info mt-2';
+            message.innerHTML = `
+            <i class="fas fa-info-circle me-2"></i>
+            <strong>Predefined outline found!</strong> 
+            Using existing outline for "${courseName}". 
+            Click "Preview Outline First" to review it.
+        `;
+
+            const titleInput = document.getElementById('title');
+            titleInput.parentNode.appendChild(message);
+
+            // Auto-remove after 10 seconds
+            setTimeout(() => {
+                if (message.parentNode) {
+                    message.remove();
+                }
+            }, 10000);
+        }
     </script>
+    {% include 'theme_toggle.html' %}
 </body>
+
 </html>

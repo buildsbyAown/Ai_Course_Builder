@@ -1,0 +1,43 @@
+# Course Learning Outcomes (CLOs)
+Not provided in source
+
+# Weekly Course Outline
+## Week 1
+- What is Big Data and Why we need Big Data
+- Sources of Data
+- Intro to big Data tools
+- Data Engineering
+- Types of Data
+## Week 2
+- Hadoop as a Platform
+- Hadoop Distributed File Systems (HDFS)
+- MapReduce Framework
+## Week 3-4
+- Sql queries
+  - Simple
+  - Aggregated function and grouping
+  - Join
+  - Nested queries
+## Week 5
+- Mid 1
+## Week 6
+- Hive, pig
+## Week 7-8
+- Resilient Distributed Datasets (RDD)
+- Apache Spark, Apache Spark SQL
+## Week 9
+- Nosql Hbase, cassandra, kafka
+## Week 10
+- Mid 2
+## Week 11-12
+- Resource Management in the cluster (YARN)
+## Week 13-14
+- Machine learning on Hadoop / Spark
+## Week 15
+- Spark Streaming, Other Components of Hadoop Ecosystem
+
+# Recommended Books
+- Mining of Massive Datasets by Jure Leskovec, Anand Rajaraman, Jeffrey D. Ullman
+- White, Tom. “Hadoop: The definitive guide."
+- Karau, Holden, Andy Konwinski, Patrick Wendell, and Matei Zaharia. “Learning spark: lightning-fast big data analysis."
+- Miner, Donald, and Adam Shook. “MapReduce design patterns: building effective algorithms and analytics for Hadoop and other systems."

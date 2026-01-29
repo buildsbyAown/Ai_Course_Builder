@@ -1,0 +1,86 @@
+# Course Learning Outcomes (CLOs)
+- Solve algebraic equations and inequalities by using properties of absolute values.
+- Analyze the function and sketching the curve by using properties horizontal/vertical and compressing / stretching.
+- Investigation of continuity through limits analytically / graphically.
+- Apply the concept of differentiation in real life problem.
+- Curve sketching using extrema theory.
+- Riemann sum, evaluation of definite & indefinite integral and their applications to compute lengths of curves / area of regions / volume of solids.
+- Correctly graphs/formulate the equation of line and plane in R3.
+
+# Weekly Course Outline
+## Week 1
+- Inequalities 
+- Rules for inequalities, solving inequalities
+## Week 2
+- Functions and their graphs: Combining functions; Shifting and Scaling graphs
+## Week 3
+- Limits and Continuity 
+- Rates of Change and tangents to curves 
+- Limit of a function and limit laws 
+- The precise definition of a Limit 
+- One sided Limit
+## Week 4
+- Continuity 
+- Limits involving Infinity; Asymptotes of Graphs
+## Week 5
+- Derivatives 
+- Tangents and derivatives at a point
+## Week 6
+- The derivatives as a function 
+- Differentiation Rules 
+- The derivative as a rate of change 
+- Derivatives of trigonometric functions 
+- The chain rule 
+- Implicit differentiation 
+- Derivatives of inverse functions and logarithms 
+- Inverse trigonometric functions 
+- Related rates
+## Week 7
+- MID-TERM-I
+## Week 8
+- Application of Derivatives 
+- Extreme values of functions 
+- The Mean value theorem 
+- Monotonic functions and the first derivative test
+## Week 9
+- Concavity and Curve sketching 
+- Indeterminate forms and L’Hopital’ s Rule 
+- Applied optimization
+## Week 10
+- Integrals 
+- Area and estimating with finite sums 
+- The definite integral
+## Week 11
+- The Fundamental theorem of calculus 
+- Indefinite integrals and the substitution method 
+- Definite integral Substitutions and area between the curves
+## Week 12
+- Application of Definite Integrals 
+- Volumes using cross sections 
+- Volumes using Cylindrical Shell 
+- Arc length
+## Week 13
+- MID-TERM-II
+## Week 14
+- Integrals and Transcendental Functions 
+- The Logarithm defined as an integral 
+- Exponential change and separable differential equations 
+- Hyperbolic Functions
+## Week 15
+- Techniques of Integration 
+- Using basic Integration formulas 
+- Integration by parts 
+- Trigonometric integrals 
+- Trigonometric substitution
+## Week 16
+- Integration of rational functions by Partial fractions 
+- Reduction formulas 
+- Improper integrals
+## Week 17
+- Analytical Geometry 
+- Straight lines in R3, Equations for planes
+
+# Recommended Books
+- Thomas Calculus by G. B. Thomas (Latest Edition)
+- Calculus and Analytic Geometry by Kenneth W. Thomas (Latest Edition)
+- Calculus by William E. Boyce & Richard C. DiPrima (Latest Edition)

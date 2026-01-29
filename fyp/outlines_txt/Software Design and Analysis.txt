@@ -1,0 +1,49 @@
+# Course Learning Outcomes (CLOs)
+- Understand and appreciate the pillars and advantages of the OO paradigm.
+- Conduct a grammatical parse of a problem statement to identify the relevant abstractions (classes) and their attributes, operations, and relationships.
+- Analyze a given problem and model it using UML diagrams
+- Model the static aspects of a solution using a detailed UML design class diagram.
+- Model the dynamic aspects of a solution using different UML state and interaction diagrams.
+- Produce elegant and flexible designs using the concept of design patterns.
+- Implement a given object-oriented design.
+- Understand and apply the fundamental design principles.
+
+# Weekly Course Outline
+## Week 1
+- Intro + SDLC; Characteristics of good programs
+## Week 2
+- OOP review, classes and objects; Inheritance, polymorphism, UML, is-a rule
+## Week 3
+- Object associations (simple association, aggregation, composition; implementation; one to one, many to one, many to many; reflexive)
+## Week 4
+- Multiple inheritance, diamond problem, Java interfaces, C++ virtual inheritance
+## Week 5
+- Class diagrams
+## Week 6
+- Use case diagrams, use case descriptions
+## Week 7
+- Sequence diagrams, principles of cohesion & coupling
+## Week 8
+- State diagrams, Activity diagrams
+## Week 9
+- Design principles (SOLID) 1
+## Week 10
+- Design principles (SOLID) 2
+## Week 11
+- Object-Oriented Metrics
+## Week 12
+- Design patterns 1, 2
+## Week 13
+- Design patterns 3, 4
+## Week 14
+- Design patterns 5, 6
+## Week 15
+- Design patterns 7, 8
+
+# Recommended Books
+- Blaha and Rumbaugh, Object-oriented Modeling and Design with UML (Second Edition), Pearson Prentice Hall 2005
+- Erich Gamma, et al., Design Patterns: Elements of Re-usable Object-oriented Design, Addison-Wesley, 1999
+- Martin Fowler, Refactoring: Improving the Design of Existing Code (First Edition), Addison-Wesley
+- Robert C. Martin, Clean Architecture: A Craftsman's Guide to Software Structure and Design, Pearson 2017
+- Grady Booch et al., Object-Oriented Analysis and Design with Applications (3rd Edition), Pearson 2007
+- Larman, Craig, Applying UML and patterns: an introduction to object-oriented analysis and design and iterative development, Pearson Education India, 2012

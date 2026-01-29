@@ -1,0 +1,103 @@
+# Course Learning Outcomes (CLOs)
+- Describe how databases store and retrieve information using the basic concepts and terminology of relational databases.
+- Create an ER diagram (semantic model) about an enterprise that correctly describes the entities, attributes, and relationships among the entities, for some of its major business functions.
+- Create a logical data model from an ER diagram to design a set of DB relations.
+- Normalize a set of attributes to eliminate update anomalies or redundancies from a set of relations.
+- Implement a logical data model using a DBMS.
+- Write queries using formal query languages such as relational algebra.
+- Write SQL statements to query a set of tables in a DBMS involving multiple conditions, ordering, aggregate functions, grouping, group selection, set operations, joins, and nested queries.
+- Write SQL statements to insert, delete and update a set of tables in a DBMS.
+- Write SQL statements to create, alter, drop, rename a set of tables in a DBMS.
+- Write SQL statements to add and drop constraints on a set of tables in a DBMS.
+- Comprehend the ACID properties of Transactions and recoverability schedules.
+
+# Weekly Course Outline
+## Week 1
+- Introduction to Databases
+- Databases and Database Users
+- Characteristics of the Database Approach
+- Advantages of Using the DBMS Approach
+- Data Models, Schemas, Instances
+- Architecture and Components of a DBMS
+
+## Week 2-3
+- Relational Data Model
+- Relational Model Concepts
+- Domain, Attributes, Tuples, Relations
+- Characteristics of Relations
+- Relational Model Constraints
+- Domain, Keys, Integrity
+- Update Operations and Dealing with Constraint Violation
+- Data Definition Statements (DDL)
+- Create, Alter, Drop, Rename
+- Specifying Constraints
+- Attribute, Key, Referential Integrity, Tuple-Based Using CHECK
+- Data Modification Statements (DML)
+- Insert, Update, Delete
+
+## Week 4-6
+- Formal Query Language: Relational Algebra and The Database Language: SQL
+- Unary Relational Operations
+- SELECT, PROJECT, RENAME
+- Retrieval Queries
+- Basic Queries: SELECT-FROM-WHERE
+- Ordering, Arithmetic Operations, Substring Comparison
+- Binary Operations
+- Union, Intersection, Difference, Division
+- Set Operations
+- Cartesian Product, JOIN
+- Outer Join, Outer Union, Full Joining, Full, outer, inner, Cross
+- Aggregate Functions and Grouping
+- Query Tree
+- Nested Queries
+- Correlated Nested Queries
+- Views (Virtual Tables), Stores Procedures, Assertions and Triggers
+
+## Week 7-9
+- Database Design Theory and Normalization
+- Design Anomalies
+- Informal Design Guidelines for Relational Databases
+- Functional Dependencies (FDs)
+- Convert Business statements into Dependencies
+- Armstrong's Inference Rules for FDs
+- Algorithm for computing Attribute Closure
+- Minimal Cover of FDs
+- Equivalence of Sets of FDs
+- Normalization for Relational databases
+- Normalization and De-Normalization
+- Normal Forms: 1NF, 2Nf, 3NF, BCNF, 4NF, 5NF
+- Overview of Relational Database Design Algorithms
+
+## Week 10-12
+- Data Modeling Using Entity-Relationship (ER) Model
+- Entity Types, Entity Sets, Attributes, Keys
+- Relationship Types, Relationship Sets, Roles
+- Constraints on Relationship Types
+- Relationship Types of Degree Higher than Two
+- Enhanced Entity-Relationship (EER) Model Concepts
+- Subclasses, Superclasses, Inheritance
+- Specialization and Generalization
+- Constraints and Characteristics of Specialization and Generalization
+- Shared and UNION Type subclasses
+
+## Week 12-13
+- Relational Database Design by ER- and EER-to-Relational Mapping
+- Mapping ER Model Constructs to Relations
+- Mapping EER Model Constructs to Relations
+
+## Week 13-14
+- Transaction Processing Concepts
+- Issues in Transaction Processing
+- Why Concurrency Control is Needed
+- Why Recovery is Needed
+- Transaction States and Operations, System Log, Commit Point of a Transaction
+- ACID Properties of Transactions
+- Characterizing Schedules based on Recoverability
+- Characterizing Schedules based on Serializability
+- Transactions Isolation Levels and Possible Violations
+- Basic Two-Phase Locking Technique for Concurrency Control
+
+# Recommended Books
+- Ramez Elmasri, Fundamentals of Database Systems (7th Edition)
+- Raghu Ramakrishnan, Database Management Systems (3rd Edition)
+- C. J. Date, An Introduction to Database Systems (8th Edition)

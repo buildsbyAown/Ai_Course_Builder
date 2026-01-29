@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Logout - LearnPath AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    {% include '_theme_vars.html' %}
+    <style>
+        body {
+            background: linear-gradient(to bottom right, var(--background), var(--background), rgba(241, 245, 249, 0.1));
+            color: var(--foreground);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logout-container {
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .card-custom {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(226, 232, 240, 0.5);
+            border-radius: 0.75rem;
+        }
+
+        .logout-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        .gradient-text {
+            background: linear-gradient(to bottom right, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .message-heading {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--foreground);
+        }
+
+        .message-text {
+            font-size: 1.1rem;
+            color: var(--muted-foreground);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .btn-custom-primary {
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+            border: none;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-custom-primary:hover {
+            background-color: rgba(3, 2, 19, 0.9);
+            text-decoration: none;
+            color: var(--primary-foreground);
+        }
+
+        .btn-custom-outline {
+            border: 1px solid var(--border);
+            background-color: transparent;
+            color: var(--foreground);
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .btn-custom-outline:hover {
+            background-color: rgba(241, 245, 249, 0.3);
+            text-decoration: none;
+            color: var(--foreground);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .decorative-element {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+        }
+
+        .circle-1 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(to right, #3b82f6, #8b5cf6);
+            top: -100px;
+            right: -100px;
+        }
+
+        .circle-2 {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(to right, #10b981, #3b82f6);
+            bottom: -50px;
+            left: -50px;
+        }
+
+        .success-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(to bottom right, #10b981, #059669);
+            color: white;
+            margin: 0 auto 1.5rem;
+            animation: scaleIn 0.6s ease-out;
+        }
+
+        .success-badge i {
+            font-size: 2.5rem;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .message-heading {
+                font-size: 1.5rem;
+            }
+
+            .message-text {
+                font-size: 1rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn-custom-primary,
+            .btn-custom-outline {
+                width: 100%;
+            }
+        }
+        
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--foreground);
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+        }
+        
+        .theme-toggle:hover {
+            opacity: 0.7;
+        }
+    </style>
+</head>
+
+<body>
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+        <i class="fas fa-moon" id="themeIcon"></i>
+    </button>
+    <!-- Decorative elements -->
+    <div class="decorative-element circle-1"></div>
+    <div class="decorative-element circle-2"></div>
+
+    <div class="logout-container">
+        <div class="card card-custom p-5">
+            <!-- Success Badge -->
+            <div class="success-badge">
+                <i class="fas fa-check"></i>
+            </div>
+
+            <!-- Main Content -->
+            <div class="text-center">
+                <h1 class="message-heading">Thank You!</h1>
+                <p class="message-text">
+                    We hope to see you again soon. Your progress has been saved, and you're all set for your next learning session.
+                </p>
+
+                <!-- Secondary Message -->
+                <div class="alert alert-light border-border" role="alert" style="margin-bottom: 2rem;">
+                    <i class="fas fa-lightbulb" style="color: #f59e0b; margin-right: 0.5rem;"></i>
+                    <strong>Keep Learning!</strong> Every step forward is progress. Stay curious and continue growing.
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="button-group">
+                    <a href="{% url 'login' %}" class="btn btn-custom-primary">
+                        <i class="fas fa-sign-in-alt" style="margin-right: 0.5rem;"></i>
+                        Login Again
+                    </a>
+                    <a href="{% url 'home' %}" class="btn btn-custom-outline">
+                        <i class="fas fa-home" style="margin-right: 0.5rem;"></i>
+                        Home
+                    </a>
+                </div>
+            </div>
+
+            <!-- Footer Message -->
+            <div class="mt-4 pt-4 border-top border-border text-center">
+                <p class="text-muted" style="margin-bottom: 0; font-size: 0.9rem;">
+                    <i class="fas fa-envelope" style="margin-right: 0.5rem;"></i>
+                    Have questions? Contact our support team.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% include 'theme_toggle.html' %}
+</body>
+
+</html>

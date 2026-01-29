@@ -1,0 +1,22 @@
+# Requirements for the Django backend in this repo
+# Detected Django version from settings.py generated header: 4.2.24
+Django==4.2.24
+
+# Environment file loader
+python-dotenv
+
+# Markdown rendering (used in views)
+Markdown
+
+# Groq client used in views (Groq API)
+groq
+
+# HTTP requests
+requests
+
+# Pydantic (InputSchema)
+pydantic
+
+# Optional: add other runtime dependencies here if your app uses them (e.g. psycopg2-binary for Postgres)
+# To pin exact versions for your environment, run:
+#   pip freeze > requirements.txt

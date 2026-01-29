@@ -1,0 +1,66 @@
+# Course Learning Outcomes (CLOs)
+- List different steps of a Software Quality Assurance Program.
+- Differentiate between black box and white box testing.
+- Design test cases for black box and white box testing.
+- Select appropriate number of test cases using an appropriate strategy.
+- Execute test cases using software testing tools.
+- Understand Software Testing Process
+
+# Weekly Course Outline
+## Week 1
+- Course Introduction.
+- Software Lifecycle.
+- Software development processes.
+- Where does testing phase fit in?
+## Week 2
+- Software Quality Landscape: What is quality? Characteristics of quality.
+- Introduction of Defect Detection Techniques.
+- Relationship among the quality characteristics, Types of quality characteristics, Improving Quality , Effectiveness of Defect Detection Techniques.
+- General Quality Principle.
+- Significance of testing.
+- Test case Design.
+## Week 3
+- Unit Testing: Debugging.
+- White box Testing: Structural Testing, Basis Path Testing, Control Flow graph, Cyclomatic Number, Selection of minimum number of test cases, Test coverage (EclEmma , JUnit )
+## Week 4
+- White box Testing: Data flow testing
+- Black box testing: Functional Testing, GUI Testing (SilkTest /Abbot)
+## Week 5
+- Black box testing: Equivalence Class Partitioning
+- Black box Testing: Boundary Value Analysis
+## Week 6
+- Midterm 1
+## Week 7
+- Black box testing: Decision Table based testing, State transition testing.
+- Black box testing: Pairwise Testing
+## Week 8
+- Black box Testing
+- Black box Testing: Use Case based Testing
+## Week 9
+- Levels of Testing: Unit Testing, debugging, diagnosis. Integration Testing. Big Bang, Top Down, Bottom UP, Call Graph based
+- Levels of Testing: Integration Testing. Integrating Component/Off-the-shelf components
+## Week 10
+- Levels of Testing: System Testing , Performance Testing, Load and Stress Testing, Security Testing , Usability Testing
+- Levels of Testing: Regression Testing. Acceptance Testing.
+## Week 11
+- Testing Process. Test Documentation
+- Software Testing Tools: Automated Testing. Selenium.
+## Week 12
+- Midterm 2
+## Week 13
+- Software Testing Tools
+- Presentations
+## Week 14
+- Presentations
+- Presentations
+## Week 15
+- Presentations
+- Presentations
+## Week 16
+- Final
+
+# Recommended Books
+- Code Complete by Steve McConnel (2nd Edition)
+- A Practitioner's Guide to Software Test Design by Lee Copeland
+- Software Testing: A Craftsman’s Approach by Paul C. Jorgensen
+- Guide to Advanced Software Testing by Anne Mette Jonassen Hass, Artech House, 2008

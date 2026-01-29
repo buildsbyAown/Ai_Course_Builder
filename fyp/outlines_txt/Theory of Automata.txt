@@ -1,0 +1,44 @@
+# Course Learning Outcomes (CLOs)
+- CLO1: Identify formal language classes and prove language membership properties
+- CLO2: Differentiate and manipulate formal descriptions of languages, automata, and grammars with a focus on non-regular, regular, context-free languages using automata (DFA, NFA, PDA) and Turing Machines
+- CLO3: Prove and disprove theorems establishing key properties of formal languages and automata
+- CLO4: Demonstrate a fundamental understanding of core concepts relating to the theory of computation and computational models including decidability and intractability
+
+# Weekly Course Outline
+## Week 1
+- Introduction and Revision of Basic Concepts
+## Week 2
+- Finite Automata: DFA
+## Week 3
+- Finite Automata: NFA
+## Week 4
+- Finite Automata: NFA-DFA Conversion
+## Week 5
+- Regular Languages: Regular Expressions, Equivalence with FA
+## Week 6
+- Regular Languages: Pumping Lemma
+## Week 7
+- Context-Free Languages: CFGs
+## Week 8
+- Context-Free Languages: PDA
+## Week 9
+- Context-Free Languages: PDA-CFG Equivalence
+## Week 10
+- Context-Free Languages: Pumping Lemma
+## Week 11
+- Context-Free Languages: DCFLs
+## Week 12
+- Context-Free Languages: DCFLs
+## Week 13
+- Turing Machines: Introduction
+## Week 14
+- Turing Machines: Variants
+## Week 15
+- Decidability
+## Week 16
+- Decidability
+
+# Recommended Books
+- John C. Martin. Introduction to Languages and the Theory of Computation. Fourth Edition. McGraw-Hill. ISBN: 0-07-115468-X (International Students Edition)
+- Introduction to the Theory of Computation, Michael Sipser, 3rd Edition, Cengage Learning, 2012
+- Introduction to Automata Theory, Languages, and Computation, John E. Hopcroft, Rajeev Motwani, and Jeffrey D. Ullman, 3rd Edition, Pearson, 2006

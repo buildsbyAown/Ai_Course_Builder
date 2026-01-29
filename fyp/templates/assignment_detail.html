@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{{ assignment.title }} - {{ course.title }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    {% include '_theme_vars.html' %}
+    <style>
+        body {
+            background-color: var(--background);
+            color: var(--foreground);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .assignment-header {
+            background: var(--gradient-warning);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .deadline-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+
+        .instructions-box {
+            background: var(--color-surface-2);
+            border-left: 4px solid var(--color-warning);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            color: var(--foreground);
+            border: 1px solid var(--border);
+        }
+
+        .submission-box {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
+        }
+
+        .submission-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .file-upload {
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: var(--color-surface-2);
+        }
+
+        .file-upload:hover {
+            border-color: var(--color-warning);
+            background: var(--color-surface-3);
+        }
+
+        .file-upload.dragover {
+            border-color: var(--color-warning);
+            background: var(--color-surface-3);
+        }
+
+        .submission-preview {
+            background: var(--color-surface-2);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            border: 1px solid var(--border);
+        }
+
+        .grade-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            background: var(--color-success);
+            color: white;
+        }
+
+        .theme-toggle {
+            background: var(--color-button-secondary);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--foreground);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle:hover {
+            background: var(--color-button-primary);
+            color: var(--primary-foreground);
+        }
+
+        /* Fix for alerts */
+        .alert {
+            background-color: var(--color-surface-2);
+            border: 1px solid var(--border);
+            color: var(--foreground);
+        }
+
+        .alert-success {
+            border-color: var(--color-success);
+            background-color: rgba(16, 185, 129, 0.1);
+        }
+
+        .alert-info {
+            border-color: var(--color-info);
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+
+        .alert-warning {
+            border-color: var(--color-warning);
+            background-color: rgba(245, 158, 11, 0.1);
+        }
+
+        /* Fix for buttons */
+        .btn {
+            border: 1px solid var(--border);
+        }
+
+        .btn-outline-primary {
+            color: var(--color-link);
+            border-color: var(--color-link);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--color-link);
+            color: white;
+            border-color: var(--color-link);
+        }
+
+        .btn-outline-secondary {
+            color: var(--color-text-secondary);
+            border-color: var(--border);
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: var(--color-button-secondary);
+            color: var(--foreground);
+            border-color: var(--border);
+        }
+
+        .btn-warning {
+            background: var(--gradient-warning);
+            border: none;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: var(--gradient-warning);
+            opacity: 0.9;
+            color: white;
+        }
+
+        /* Fix for form controls */
+        .form-control {
+            background-color: var(--input-background);
+            border: 1px solid var(--border);
+            color: var(--foreground);
+        }
+
+        .form-control:focus {
+            background-color: var(--input-background);
+            border-color: var(--primary);
+            color: var(--foreground);
+            box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25);
+        }
+
+        /* Fix for breadcrumb */
+        .breadcrumb {
+            background-color: transparent;
+        }
+
+        .breadcrumb-item a {
+            color: var(--color-link);
+        }
+
+        .breadcrumb-item.active {
+            color: var(--color-text-tertiary);
+        }
+
+        /* Fix for card */
+        .card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            color: var(--foreground);
+        }
+
+        .card-header {
+            background-color: var(--color-surface-2);
+            border-bottom: 1px solid var(--border);
+            color: var(--foreground);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="d-flex justify-content-end p-3">
+        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+            <i class="fas fa-moon" id="themeIcon"></i>
+        </button>
+    </div>
+    <div class="assignment-container">
+        <!-- Navigation -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'course_detail' course.id %}">{{ course.title }}</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'week_detail' course.id week.week_number %}">Week {{
+                        week.week_number }}</a></li>
+                <li class="breadcrumb-item active">{{ assignment.title }}</li>
+            </ol>
+        </nav>
+
+        <!-- Assignment Header -->
+        <div class="assignment-header">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div>
+                    <h1 class="h3 mb-2">{{ assignment.title }}</h1>
+                    <p class="opacity-90 mb-0">Week {{ week.week_number }} Practical Assignment</p>
+                </div>
+                <div class="deadline-badge">
+                    <i class="fas fa-clock"></i>
+                    Due: {{ assignment.due_date|date:"M d, Y" }}
+                </div>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <div class="h4 mb-1">{{ assignment.max_marks }}</div>
+                        <small>Maximum Marks</small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <div class="h4 mb-1">Optional</div>
+                        <small>Grading</small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <div class="h4 mb-1">
+                            {% if has_submitted %}Submitted{% else %}Pending{% endif %}
+                        </div>
+                        <small>Status</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <!-- Instructions -->
+        <div class="instructions-box">
+            <h5><i class="fas fa-list-check me-2"></i>Assignment Instructions:</h5>
+            <p class="mb-0">{{ assignment.description|linebreaks }}</p>
+        </div>
+
+        {% if assignment.content %}
+        <div class="card mb-3">
+            <div class="card-header bg-light">
+                <h6 class="mb-0"><i class="fas fa-file-alt me-2"></i>Additional Details</h6>
+            </div>
+            <div class="card-body">
+                {{ assignment.content|safe }}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Submission Section -->
+        <div class="submission-box">
+            <div class="submission-header">
+                <h4 class="mb-0"><i class="fas fa-upload me-2"></i>Your Submission</h4>
+
+                {% if user_submission and user_submission.grade %}
+                <span class="grade-badge bg-success text-white">
+                    Grade: {{ user_submission.grade }}/{{ assignment.max_marks }}
+                </span>
+                {% endif %}
+            </div>
+
+            {% if has_submitted %}
+            <!-- Show existing submission -->
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle me-2"></i>
+                <strong>Submitted on:</strong> {{ user_submission.submitted_at|date:"M d, Y H:i" }}
+            </div>
+
+            <div class="submission-preview">
+                <h6 class="mb-3">Your Submission:</h6>
+
+                {% if user_submission.submitted_file %}
+                <div class="mb-3">
+                    <strong><i class="fas fa-file me-2"></i>Uploaded File:</strong>
+                    <div class="mt-2">
+                        <a href="{{ user_submission.submitted_file.url }}" target="_blank"
+                            class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-download me-1"></i>Download File
+                        </a>
+                        <span class="text-muted ms-2">
+                            {{ user_submission.submitted_file.name|cut:"assignments/submissions/" }}
+                        </span>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if user_submission.submitted_text %}
+                <div>
+                    <strong><i class="fas fa-align-left me-2"></i>Text Submission:</strong>
+                    <div class="mt-2 p-3 bg-white rounded border">
+                        {{ user_submission.submitted_text|linebreaks }}
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if user_submission.grade and user_submission.graded_at %}
+                <div class="mt-3 pt-3 border-top">
+                    <strong><i class="fas fa-star me-2"></i>Graded on:</strong>
+                    {{ user_submission.graded_at|date:"M d, Y" }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#resubmitModal">
+                    <i class="fas fa-redo me-2"></i>Resubmit Assignment
+                </button>
+                <a href="{% url 'week_detail' course.id week.week_number %}" class="btn btn-outline-secondary ms-2">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Week
+                </a>
+            </div>
+
+            {% else %}
+            <!-- Submission Form -->
+            <form method="POST" enctype="multipart/form-data" id="assignmentForm">
+                {% csrf_token %}
+
+                <div class="mb-4">
+                    <label for="submission_text" class="form-label fw-semibold">
+                        <i class="fas fa-align-left me-2"></i>Text Submission (Optional)
+                    </label>
+                    <textarea class="form-control" id="submission_text" name="submission_text" rows="6"
+                        placeholder="Type your answer or code here..."></textarea>
+                    <small class="text-muted">You can write your answer directly here or upload a file below.</small>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">
+                        <i class="fas fa-file-upload me-2"></i>File Upload (Optional)
+                    </label>
+                    <div class="file-upload" id="fileUploadArea">
+                        <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-3"></i>
+                        <p class="mb-2">Drag and drop your file here, or click to browse</p>
+                        <input type="file" class="form-control" id="submission_file" name="submission_file"
+                            style="display: none;">
+                        <button type="button" class="btn btn-outline-secondary"
+                            onclick="document.getElementById('submission_file').click()">
+                            <i class="fas fa-folder-open me-2"></i>Browse Files
+                        </button>
+                        <small class="d-block mt-2 text-muted">Accepted: PDF, DOC, TXT, ZIP, Python files, etc.</small>
+                    </div>
+                    <div id="fileName" class="mt-2"></div>
+                </div>
+
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Note:</strong> This assignment is for practice. You can submit text, files, or both.
+                    You can resubmit if needed.
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-warning btn-lg">
+                        <i class="fas fa-paper-plane me-2"></i>Submit Assignment
+                    </button>
+                    <a href="{% url 'week_detail' course.id week.week_number %}"
+                        class="btn btn-outline-secondary btn-lg ms-3">
+                        <i class="fas fa-times me-2"></i>Cancel
+                    </a>
+                </div>
+            </form>
+            {% endif %}
+        </div>
+
+        <!-- Tips -->
+        <div class="card">
+            <div class="card-header bg-light">
+                <h6 class="mb-0"><i class="fas fa-lightbulb me-2"></i>Tips for Success</h6>
+            </div>
+            <div class="card-body">
+                <ul>
+                    <li>Read the instructions carefully before starting</li>
+                    <li>Break down complex problems into smaller steps</li>
+                    <li>Test your solution with different inputs</li>
+                    <li>Include comments in your code for clarity</li>
+                    <li>Submit early to avoid last-minute issues</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resubmit Modal -->
+    <div class="modal fade" id="resubmitModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Resubmit Assignment</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <p>Are you sure you want to resubmit this assignment? Your previous submission will be replaced.
+                        </p>
+
+                        <div class="mb-3">
+                            <label for="resubmission_text" class="form-label">Text Submission</label>
+                            <textarea class="form-control" id="resubmission_text" name="submission_text" rows="4">
+                                {{ user_submission.submitted_text|default:'' }}
+                            </textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="resubmission_file" class="form-label">File Upload</label>
+                            <input type="file" class="form-control" id="resubmission_file" name="submission_file">
+                            {% if user_submission.submitted_file %}
+                            <small class="text-muted">Current file: {{
+                                user_submission.submitted_file.name|cut:"assignments/submissions/" }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-warning">Resubmit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // File upload handling
+        const fileInput = document.getElementById('submission_file');
+        const fileUploadArea = document.getElementById('fileUploadArea');
+        const fileName = document.getElementById('fileName');
+
+        fileInput.addEventListener('change', function () {
+            if (this.files.length > 0) {
+                const file = this.files[0];
+                fileName.innerHTML = `
+                    <div class="alert alert-success d-flex align-items-center">
+                        <i class="fas fa-file me-2"></i>
+                        <div>
+                            <strong>Selected:</strong> ${file.name}
+                            <br><small>Size: ${(file.size / 1024).toFixed(2)} KB</small>
+                        </div>
+                    </div>
+                `;
+            }
+        });
+
+        // Drag and drop
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            fileUploadArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            fileUploadArea.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            fileUploadArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight() {
+            fileUploadArea.classList.add('dragover');
+        }
+
+        function unhighlight() {
+            fileUploadArea.classList.remove('dragover');
+        }
+
+        fileUploadArea.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            fileInput.files = files;
+
+            if (files.length > 0) {
+                const file = files[0];
+                fileName.innerHTML = `
+                    <div class="alert alert-success d-flex align-items-center">
+                        <i class="fas fa-file me-2"></i>
+                        <div>
+                            <strong>Selected:</strong> ${file.name}
+                            <br><small>Size: ${(file.size / 1024).toFixed(2)} KB</small>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Form validation
+        document.getElementById('assignmentForm')?.addEventListener('submit', function (e) {
+            const text = document.getElementById('submission_text').value.trim();
+            const file = document.getElementById('submission_file').files.length;
+
+            if (!text && !file) {
+                e.preventDefault();
+                alert('Please provide either text submission or upload a file.');
+                return false;
+            }
+        });
+    </script>
+    {% include 'theme_toggle.html' %}
+</body>
+
+</html>

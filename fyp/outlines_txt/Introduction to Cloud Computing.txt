@@ -1,0 +1,39 @@
+# Course Learning Outcomes (CLOs)
+- Demonstrate familiarity with the need and significance of cloud computing
+- Demonstrate familiarity with cloud service and deployment models
+- Demonstrate familiarity with virtualization, the Internet and other technologies enabling cloud computing
+- Demonstrate an understanding of the data center architecture
+- Use cloud computing in software development and/or take up research in cloud computing
+
+# Weekly Course Outline
+## Week 1
+- Cloud Concepts Overview
+## Week 2
+- Cloud Economics and Billing
+## Week 3
+- AWS Global Infrastructure Overview
+## Week 4
+- AWS Cloud Security
+## Week 5
+- Networking and Content Delivery
+## Week 8
+- Compute
+## Week 9
+- Storage
+## Week 10
+- Databases
+## Week 11
+- Cloud Architecture
+## Week 12
+- Automatic Scaling and Monitoring
+## Week 13
+- Machine Learning using AWS
+
+# Recommended Books
+- Student Handbook of the AWS Cloud Foundation Course
+- Distributed and Cloud Computing by Kai Huwang, Geoffrey C. Fox and Jack J. Dongarra
+- Modern Operating Systems by Andrew S. Tanenbaum 4th edition
+- Architecting the Cloud by Michael J. Kavis
+- Cloud computing Concepts, Technology and Architecture by Thomas Erl
+- Cloud Computing: Principles and Paradigms by Buyya R.
+- Mastering Cloud Computing by Buyya R.

@@ -1,0 +1,46 @@
+# Course Learning Outcomes (CLOs)
+- 1 Defining Functions of Several Variables, Computing Partial Derivatives, Directional and Gradient Vectors.
+- 2 Evaluation of Iterated Integrals, in Rectangular, Polar, Cylindrical Coordinates and their Applications.
+- 3 Line Integral and its Applications, of Work, Circulation and Flux.
+- 4 Greens Theorem in Plane, its Tangential and Normal Form, Surface Integrals, Divergence and Stokes theorem, Laplace Transform and its operational Properties.
+- 5 Expanding Functions in terms of Fourier Series, Fourier Sin and Cosine Series, Introduction to Fourier Transformation. Sequence and Series.
+
+# Weekly Course Outline
+## Week 1
+- Functions of several variables, Limit and continuity of Higher dimensions.
+## Week 2
+- Partial derivatives, Chain Rule, Directional Derivative and Gradient Vectors.
+## Week 3
+- Double and Iterated Integrals over Rectangles, Double Integrals over General Regions, Area by Double Integration.
+## Week 4
+- Double integrals in polar form, Triple Integrals in Rectangular Coordinates.
+## Week 5
+- Triple integral in cylindrical and spherical coordinates, Line Integral
+## Week 6
+- Vector Fields and line Integrals: Work Circulation and Flux. Path Independence
+## Week 7
+- Conservative Fields and Potential Functions, Greens Theorem in the Plane, Surfaces and Area.
+## Week 8
+- Surface Integrals, Stocks Theorem.
+## Week 9
+- The Divergence Theorem and a Unified theory, Definition of the Laplace Transform.
+## Week 10
+- Inverse Transforms and Transforms of Derivatives.
+## Week 11
+- Operational Properties I, Translation on the S-Axis, Translation on the t-Axis, Orthogonal Functions.
+## Week 12
+- Fourier Series, Fourier Cosine and Sine Series.
+## Week 13
+- Definition of the Fourier Transform and Example.
+## Week 14
+- Sequence and Infinite series, Integral Test
+## Week 15
+- Absolute convergence, ratio and root test
+## Week 16
+- Not provided in source
+
+# Recommended Books
+- Thomas Calculus (Thirteenth Edition) by George B. Thomas, Jr. (PEARSON)
+- Differential Equations with Boundary-Value Problems (Ninth Edition) by Dennis G. Zill (Cengage Learning)
+- Advanced Modern Engineering Mathematics, 4th edition, by Glyn James
+- Calculus (Sixth Edition) By Swokowski

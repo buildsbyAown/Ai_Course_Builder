@@ -1,0 +1,42 @@
+{% comment %} Universal Theme Toggle Script - Include this in all templates {% endcomment %}
+<script>
+    // Initialize theme from localStorage
+    document.addEventListener('DOMContentLoaded', function() {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        const htmlElement = document.documentElement;
+        const bodyElement = document.body;
+        
+        // Apply theme to both html and body
+        htmlElement.setAttribute('data-theme', savedTheme);
+        bodyElement.setAttribute('data-theme', savedTheme);
+        htmlElement.classList.toggle('dark', savedTheme === 'dark');
+        
+        // Update theme toggle icons
+        const themeIcon = document.getElementById('themeIcon');
+        if (themeIcon) {
+            themeIcon.className = savedTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+        }
+    });
+
+    // Theme toggle button handler
+    function toggleTheme() {
+        const htmlElement = document.documentElement;
+        const bodyElement = document.body;
+        const currentTheme = bodyElement.getAttribute('data-theme') || 'light';
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+        
+        // Update elements
+        htmlElement.setAttribute('data-theme', newTheme);
+        bodyElement.setAttribute('data-theme', newTheme);
+        htmlElement.classList.toggle('dark', newTheme === 'dark');
+        
+        // Update icon
+        const themeIcon = document.getElementById('themeIcon');
+        if (themeIcon) {
+            themeIcon.className = newTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+        }
+        
+        // Save preference
+        localStorage.setItem('theme', newTheme);
+    }
+</script>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz Results - {{ quiz.title }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    {% include '_theme_vars.html' %}
+    <style>
+        body {
+            background-color: var(--background, #f8f9fa);
+            color: var(--foreground, black);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .result-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .result-header {
+            background: linear-gradient(135deg, 
+                {% if score_percentage >= 70 %}var(--color-success){% elif score_percentage >= 50 %}var(--color-warning){% else %}var(--color-danger){% endif %} 
+                0%, 
+                {% if score_percentage >= 70 %}var(--color-success){% elif score_percentage >= 50 %}var(--color-warning){% else %}var(--color-danger){% endif %} 
+                100%);
+            color: white;
+            padding: 3rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            border: 8px solid rgba(255, 255, 255, 0.3);
+        }
+        .score-text {
+            font-size: 3rem;
+            font-weight: 700;
+        }
+        .performance-badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+        .question-review {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .correct-answer {
+            background: var(--color-light-bg, #d1e7dd);
+            border-left: 4px solid var(--color-success);
+        }
+        .incorrect-answer {
+            background: var(--color-light-bg, #f8d7da);
+            border-left: 4px solid var(--color-danger);
+        }
+        .explanation-box {
+            background: var(--color-light-secondary, #f8f9fa);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-left: 4px solid var(--muted-foreground);
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--foreground, black);
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .theme-toggle:hover {
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="d-flex justify-content-end p-3">
+        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+            <i class="fas fa-moon" id="themeIcon"></i>
+        </button>
+    </div>
+    <div class="result-container">
+        <!-- Navigation -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'course_detail' course.id %}">{{ course.title }}</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'week_detail' course.id week.week_number %}">Week {{ week.week_number }}</a></li>
+                <li class="breadcrumb-item active">Quiz Results</li>
+            </ol>
+        </nav>
+        
+        <!-- Result Header -->
+        <div class="result-header">
+            <div class="score-circle">
+                <div class="score-text">{{ user_submission.score }}/{{ quiz.total_marks }}</div>
+            </div>
+            <h1 class="h2 mb-2">{{ quiz.title }}</h1>
+            <p class="opacity-90 mb-0">Week {{ week.week_number }} Quiz Results</p>
+            <div class="performance-badge">
+                {% if score_percentage >= 80 %}
+                Excellent! 🎉
+                {% elif score_percentage >= 60 %}
+                Good Job! 👍
+                {% elif score_percentage >= 40 %}
+                Keep Practicing! 💪
+                {% else %}
+                Review Needed 📚
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">{{ user_submission.score }}</div>
+                <div class="stat-label">Your Score</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ score_percentage|floatformat:0 }}%</div>
+                <div class="stat-label">Percentage</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ user_submission.submitted_at|date:"M d, Y" }}</div>
+                <div class="stat-label">Date Submitted</div>
+            </div>
+        </div>
+        
+        <!-- Question Review -->
+        <h3 class="mb-3"><i class="fas fa-list-check me-2"></i>Question Review</h3>
+        
+        {% for question in quiz_data %}
+        <div class="question-review {% if question.correct_answer == question.user_answer %}correct-answer{% else %}incorrect-answer{% endif %}">
+            <h5 class="mb-3">
+                <span class="badge {% if question.correct_answer == question.user_answer %}bg-success{% else %}bg-danger{% endif %} me-2">
+                    Q{{ forloop.counter }}
+                </span>
+                {{ question.question }}
+            </h5>
+            
+            <div class="options-list mb-2">
+                {% for option in question.options %}
+                <div class="form-check mb-2">
+                    <input class="form-check-input" 
+                           type="radio" 
+                           disabled
+                           {% if forloop.counter0 == question.user_answer %}checked{% endif %}>
+                    <label class="form-check-label {% if forloop.counter0 == question.correct_answer %}text-success fw-bold{% endif %}">
+                        {{ option }}
+                        {% if forloop.counter0 == question.correct_answer %}
+                        <span class="badge bg-success ms-2">Correct Answer</span>
+                        {% endif %}
+                        {% if forloop.counter0 == question.user_answer and forloop.counter0 != question.correct_answer %}
+                        <span class="badge bg-danger ms-2">Your Answer</span>
+                        {% endif %}
+                    </label>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="explanation-box">
+                <strong><i class="fas fa-lightbulb me-1"></i>Explanation:</strong>
+                <div class="mt-1">{{ question.explanation }}</div>
+            </div>
+        </div>
+        {% endfor %}
+        
+        <!-- Action Buttons -->
+        <div class="text-center mt-4">
+            <a href="{% url 'week_detail' course.id week.week_number %}" class="btn btn-outline-primary me-3">
+                <i class="fas fa-arrow-left me-2"></i>Back to Week
+            </a>
+            <a href="{% url 'quiz_detail' course.id week.week_number quiz.id %}" class="btn btn-primary">
+                <i class="fas fa-redo me-2"></i>Retake Quiz
+            </a>
+        </div>
+        
+        <!-- Feedback -->
+        <div class="alert alert-info mt-4">
+            <h6><i class="fas fa-trophy me-2"></i>Keep Going!</h6>
+            <p class="mb-0">
+                {% if score_percentage >= 80 %}
+                Excellent work! You have a strong understanding of this week's topics.
+                {% elif score_percentage >= 60 %}
+                Good job! You understand most concepts but could review a few areas.
+                {% elif score_percentage >= 40 %}
+                You're making progress! Review the explanations and try again.
+                {% else %}
+                Don't worry! Learning takes time. Review the material and retry the quiz.
+                {% endif %}
+            </p>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% include 'theme_toggle.html' %}
+</body>
+</html>

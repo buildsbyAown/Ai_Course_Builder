@@ -1,0 +1,69 @@
+# Course Learning Outcomes (CLOs)
+
+- Describe key terminologies and technologies of computer networks.
+- Explain the services and functions provided by each layer in the Internet protocol stack.
+- Identify and analyze various internetworking devices and protocols and their functions in a network.
+- Analyze the working and performance of key networking technologies, algorithms, and protocols.
+- Build computer networks using various topologies.
+
+# Weekly Course Outline
+
+## Week 1
+- Introduction and overview of computer networking
+- Basic concepts of networking
+
+## Week 2
+- Circuit switching and packet switching
+- Multiplexing techniques (TDM, FDM)
+- Network performance metrics: throughput, loss, and delay
+
+## Week 3
+- Internet architecture
+- Protocol layering
+
+## Week 4
+- Application layer overview
+- Network application architectures
+- HTTP, FTP, Email, and DNS
+- Basics of peer-to-peer (P2P) applications
+
+## Week 5
+- Transport layer overview
+- Multiplexing in UDP and TCP
+- Connectionless transport: UDP
+
+## Week 6
+- Reliable data transfer
+- TCP mechanisms
+- Congestion avoidance and control
+
+## Week 7
+- Network layer overview
+- Internet Protocol (IP)
+- Routing algorithms and routing protocols
+
+## Week 8
+- Broadcasting and multicasting
+- Link layer and MAC layer functionalities
+- Error detection and control
+
+## Week 9
+- Address Resolution Protocol (ARP)
+- Link-layer addressing
+- Bridges, hubs, and LAN technologies
+- Multiple access techniques
+
+## Week 10
+- Introduction to Internet of Things (IoT)
+- Multimedia networking applications
+- Introduction to network security and principles of cryptography
+- Overview of 1G, 2G, and 3G mobile networks
+
+> Note: Weekly distribution is derived from the provided course outline and lecture groupings without introducing new material.
+
+# Recommended Books
+
+- Computer Networking: A Top-Down Approach Featuring the Internet (6th Edition) — James F. Kurose, Keith W. Ross
+- Computer Networks (5th Edition) — Andrew S. Tanenbaum
+- Data Communications and Networking (4th Edition) — Behrouz A. Forouzan
+- Network Security: Private Communication in a Public World — Radia Perlman
