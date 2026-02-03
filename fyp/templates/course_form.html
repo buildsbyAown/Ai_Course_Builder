@@ -5,23 +5,90 @@
     <title>Create Course - LearnPath AI</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    {% include '_theme_vars.html' %}
     <style>
+        :root {
+            /* Light Theme Variables */
+            --background: #ffffff;
+            --foreground: #020817;
+            --card: #ffffff;
+            --card-foreground: #020817;
+            --primary: #3b82f6;
+            --primary-foreground: #ffffff;
+            --secondary: #f1f5f9;
+            --secondary-foreground: #0f172a;
+            --muted: #f8fafc;
+            --muted-foreground: #64748b;
+            --accent: #f1f5f9;
+            --accent-foreground: #0f172a;
+            --border: #e2e8f0;
+            --radius: 12px;
+            --input: #ffffff;
+            
+            /* Custom Colors */
+            --color-orange: #ff6b35;
+            --color-orange-dark: #f5931e;
+            --color-warning: #f59e0b;
+            --color-success: #10b981;
+            --color-danger: #ef4444;
+            
+            /* Chart Colors */
+            --chart-1: #3b82f6;
+            --chart-2: #8b5cf6;
+            --chart-3: #ec4899;
+            --chart-4: #10b981;
+            --chart-5: #f59e0b;
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme Variables */
+            --background: #020817;
+            --foreground: #f8fafc;
+            --card: #1e293b;
+            --card-foreground: #f1f5f9;
+            --primary: #60a5fa;
+            --primary-foreground: #020817;
+            --secondary: #334155;
+            --secondary-foreground: #f1f5f9;
+            --muted: #1e293b;
+            --muted-foreground: #94a3b8;
+            --accent: #334155;
+            --accent-foreground: #f1f5f9;
+            --border: #334155;
+            --input: #1e293b;
+            
+            /* Dark Theme Custom Colors */
+            --color-orange: #fb923c;
+            --color-orange-dark: #f97316;
+            --color-warning: #fbbf24;
+            --color-success: #34d399;
+            --color-danger: #f87171;
+            
+            /* Dark Chart Colors */
+            --chart-1: #60a5fa;
+            --chart-2: #a78bfa;
+            --chart-3: #f472b6;
+            --chart-4: #34d399;
+            --chart-5: #fbbf24;
+        }
+
         body {
-            background: linear-gradient(to bottom right, var(--background), var(--background), rgba(241, 245, 249, 0.1));
+            background: var(--background);
             color: var(--foreground);
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             min-height: 100vh;
+            transition: all 0.3s ease;
         }
 
         .header-custom {
             backdrop-filter: blur(8px);
-            background-color: rgba(255, 255, 255, 0.95);
+            background-color: var(--background);
             border-bottom: 1px solid var(--border);
+            transition: all 0.3s ease;
         }
 
         .gradient-icon {
             background: linear-gradient(to bottom right, var(--chart-1), var(--chart-3));
+            transition: all 0.3s ease;
         }
 
         .btn-custom-primary {
@@ -31,28 +98,51 @@
             border-radius: 0.5rem;
             font-weight: 500;
             padding: 0.75rem 1.5rem;
+            transition: all 0.3s ease;
         }
 
         .btn-custom-primary:hover {
-            background-color: rgba(3, 2, 19, 0.9);
+            background-color: var(--primary);
+            opacity: 0.9;
         }
 
         .card-custom {
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(226, 232, 240, 0.5);
+            border: 1px solid var(--border);
             border-radius: 0.75rem;
+            background-color: var(--card);
+            color: var(--card-foreground);
+            transition: all 0.3s ease;
         }
 
         .form-control-custom {
             background-color: var(--input);
-            border: 1px solid rgba(226, 232, 240, 0.5);
+            border: 1px solid var(--border);
             border-radius: 0.5rem;
             padding: 0.75rem 1rem;
+            color: var(--foreground);
+            transition: all 0.3s ease;
         }
 
         .form-control-custom:focus {
-            box-shadow: 0 0 0 2px rgba(3, 2, 19, 0.2);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
             border-color: var(--primary);
+            background-color: var(--input);
+            color: var(--foreground);
+        }
+
+        .form-select {
+            background-color: var(--input);
+            border-color: var(--border);
+            color: var(--foreground);
+            transition: all 0.3s ease;
+        }
+
+        .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+            background-color: var(--input);
+            color: var(--foreground);
         }
 
         .info-section {
@@ -60,6 +150,13 @@
             border-radius: 0.5rem;
             border: 1px solid rgba(59, 130, 246, 0.2);
             padding: 1.5rem;
+            color: var(--foreground);
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .info-section {
+            background: linear-gradient(to right, rgba(96, 165, 250, 0.1), rgba(167, 139, 250, 0.1));
+            border-color: rgba(96, 165, 250, 0.2);
         }
 
         .stats-grid {
@@ -72,6 +169,10 @@
         .stat-item {
             text-align: center;
             padding: 1rem;
+            background-color: var(--card);
+            border-radius: 0.5rem;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
         }
 
         .stat-number {
@@ -79,11 +180,13 @@
             font-weight: bold;
             color: var(--chart-1);
             margin-bottom: 0.25rem;
+            transition: all 0.3s ease;
         }
 
         .stat-label {
             font-size: 0.875rem;
             color: var(--muted-foreground);
+            transition: all 0.3s ease;
         }
 
         .slider-container {
@@ -96,6 +199,12 @@
             border-radius: 0.375rem;
             font-weight: 500;
             display: inline-block;
+            color: var(--primary);
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .slider-value {
+            background: linear-gradient(to right, rgba(96, 165, 250, 0.2), rgba(52, 211, 153, 0.2));
         }
 
         .slider-label {
@@ -111,6 +220,7 @@
             margin-top: 0.25rem;
             color: var(--muted-foreground);
             font-size: 0.75rem;
+            transition: all 0.3s ease;
         }
 
         .form-section {
@@ -121,11 +231,14 @@
             font-size: 1.25rem;
             font-weight: 600;
             margin-bottom: 0.5rem;
+            color: var(--foreground);
+            transition: all 0.3s ease;
         }
 
         .form-description {
             color: var(--muted-foreground);
             margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
         }
 
         @media (max-width: 768px) {
@@ -139,7 +252,7 @@
         }
 
         .suggestion-item:hover {
-            background-color: var(--color-light-secondary, #f8f9fa);
+            background-color: var(--secondary);
         }
 
         .predefined-message {
@@ -159,8 +272,8 @@
         }
         
         .theme-toggle {
-            background: none;
-            border: none;
+            background: var(--secondary);
+            border: 1px solid var(--border);
             cursor: pointer;
             font-size: 1.2rem;
             color: var(--foreground);
@@ -168,15 +281,178 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            border-radius: 0.375rem;
+            transition: all 0.3s ease;
         }
         
         .theme-toggle:hover {
-            opacity: 0.7;
+            background-color: var(--accent);
+            border-color: var(--primary);
+        }
+
+        /* Custom Bootstrap Overrides */
+        .btn-outline-secondary {
+            color: var(--foreground);
+            border-color: var(--border);
+            background-color: transparent;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: var(--secondary);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline-primary {
+            color: var(--primary);
+            border-color: var(--primary);
+            background-color: transparent;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+        }
+
+        .text-muted {
+            color: var(--muted-foreground) !important;
+        }
+
+        .alert {
+            background-color: var(--secondary);
+            border-color: var(--border);
+            color: var(--foreground);
+            transition: all 0.3s ease;
+        }
+
+        .alert-info {
+            background-color: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.3);
+            color: var(--primary);
+        }
+
+        [data-theme="dark"] .alert-info {
+            background-color: rgba(96, 165, 250, 0.1);
+            border-color: rgba(96, 165, 250, 0.3);
+        }
+
+        .alert-success {
+            background-color: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.3);
+            color: var(--color-success);
+        }
+
+        .alert-warning {
+            background-color: rgba(245, 158, 11, 0.1);
+            border-color: rgba(245, 158, 11, 0.3);
+            color: var(--color-warning);
+        }
+
+        .alert-danger {
+            background-color: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: var(--color-danger);
+        }
+
+        /* Form Range Slider */
+        .form-range::-webkit-slider-thumb {
+            background-color: var(--primary);
+        }
+
+        .form-range::-moz-range-thumb {
+            background-color: var(--primary);
+        }
+
+        .form-range::-webkit-slider-runnable-track {
+            background-color: var(--secondary);
+        }
+
+        .form-range::-moz-range-track {
+            background-color: var(--secondary);
+        }
+
+        /* Autocomplete Styling */
+        .autocomplete-suggestions {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        [data-theme="dark"] .autocomplete-suggestions {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .suggestion-item {
+            border-bottom: 1px solid var(--border);
+            color: var(--foreground);
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--secondary);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--color-orange);
+        }
+
+        /* Spinner */
+        .spinner-border {
+            color: var(--primary-foreground);
+        }
+
+        /* Additional utility classes */
+        .bg-primary {
+            background-color: var(--primary) !important;
+        }
+
+        .text-primary {
+            color: var(--primary) !important;
+        }
+
+        .border-primary {
+            border-color: var(--primary) !important;
+        }
+
+        .text-white {
+            color: white !important;
+        }
+
+        .text-dark {
+            color: var(--foreground) !important;
+        }
+
+        .bg-warning {
+            background-color: var(--color-warning) !important;
+        }
+
+        .bg-success {
+            background-color: var(--color-success) !important;
+        }
+
+        .bg-danger {
+            background-color: var(--color-danger) !important;
+        }
+
+        .bg-secondary {
+            background-color: var(--secondary) !important;
         }
     </style>
 </head>
 
-<body>
+<body data-theme="light">
     <!-- Header -->
     <header class="header-custom sticky-top">
         <div class="container py-3">
@@ -190,7 +466,7 @@
                 </div>
 
                 <div class="d-flex align-items-center gap-3">
-                    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+                    <button class="theme-toggle" id="themeToggle">
                         <i class="fas fa-moon" id="themeIcon"></i>
                     </button>
                     <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary d-flex align-items-center gap-2">
@@ -355,6 +631,26 @@
     </div>
 
     <script>
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const body = document.body;
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+            body.setAttribute('data-theme', newTheme);
+            themeIcon.className = newTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+
+            localStorage.setItem('theme', newTheme);
+        });
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        body.setAttribute('data-theme', savedTheme);
+        themeIcon.className = savedTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+
         // Update hours value display
         function updateHoursValue(value) {
             document.getElementById('hoursValue').textContent = value + ' hr' + (value > 1 ? 's' : '');
@@ -388,8 +684,8 @@
             suggestionsDiv.className = 'autocomplete-suggestions';
             suggestionsDiv.style.cssText = `
             position: absolute;
-            background: white;
-            border: 1px solid #ddd;
+            background: var(--card);
+            border: 1px solid var(--border);
             border-radius: 4px;
             max-height: 200px;
             overflow-y: auto;
@@ -397,6 +693,7 @@
             z-index: 1000;
             display: none;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
         `;
             courseTitleInput.parentNode.appendChild(suggestionsDiv);
 
@@ -423,12 +720,13 @@
                                     suggestion.style.cssText = `
                                     padding: 8px 12px;
                                     cursor: pointer;
-                                    border-bottom: 1px solid #f0f0f0;
+                                    border-bottom: 1px solid var(--border);
                                     transition: background 0.2s;
+                                    color: var(--foreground);
                                 `;
                                     suggestion.innerHTML = `
                                     <div style="font-weight: 500;">${result.name}</div>
-                                    <small style="color: #666; font-size: 0.85em;">
+                                    <small style="color: var(--muted-foreground); font-size: 0.85em;">
                                         <i class="fas fa-check-circle me-1"></i>
                                         ${result.match_type} match - Predefined outline available
                                     </small>
@@ -442,7 +740,7 @@
                                     });
 
                                     suggestion.addEventListener('mouseenter', function () {
-                                        this.style.backgroundColor = '#f5f5f5';
+                                        this.style.backgroundColor = 'var(--secondary)';
                                     });
 
                                     suggestion.addEventListener('mouseleave', function () {
@@ -535,7 +833,6 @@
             }, 10000);
         }
     </script>
-    {% include 'theme_toggle.html' %}
 </body>
 
 </html>

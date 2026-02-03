@@ -14,9 +14,64 @@
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    {% include '_theme_vars.html' %}
 
     <style>
+        :root {
+            /* Light Theme Variables */
+            --background: #ffffff;
+            --foreground: #020817;
+            --card: #ffffff;
+            --card-foreground: #020817;
+            --primary: #3b82f6;
+            --primary-foreground: #ffffff;
+            --secondary: #f1f5f9;
+            --secondary-foreground: #0f172a;
+            --muted: #f8fafc;
+            --muted-foreground: #64748b;
+            --accent: #f1f5f9;
+            --accent-foreground: #0f172a;
+            --border: #e2e8f0;
+            --radius: 12px;
+            
+            /* Custom Colors */
+            --color-orange: #ff6b35;
+            --color-orange-dark: #f5931e;
+            --color-warning: #f59e0b;
+            --color-success: #10b981;
+            --color-danger: #ef4444;
+            
+            /* Chart Colors */
+            --chart-1: #3b82f6;
+            --chart-2: #8b5cf6;
+            --chart-3: #ec4899;
+            --chart-4: #10b981;
+            --chart-5: #f59e0b;
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme Variables */
+            --background: #020817;
+            --foreground: #f8fafc;
+            --card: #1e293b;
+            --card-foreground: #f1f5f9;
+            --primary: #60a5fa;
+            --primary-foreground: #020817;
+            --secondary: #334155;
+            --secondary-foreground: #f1f5f9;
+            --muted: #1e293b;
+            --muted-foreground: #94a3b8;
+            --accent: #334155;
+            --accent-foreground: #f1f5f9;
+            --border: #334155;
+            
+            /* Dark Theme Custom Colors */
+            --color-orange: #5479f3;
+            --color-orange-dark: #3c16f9;
+            --color-warning: #fbbf24;
+            --color-success: #34d399;
+            --color-danger: #f87171;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -25,7 +80,7 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, var(--background) 0%, var(--background) 50%, var(--secondary) 100%);
+            background: var(--background);
             color: var(--foreground);
             min-height: 100vh;
             transition: all 0.3s ease;
@@ -38,8 +93,9 @@
             z-index: 50;
             width: 100%;
             border-bottom: 1px solid var(--border);
-            background-color: rgba(255, 255, 255, 0.95);
+            background-color: var(--background);
             backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
         }
 
         [data-theme="dark"] .header {
@@ -63,7 +119,7 @@
         }
 
         .theme-toggle {
-            background: none;
+            background: var(--secondary);
             border: 1px solid var(--border);
             border-radius: 8px;
             padding: 8px 12px;
@@ -76,7 +132,8 @@
         }
 
         .theme-toggle:hover {
-            background-color: var(--secondary);
+            background-color: var(--accent);
+            border-color: var(--primary);
         }
 
         /* Week Header Section */
@@ -202,6 +259,7 @@
             height: calc(100vh - 150px);
             position: sticky;
             top: 120px;
+            transition: all 0.3s ease;
         }
 
         /* Progress Section in Left Panel */
@@ -209,6 +267,7 @@
             background: var(--card);
             border-bottom: 1px solid var(--border);
             padding: 1.5rem;
+            transition: all 0.3s ease;
         }
 
         .progress-header {
@@ -222,6 +281,7 @@
             font-size: 1rem;
             font-weight: 600;
             color: var(--foreground);
+            transition: color 0.3s ease;
         }
 
         .progress-percentage {
@@ -239,6 +299,7 @@
             background-color: var(--secondary);
             overflow: hidden;
             margin-bottom: 0.75rem;
+            transition: all 0.3s ease;
         }
 
         .progress-bar {
@@ -253,6 +314,7 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            transition: color 0.3s ease;
         }
 
         /* Days List in Left Panel */
@@ -268,6 +330,7 @@
             display: flex;
             align-items: center;
             gap: 1rem;
+            background: var(--card);
         }
 
         .day-sidebar-item:hover {
@@ -302,6 +365,7 @@
             color: var(--primary);
             font-size: 0.875rem;
             flex-shrink: 0;
+            transition: all 0.3s ease;
         }
 
         .day-sidebar-item.completed .day-sidebar-number {
@@ -327,6 +391,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            transition: color 0.3s ease;
         }
 
         .day-sidebar-duration {
@@ -335,6 +400,7 @@
             display: flex;
             align-items: center;
             gap: 0.25rem;
+            transition: color 0.3s ease;
         }
 
         .day-sidebar-item.active .day-sidebar-duration {
@@ -347,6 +413,8 @@
             padding: 2rem;
             overflow-y: auto;
             height: calc(100vh - 150px);
+            background: var(--background);
+            transition: all 0.3s ease;
         }
 
         /* Enhanced Video Container */
@@ -466,6 +534,7 @@
             font-weight: 700;
             color: var(--foreground);
             margin-bottom: 0.5rem;
+            transition: color 0.3s ease;
         }
 
         .day-content-meta {
@@ -474,6 +543,7 @@
             gap: 1rem;
             color: var(--muted-foreground);
             font-size: 0.875rem;
+            transition: color 0.3s ease;
         }
 
         /* Learning Content */
@@ -486,6 +556,7 @@
             padding: 2rem;
             border: 1px solid var(--border);
             margin-bottom: 2rem;
+            transition: all 0.3s ease;
         }
 
         .learning-content h1,
@@ -528,6 +599,7 @@
             border-radius: 4px;
             font-family: 'Courier New', monospace;
             font-size: 0.95em;
+            transition: all 0.3s ease;
         }
 
         .learning-content pre {
@@ -538,6 +610,7 @@
             overflow-x: auto;
             margin-bottom: 1.5rem;
             line-height: 1.6;
+            transition: all 0.3s ease;
         }
 
         .learning-content pre code {
@@ -603,6 +676,7 @@
             background: var(--secondary);
             padding: 1rem 1rem 1rem 1.5rem;
             border-radius: 4px;
+            transition: all 0.3s ease;
         }
 
         .learning-content table {
@@ -612,6 +686,7 @@
             border: 1px solid var(--border);
             border-radius: 4px;
             overflow: hidden;
+            transition: all 0.3s ease;
         }
 
         .learning-content th,
@@ -639,7 +714,7 @@
         }
 
         .learning-content a:hover {
-            color: var(--accent);
+            color: var(--accent-foreground);
             text-decoration: underline;
         }
 
@@ -692,10 +767,11 @@
             gap: 0.75rem;
             font-size: 1rem;
             cursor: not-allowed;
+            transition: all 0.3s ease;
         }
 
         .back-button {
-            background: white;
+            background: var(--card);
             color: var(--primary);
             border: 2px solid var(--primary);
             padding: 1rem 2rem;
@@ -709,15 +785,9 @@
             box-shadow: 0 4px 15px rgba(59, 130, 246, 0.1);
         }
 
-        [data-theme="dark"] .back-button {
-            background: var(--secondary);
-            color: var(--primary-foreground);
-            border-color: var(--primary);
-        }
-
         .back-button:hover {
             background: var(--primary);
-            color: white;
+            color: var(--primary-foreground);
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
             text-decoration: none;
@@ -727,7 +797,7 @@
         .success-alert {
             background: linear-gradient(135deg, rgba(255, 107, 53, 0.1) 0%, rgba(247, 147, 30, 0.05) 100%);
             border: 1px solid rgba(255, 107, 53, 0.3);
-            color: #ff6b35;
+            color: var(--color-orange);
             padding: 1.25rem;
             border-radius: var(--radius);
             margin-bottom: 1.5rem;
@@ -781,6 +851,77 @@
             border-top: 1px solid var(--border);
         }
 
+        /* Activities Section */
+        .activities-section {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .activities-section h3 {
+            color: var(--foreground);
+            transition: color 0.3s ease;
+        }
+
+        .card {
+            background: var(--card);
+            border-color: var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .card-header {
+            background: var(--secondary);
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .card-title {
+            color: var(--foreground);
+            transition: color 0.3s ease;
+        }
+
+        .card-text {
+            color: var(--muted-foreground);
+            transition: color 0.3s ease;
+        }
+
+        .alert {
+            background: var(--secondary);
+            border-color: var(--border);
+            color: var(--foreground);
+            transition: all 0.3s ease;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.3);
+            color: var(--color-success);
+        }
+
+        .alert-info {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.3);
+            color: var(--primary);
+        }
+
+        /* Form Controls */
+        .form-control {
+            background: var(--card);
+            border-color: var(--border);
+            color: var(--foreground);
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            background: var(--card);
+            border-color: var(--primary);
+            color: var(--foreground);
+            box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25);
+        }
+
         /* Responsive Design */
         @media (max-width: 992px) {
             .main-content-wrapper {
@@ -827,6 +968,98 @@
                 align-items: flex-start;
                 gap: 0.5rem;
             }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--secondary);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--color-orange);
+        }
+
+        /* Utility Classes */
+        .text-muted {
+            color: var(--muted-foreground) !important;
+        }
+
+        .text-success {
+            color: var(--color-success) !important;
+        }
+
+        .text-danger {
+            color: var(--color-danger) !important;
+        }
+
+        .text-warning {
+            color: var(--color-warning) !important;
+        }
+
+        .text-info {
+            color: var(--primary) !important;
+        }
+
+        .bg-primary {
+            background-color: var(--primary) !important;
+        }
+
+        .bg-warning {
+            background-color: var(--color-warning) !important;
+        }
+
+        .bg-success {
+            background-color: var(--color-success) !important;
+        }
+
+        .border-primary {
+            border-color: var(--primary) !important;
+        }
+
+        .border-warning {
+            border-color: var(--color-warning) !important;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            color: var(--primary-foreground);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            opacity: 0.9;
+        }
+
+        .btn-outline-success {
+            color: var(--color-success);
+            border-color: var(--color-success);
+        }
+
+        .btn-outline-success:hover {
+            background-color: var(--color-success);
+            color: white;
+        }
+
+        .btn-outline-info {
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-outline-info:hover {
+            background-color: var(--primary);
+            color: white;
         }
     </style>
 </head>
@@ -1182,6 +1415,26 @@
             }
             
             const day = daysData[index];
+
+            // Calculate day number (1-indexed)
+            const dayNumber = index + 1;
+            
+            // Update chatbot context with current day information
+            const chatbotData = document.getElementById('chatbot-data');
+            if (chatbotData) {
+                chatbotData.dataset.dayNumber = dayNumber;
+                chatbotData.dataset.dayTitle = day.title;
+            }
+            
+            // Call the global chatbot context update function
+            if (typeof window.updateChatbotContext === 'function') {
+                window.updateChatbotContext(dayNumber, day.title);
+                
+                // Also reload the conversation for the new day
+                if (typeof window.loadChatbotConversation === 'function') {
+                    window.loadChatbotConversation();
+                }
+            }
 
             // Update active state in left panel
             document.querySelectorAll('.day-sidebar-item').forEach(item => {

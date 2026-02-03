@@ -38,10 +38,14 @@
             backdrop-filter: blur(8px);
             background-color: rgba(255, 255, 255, 0.95);
             border-bottom: 1px solid var(--border);
+        [data-theme="dark"] .header-custom {
+            background-color: rgba(15, 23, 42, 0.95);
+        }
+
         }
 
         .gradient-icon {
-            background: linear-gradient(to bottom right, #3b82f6, #8b5cf6);
+            background: linear-gradient(to bottom right, var(--chart-1), var(--chart-3));
         }
 
         .btn-custom-primary {
@@ -51,7 +55,7 @@
         }
 
         .btn-custom-primary:hover {
-            background-color: rgba(3, 2, 19, 0.9);
+            background-color: var(--primary);
         }
 
         .btn-custom-outline {
@@ -61,7 +65,7 @@
         }
 
         .btn-custom-outline:hover {
-            background-color: rgba(241, 245, 249, 0.3);
+            background-color: var(--secondary);
         }
         
         .theme-toggle {

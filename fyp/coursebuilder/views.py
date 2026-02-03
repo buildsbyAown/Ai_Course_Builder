@@ -1,3 +1,5 @@
+from typing import List, Dict, Tuple
+import math
 from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -21,6 +23,27 @@ from django.contrib.auth import update_session_auth_hash
 import json
 from django.views.decorators.http import require_http_methods
 from django.utils import timezone
+
+import logging
+import os
+
+def get_function_logger(func_name):
+    log_dir = "logs"
+    os.makedirs(log_dir, exist_ok=True)
+
+    logger = logging.getLogger(func_name)
+    logger.setLevel(logging.INFO)
+
+    # Prevent duplicate handlers
+    if not logger.handlers:
+        file_handler = logging.FileHandler(f"{log_dir}/{func_name}.txt", mode="a")
+        formatter = logging.Formatter(
+            "%(asctime)s | %(levelname)s | %(message)s"
+        )
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
+
+    return logger
 
 
 load_dotenv()
@@ -421,37 +444,26 @@ def get_predefined_outlines():
 def search_predefined_outline(course_title):
     """
     Search for a predefined outline that matches the course title.
-    Supports acronym matching and partial matching.
+    Uses strict matching to avoid false positives.
     """
     outlines = get_predefined_outlines()
     course_title_lower = course_title.lower().strip()
     
-    # Check for exact match
+    # Check for exact match (case-insensitive)
     for outline_name in outlines.keys():
         if course_title_lower == outline_name.lower():
             return outline_name, outlines[outline_name]
     
     # Check for acronym match (e.g., "OOP" matches "Object Oriented Programming")
-    for outline_name in outlines.keys():
-        # Extract acronym from outline name
-        acronym = ''.join([word[0] for word in outline_name.split() if word[0].isupper()])
-        if course_title_lower == acronym.lower():
-            return outline_name, outlines[outline_name]
-    
-    # Check for partial match
-    for outline_name in outlines.keys():
-        if course_title_lower in outline_name.lower() or outline_name.lower() in course_title_lower:
-            return outline_name, outlines[outline_name]
-    
-    # Check for individual word match
-    course_words = course_title_lower.split()
-    for outline_name in outlines.keys():
-        outline_words = outline_name.lower().split()
-        # Check if any word matches
-        for word in course_words:
-            if any(word in outline_word or outline_word in word for outline_word in outline_words):
+    # Only if the input is all uppercase or all capital letters
+    if course_title.isupper() or (len(course_title) <= 5 and all(c.isupper() or c.isdigit() or c.isspace() for c in course_title)):
+        for outline_name in outlines.keys():
+            # Extract acronym from outline name
+            acronym = ''.join([word[0] for word in outline_name.split() if word[0].isupper()])
+            if course_title_lower == acronym.lower():
                 return outline_name, outlines[outline_name]
     
+    # No match found - return None so LLM will generate an outline
     return None, None
 
 def split_weeks(content: str) -> dict:
@@ -498,7 +510,7 @@ def get_youtube_thumbnail(video_url):
         print(f"Error in get_youtube_thumbnail: {e}")
         return None
 
-def search_youtube_video(topic):
+def search_youtube_video(topic, course_title=None):
     """
     Search YouTube for a relevant educational video on the given topic
     Returns: (video_url, thumbnail_url) or (None, None) if no results
@@ -509,7 +521,10 @@ def search_youtube_video(topic):
             print("YouTube API key not found")
             return None, None
         
-        search_query = f"{topic} tutorial education learning course"
+        if course_title:
+            search_query = f"{course_title} {topic} tutorial education learning course"
+        else:
+            search_query = f"{topic} tutorial education learning course"
         
         url = "https://www.googleapis.com/youtube/v3/search"
         params = {
@@ -528,6 +543,7 @@ def search_youtube_video(topic):
         response.raise_for_status()
         
         data = response.json()
+        print("Data in search_youtube_video: ", data)
         
         if data.get('items'):
             video_id = data['items'][0]['id']['videoId']
@@ -550,14 +566,16 @@ def gen_outline(data, use_predefined=True):
     predefined outline exists, use it. Otherwise, generate a new one.
     """
     title = data.title
-    
+    logger = get_function_logger("gen_outline")
     # First check for predefined outline
     if use_predefined:
         matched_name, outline_content = search_predefined_outline(title)
         if outline_content:
-            print(f"Using predefined outline for: {matched_name}")
+            logger.info(f"Using predefined outline: {matched_name}")
+            logger.debug(f"Predefined outline content: {outline_content}")
             return outline_content, matched_name, True  # True indicates predefined outline
     
+    logger.info("No predefined outline found. Generating using LLM.")
     # If no predefined outline found, generate new one
     client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
     
@@ -589,28 +607,29 @@ def gen_outline(data, use_predefined=True):
                 ... until ## Week {total_weeks}.  
 
                 - For each week, provide **exactly 6 bullet points** (one for each day of the week, assuming one rest day).  
-                - Ensure progression is logical from beginner to advanced concepts.  
-                - Include both theoretical concepts and practical exercises.
-                - Consider that the student has {hours_per_day} hours available per day when planning the content.
-                - Format the response in Markdown.  
-
-                Example structure:
-
+                - **CRITICAL**: Each day MUST have a specific, descriptive title related to the week's theme.
+                - **DO NOT** use generic placeholders like "Introduction to [Topic]" where [Topic] is the week title.
+                - **DO NOT** use generic titles like "Fundamentals", "Advanced Concepts", "Practical Exercise" without specific context.
+                
+                Example of GOOD output (Specific):
                 ## Week 1
-                - Day 1: Introduction to [Topic] - Basic concepts and definitions
-                - Day 2: [Topic] Fundamentals - Core principles and examples
-                - Day 3: Practical Exercise - Hands-on practice with guidance
-                - Day 4: Advanced Concepts - Deeper understanding
-                - Day 5: Real-world Application - How to apply in practice
-                - Day 6: Review and Assessment - Test your knowledge
+                - Day 1: List Creation and Indexing - Creating lists and accessing elements
+                - Day 2: List Slicing and Stride - Extracting sub-lists
+                - Day 3: List Methods (append, extend, pop) - Modifying lists
+                - Day 4: List Comprehensions - Concise list creation
+                - Day 5: Nested Lists and Matrix Operations - Working with multi-dimensional data
+                - Day 6: List Practice Problems - Solving real-world list challenges
 
-                ## Week {total_weeks}
-                - Day 1: [Advanced Topic] - Master level concepts
-                - Day 2: [Advanced Topic] - Implementation strategies
-                - Day 3: Project Work - Build a complete solution
-                - Day 4: Optimization Techniques - Improve performance
-                - Day 5: Industry Best Practices - Professional standards
-                - Day 6: Final Review - Comprehensive assessment
+                Example of BAD output (Generic - DO NOT DO THIS):
+                ## Week 1
+                - Day 1: Introduction to Lists
+                - Day 2: List Fundamentals
+                - Day 3: Practical Exercise
+                - Day 4: Advanced Concepts
+                - Day 5: Real-world Application
+                - Day 6: Review
+
+                - Format the response in Markdown.  
                 """,
             }
         ],
@@ -619,6 +638,8 @@ def gen_outline(data, use_predefined=True):
     )
 
     response = chat_completion.choices[0].message.content
+    logger.info("Outline generated successfully")
+    logger.debug(f"LLM response: {response}")
     return response, title, False  # False indicates AI-generated outline
 
 
@@ -696,7 +717,7 @@ def delete_course(request, course_id):
     messages.error(request, 'Invalid request method for this action.')
     return redirect('dashboard')
 
-def get_daily_detail(week_number, day_number, topic, hours_per_day):
+def get_daily_detail(week_number, day_number, topic, hours_per_day, course_title):
     """
     Generate rich, non-repetitive, detailed daily content for a specific topic.
     Includes examples, exercises, YouTube resources, and structure variety.
@@ -704,17 +725,9 @@ def get_daily_detail(week_number, day_number, topic, hours_per_day):
     import random
     client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
-    teaching_style = random.choice([
-        "project-based learning",
-        "concept-first with examples",
-        "case-study focused",
-        "hands-on guided exercise",
-        "quiz and challenge style",
-        "visual explanation with analogies"
-    ])
 
     prompt = f"""
-    Generate a {hours_per_day}-hour detailed learning content for Week {week_number}, Day {day_number}.
+    Generate a {hours_per_day}-hour detailed learning content for Week {week_number}, Day {day_number} of the course "{course_title}".
     The topic of the day is: "{topic}".
     
     Output in **Markdown** using this exact structure:
@@ -739,6 +752,7 @@ def get_daily_detail(week_number, day_number, topic, hours_per_day):
         model="llama-3.3-70b-versatile",
         temperature=0.6,
     )
+    print("Response in get_daily_detail: ", response.choices[0].message.content)
 
     return response.choices[0].message.content
 
@@ -750,39 +764,97 @@ def get_weekly_detail(week_content, week_number, hours_per_day):
             {
                 "role": "user",
                 "content": f"""
-                Create a detailed 6-day learning plan for Week {week_number} with the following topics: {week_content}
-                
-                The student has {hours_per_day} hours available per day for study.
-                
-                :zap: CRITICAL FORMATTING REQUIREMENTS:
-                - You MUST use EXACTLY this format for each day, no variations:
-                
-                ## Day 1: [Specific Topic Title]
-                **Video Resource:** [Provide a relevant YouTube educational video URL or "No video" if not applicable]
+                You are an expert instructor designing a professional-grade learning experience.
+
+                Create a **STRICTLY FORMATTED**, **IN-DEPTH**, and **NON-REPETITIVE** 6-day learning plan for:
+
+                Week {week_number}
+                Weekly Topics: {week_content}
+                Daily Study Time: {hours_per_day} hours
+
+                ================================
+                🚨 ABSOLUTE FORMAT RULES (MANDATORY)
+                ================================
+
+                1. You MUST generate EXACTLY **6 days** (Day 1 to Day 6).
+                2. Each day MUST follow THIS FORMAT EXACTLY — no extra headings, notes, or summaries:
+
+                ## Day X: <Exact topic name being taught that day>
+                **Video Resource:** <Relevant YouTube educational URL OR "No video">
                 **Content:**
-                [Detailed learning content for 2 hours of study including:
-                - Clear learning objectives
-                - Theoretical explanations
-                - Practical examples
-                - Hands-on exercises
-                - Real-world applications
-                Make this comprehensive and actionable]
-                
-                ## Day 2: [Specific Topic Title]
-                **Video Resource:** [YouTube URL or "No video"]
-                **Content:**
-                [Detailed content for 2 hours...]
-                
-                Continue this exact pattern for all 6 days.
-                
-                IMPORTANT:
-                - Each day MUST start with "## Day X: " exactly
-                - Each day MUST have "**Video Resource:**" on the next line
-                - Each day MUST have "**Content:**" on the line after that
-                - Content should be detailed enough for {hours_per_day} hours of study
-                - Include specific examples, exercises, and practical applications
-                - Make each day's content self-contained and comprehensive
-                - Ensure logical progression from day to day
+                <DETAILED CONTENT>
+
+                ❌ OUTPUT IS INVALID IF:
+                - Any day is missing
+                - Any heading format changes
+                - Any required line is missing
+                - Any extra section is added
+
+                ================================
+                🎯 CONTENT QUALITY REQUIREMENTS
+                ================================
+
+                For EACH day:
+                - The day title MUST be the **specific topic or concept covered**, not generic labels
+                - The content MUST implicitly include:
+                • Learning goals  
+                • Conceptual explanation  
+                • Concrete examples  
+                • Hands-on or thinking-based exercises  
+                • Real-world or industry context  
+
+                ⚠️ IMPORTANT:
+                - DO NOT include headings like:
+                "Learning Objectives", "Theory", "Examples", "Exercises", etc.
+                - These are ONLY guidance for you — they must NOT appear in the output.
+
+                ================================
+                🔄 NON-REPETITION REQUIREMENT
+                ================================
+
+                - Each day MUST use a **different internal structure**
+                - Vary:
+                - Teaching style (explanation-first, example-first, problem-first, scenario-based, etc.)
+                - Types of exercises (coding task, analysis, design challenge, debugging, reflection, mini-project)
+                - Examples and contexts
+                - Avoid repeating sentence patterns across days
+
+                ================================
+                🚫 FORBIDDEN DAY TITLES
+                ================================
+
+                DO NOT use:
+                - Introduction to...
+                - Basics / Fundamentals
+                - Advanced Concepts
+                - Practice Session
+                - Review
+                - Hands-on Practice
+
+                Each title MUST clearly name the **actual concept, tool, or workflow** being studied.
+
+                ================================
+                📈 PROGRESSION RULES
+                ================================
+
+                - Days must build logically on previous days
+                - Complexity should gradually increase
+                - Content must align tightly with the weekly topics
+
+                ================================
+                🔍 FINAL SELF-CHECK (REQUIRED)
+                ================================
+
+                Before responding, silently verify:
+                - Exactly 6 days are present
+                - Format is followed EXACTLY
+                - No forbidden headings or generic titles appear
+                - Each day feels distinct in structure and approach
+                - Content realistically fills {hours_per_day} hours/day
+
+                If ANY rule is violated, FIX IT before outputting.
+
+                Respond in **Markdown only**.
                 """,
             }
         ],
@@ -792,7 +864,7 @@ def get_weekly_detail(week_content, week_number, hours_per_day):
 
     response = chat_completion.choices[0].message.content
     print(f"Week {week_number} generated content:")
-    print(response)
+    print("Response in get_weekly_detail: ", response)
     return response
 
 def parse_daily_content(weekly_detail):
@@ -1258,9 +1330,9 @@ def week_detail(request, course_id, week_number):
             topics = topics[:6]  # Limit to 6 days
             
             def generate_day(day_number, topic):
-                daily_content = get_daily_detail(week_number, day_number, topic, course.hours_per_day)
+                daily_content = get_daily_detail(week_number, day_number, topic, course.hours_per_day, course.title)
                 
-                video_url, video_thumbnail = search_youtube_video(topic)
+                video_url, video_thumbnail = search_youtube_video(topic, course.title)
                 
                 content_html = markdown.markdown(daily_content, extensions=["extra", "nl2br", "sane_lists"])
                 

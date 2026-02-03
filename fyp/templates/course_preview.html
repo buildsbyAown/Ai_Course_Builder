@@ -29,8 +29,8 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            background: #e3f2fd;
-            color: #1976d2;
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--color-info);
             padding: 0.5rem 1rem;
             border-radius: 20px;
             font-size: 0.875rem;
@@ -38,16 +38,17 @@
             margin-bottom: 1rem;
         }
         .outline-content {
-            background: white;
+            background: var(--card);
             border-radius: 12px;
             padding: 2rem;
             margin-bottom: 2rem;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            color: var(--foreground);
         }
         .outline-section {
             margin-bottom: 2rem;
             padding-bottom: 1.5rem;
-            border-bottom: 1px solid #e9ecef;
+            border-bottom: 1px solid var(--border);
         }
         .action-buttons {
             display: flex;
@@ -56,7 +57,7 @@
             margin-top: 2rem;
         }
         .btn-confirm {
-            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            background: linear-gradient(135deg, var(--color-orange) 0%, var(--color-orange-dark) 100%);
             color: white;
             border: none;
             padding: 1rem 2rem;
@@ -65,9 +66,9 @@
             min-width: 200px;
         }
         .btn-back {
-            background: white;
-            color: #212529;
-            border: 1px solid #dee2e6;
+            background: var(--card);
+            color: var(--foreground);
+            border: 1px solid var(--border);
             padding: 1rem 2rem;
             border-radius: 8px;
             font-weight: 500;
@@ -80,7 +81,8 @@
             margin-bottom: 1.5rem;
         }
         .info-item {
-            background: #f8f9fa;
+            background: var(--muted);
+            color: var(--foreground);
             padding: 0.5rem 1rem;
             border-radius: 8px;
             font-size: 0.9rem;
@@ -89,17 +91,20 @@
             font-size: 1.75rem;
             font-weight: 600;
             margin-bottom: 1rem;
+            color: var(--foreground);
         }
         .week-header {
-            background: #f8f9fa;
+            background: var(--muted);
             padding: 1rem;
             border-radius: 8px;
             margin-bottom: 1rem;
             font-weight: 600;
+            color: var(--foreground);
         }
         .day-item {
             padding: 0.5rem 0;
-            border-bottom: 1px dashed #e9ecef;
+            border-bottom: 1px dashed var(--border);
+            color: var(--foreground);
         }
         .day-item:last-child {
             border-bottom: none;
@@ -136,7 +141,7 @@
                         Using Predefined Outline
                     </div>
                     {% else %}
-                    <div class="outline-badge" style="background: #fff3e0; color: #f57c00;">
+                    <div class="outline-badge" style="background: rgba(249, 115, 22, 0.15); color: var(--color-orange);">
                         <i class="fas fa-robot"></i>
                         AI-Generated Outline
                     </div>

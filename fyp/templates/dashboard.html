@@ -10,15 +10,27 @@
         
 
         body {
-            background: linear-gradient(to bottom right, var(--background), var(--background), rgba(241, 245, 249, 0.1));
+            background: linear-gradient(135deg, var(--background) 0%, var(--secondary) 100%);
             color: var(--foreground);
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             min-height: 100vh;
         }
 
+        /* Ensure dark theme forces dark backgrounds and light text */
+        [data-theme="dark"] body {
+            background: linear-gradient(135deg, var(--background) 0%, var(--secondary) 100%);
+            color: var(--foreground);
+        }
+
         .header-custom {
             backdrop-filter: blur(8px);
             background-color: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* Dark theme header override (separate rule to avoid nesting issues) */
+        [data-theme="dark"] .header-custom {
+            background-color: rgba(15, 23, 42, 0.95);
             border-bottom: 1px solid var(--border);
         }
 
@@ -35,7 +47,7 @@
         }
 
         .btn-custom-primary:hover {
-            background-color: rgba(3, 2, 19, 0.9);
+            background-color: var(--primary);
         }
 
         .btn-custom-outline {
@@ -47,7 +59,7 @@
         }
 
         .btn-custom-outline:hover {
-            background-color: rgba(241, 245, 249, 0.3);
+            background-color: var(--secondary);
         }
         
         .theme-toggle {
@@ -67,14 +79,16 @@
         }
 
         .card-custom {
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(226, 232, 240, 0.5);
+            background: var(--card);
+            color: var(--card-foreground);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
             border-radius: 0.75rem;
             transition: box-shadow 0.3s ease;
         }
 
         .card-custom:hover {
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow-md);
         }
 
         .stat-card {
@@ -117,8 +131,9 @@
         }
 
         .goal-card {
-            background: linear-gradient(to bottom right, rgba(59, 130, 246, 0.1), rgba(16, 185, 129, 0.1));
-            border: 1px solid rgba(59, 130, 246, 0.2);
+            background: linear-gradient(to bottom right, rgba(59, 130, 246, 0.08), rgba(16, 185, 129, 0.06));
+            border: 1px solid rgba(59, 130, 246, 0.12);
+            color: var(--foreground);
         }
 
         .goal-badge {

@@ -130,7 +130,7 @@
         flex: 1;
         padding: 20px;
         overflow-y: auto;
-        background: #f8f9fa;
+        background: var(--muted);
         display: flex;
         flex-direction: column;
         gap: 16px;
@@ -168,21 +168,21 @@
     }
     
     .user-message .message-content {
-        background: #667eea;
+        background: var(--color-info);
         color: white;
         border-bottom-right-radius: 4px;
     }
     
     .assistant-message .message-content {
-        background: white;
-        color: #333;
-        border: 1px solid #e0e0e0;
+        background: var(--card);
+        color: var(--foreground);
+        border: 1px solid var(--border);
         border-bottom-left-radius: 4px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     }
     
     .message-content strong {
-        color: #667eea;
+        color: var(--color-info);
     }
     
     .message-content p {
@@ -208,15 +208,15 @@
     
     .message-timestamp {
         font-size: 11px;
-        color: #999;
+        color: var(--color-text-tertiary);
         margin-top: 4px;
         text-align: right;
     }
     
     .chatbot-input-area {
         padding: 16px;
-        background: white;
-        border-top: 1px solid #e0e0e0;
+        background: var(--card);
+        border-top: 1px solid var(--border);
     }
     
     .input-group {
@@ -228,26 +228,28 @@
     .chatbot-input {
         flex: 1;
         padding: 12px 16px;
-        border: 2px solid #e0e0e0;
+        border: 2px solid var(--border);
         border-radius: 24px;
         font-size: 14px;
         resize: none;
         max-height: 120px;
         font-family: inherit;
         transition: border-color 0.2s ease;
+        background: var(--input-background);
+        color: var(--foreground);
     }
     
     .chatbot-input:focus {
         outline: none;
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        border-color: var(--color-info);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     }
     
     .chatbot-send-btn {
         width: 48px;
         height: 48px;
         border-radius: 50%;
-        background: #667eea;
+        background: var(--color-info);
         border: none;
         color: white;
         cursor: pointer;
@@ -259,18 +261,18 @@
     }
     
     .chatbot-send-btn:hover {
-        background: #5a6fd8;
+        background: var(--primary);
         transform: scale(1.05);
     }
     
     .chatbot-send-btn:disabled {
-        background: #ccc;
+        background: var(--muted-foreground);
         cursor: not-allowed;
         transform: none;
     }
     
     .chatbot-hint {
-        color: #666;
+        color: var(--color-text-tertiary);
         font-size: 11px;
         text-align: center;
         display: block;
@@ -398,6 +400,27 @@
         weekNumber: null,
         dayNumber: null,
         dayTitle: null
+    };
+    
+    // Expose function to update chatbot context from external scripts
+    window.updateChatbotContext = function(dayNumber, dayTitle) {
+        config.dayNumber = dayNumber;
+        config.dayTitle = dayTitle;
+        
+        // Update UI displays
+        const dayNumberDisplay = document.getElementById('day-number-display');
+        const weekNumberDisplay = document.getElementById('week-number-display');
+        const welcomeWeekDay = document.getElementById('welcome-week-day');
+        const welcomeTopic = document.getElementById('welcome-topic');
+        
+        if (dayNumberDisplay) dayNumberDisplay.textContent = dayNumber;
+        if (welcomeWeekDay) {
+            const weekNum = config.weekNumber;
+            welcomeWeekDay.innerHTML = `I'm here to help you with <strong>Week ${weekNum}, Day ${dayNumber}</strong>.`;
+        }
+        if (welcomeTopic) welcomeTopic.innerHTML = `Today's topic: <strong>${dayTitle}</strong>`;
+        
+        console.log('Chatbot context updated - Day:', dayNumber, 'Title:', dayTitle);
     };
     
     // State
@@ -550,6 +573,14 @@
             const data = await response.json();
             
             if (data.success && data.messages && data.messages.length > 0) {
+                // Clear all previous messages except welcome
+                const messages = chatbotMessages.querySelectorAll('.user-message, .assistant-message');
+                messages.forEach(msg => {
+                    if (!msg.closest('#chatbot-welcome')) {
+                        msg.remove();
+                    }
+                });
+                
                 // Clear welcome message
                 const welcomeElement = document.getElementById('chatbot-welcome');
                 if (welcomeElement) welcomeElement.style.display = 'none';
@@ -566,11 +597,29 @@
                 setTimeout(() => {
                     if (chatbotMessages) chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
                 }, 100);
+            } else {
+                // Show welcome message if no conversation found
+                const welcomeElement = document.getElementById('chatbot-welcome');
+                if (welcomeElement) welcomeElement.style.display = 'block';
+                
+                // Clear any existing messages
+                const messages = chatbotMessages.querySelectorAll('.user-message, .assistant-message');
+                messages.forEach(msg => {
+                    if (!msg.closest('#chatbot-welcome')) {
+                        msg.remove();
+                    }
+                });
+                
+                messageCount = 0;
+                updateNotificationBadge();
             }
         } catch (error) {
             console.error('Error loading conversation:', error);
         }
     }
+    
+    // Expose loadConversation as global function
+    window.loadChatbotConversation = loadConversation;
     
     async function clearConversation() {
         try {
