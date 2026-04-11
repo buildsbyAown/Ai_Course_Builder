@@ -1,146 +1,161 @@
 {% comment %} Shared theme variables extracted from frontend/src/styles/globals.css {% endcomment %}
 <style>
-:root {
-  /* Light Theme - Professional Blue/Gray */
-  --font-size: 16px;
-  --background: #f8fafc;
-  --foreground: #0f172a;
-  --card: #ffffff;
-  --card-foreground: #0f172a;
-  --popover: #ffffff;
-  --popover-foreground: #0f172a;
-  --primary: #2563eb;
-  --primary-foreground: #ffffff;
-  --secondary: #f1f5f9;
-  --secondary-foreground: #0f172a;
-  --muted: #f8fafc;
-  --muted-foreground: #64748b;
-  --accent: #e2e8f0;
-  --accent-foreground: #0f172a;
-  --destructive: #ef4444;
-  --destructive-foreground: #ffffff;
-  --border: #e2e8f0;
-  --input: #ffffff;
-  --input-background: #ffffff;
-  --switch-background: #cbd5e1;
-  --ring: #94a3b8;
-  --chart-1: #3b82f6;
-  --chart-2: #10b981;
-  --chart-3: #8b5cf6;
-  --chart-4: #f59e0b;
-  --chart-5: #ef4444;
-  --radius: 0.625rem;
-  --sidebar: #ffffff;
-  --sidebar-foreground: #0f172a;
-  
-  /* Functional Colors - Light Theme */
-  --color-success: #10b981;
-  --color-warning: #f59e0b;
-  --color-danger: #ef4444;
-  --color-info: #3b82f6;
-  
-  /* Semantic Colors - Light Theme */
-  --color-surface: #ffffff;
-  --color-surface-2: #f8fafc;
-  --color-surface-3: #f1f5f9;
-  --color-text-primary: #0f172a;
-  --color-text-secondary: #475569;
-  --color-text-tertiary: #64748b;
-  
-  /* Specific UI Colors - Light Theme */
-  --color-button-primary: #2563eb;
-  --color-button-secondary: #f1f5f9;
-  --color-button-destructive: #ef4444;
-  --color-link: #2563eb;
-  --color-border-light: #e2e8f0;
-  --color-border-medium: #cbd5e1;
-  --color-border-heavy: #94a3b8;
-  
-  /* Additional semantic colors - Light Theme */
-  --color-purple: #8b5cf6;
-  --color-purple-dark: #7c3aed;
-  --color-orange: #f97316;
-  --color-orange-dark: #ea580c;
-  --color-blue: #0ea5e9;
-  --color-blue-dark: #0284c7;
-  --color-light-secondary: #f8f9fa;
-  
-  /* Gradient Colors */
-  --gradient-primary: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-  --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-  --gradient-danger: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-  
-  /* Shadow */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
-}
+  :root {
+    /* Light Theme - Professional Blue/Gray */
+    --font-size: 16px;
+    --background: #f8fafc;
+    --foreground: #0f172a;
+    --card: #ffffff;
+    --card-foreground: #0f172a;
+    --popover: #ffffff;
+    --popover-foreground: #0f172a;
+    --primary: #2563eb;
+    --primary-foreground: #ffffff;
+    --secondary: #f1f5f9;
+    --secondary-foreground: #0f172a;
+    --muted: #f8fafc;
+    --muted-foreground: #64748b;
+    --accent: #e2e8f0;
+    --accent-foreground: #0f172a;
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --border: #e2e8f0;
+    --input: #ffffff;
+    --input-background: #ffffff;
+    --switch-background: #cbd5e1;
+    --ring: #94a3b8;
+    --chart-1: #3b82f6;
+    --chart-2: #10b981;
+    --chart-3: #8b5cf6;
+    --chart-4: #f59e0b;
+    --chart-5: #ef4444;
+    --radius: 0.625rem;
+    --sidebar: #ffffff;
+    --sidebar-foreground: #0f172a;
 
-.dark {
-  /* Dark Theme - Deep Blue/Gray */
-  --background: #0f172a;
-  --foreground: #f8fafc;
-  --card: #1e293b;
-  --card-foreground: #f8fafc;
-  --popover: #1e293b;
-  --popover-foreground: #f8fafc;
-  --primary: #3b82f6;
-  --primary-foreground: #ffffff;
-  --secondary: #334155;
-  --secondary-foreground: #f8fafc;
-  --muted: #1e293b;
-  --muted-foreground: #94a3b8;
-  --accent: #334155;
-  --accent-foreground: #f8fafc;
-  --destructive: #f87171;
-  --destructive-foreground: #ffffff;
-  --border: #334155;
-  --input: #1e293b;
-  --input-background: #1e293b;
-  --ring: #475569;
-  
-  /* Functional Colors - Dark Theme */
-  --color-success: #34d399;
-  --color-warning: #fbbf24;
-  --color-danger: #f87171;
-  --color-info: #60a5fa;
-  
-  /* Semantic Colors - Dark Theme */
-  --color-surface: #1e293b;
-  --color-surface-2: #0f172a;
-  --color-surface-3: #334155;
-  --color-text-primary: #f8fafc;
-  --color-text-secondary: #e2e8f0;
-  --color-text-tertiary: #cbd5e1;
-  
-  /* Specific UI Colors - Dark Theme */
-  --color-button-primary: #3b82f6;
-  --color-button-secondary: #334155;
-  --color-button-destructive: #f87171;
-  --color-link: #60a5fa;
-  --color-border-light: #334155;
-  --color-border-medium: #475569;
-  --color-border-heavy: #64748b;
-  
-  /* Additional semantic colors - Dark Theme */
-  --color-purple: #a78bfa;
-  --color-purple-dark: #c4b5fd;
-  --color-orange: #fb923c;
-  --color-orange-dark: #f97316;
-  --color-blue: #38bdf8;
-  --color-blue-dark: #0ea5e9;
-  --color-light-secondary: #334155;
-  
-  /* Gradient Colors - Dark Theme */
-  --gradient-primary: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-  --gradient-success: linear-gradient(135deg, #34d399 0%, #10b981 100%);
-  --gradient-warning: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-  --gradient-danger: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
-  
-  /* Shadow - Dark Theme */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.25);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.25);
-}
+    /* Functional Colors - Light Theme */
+    --color-success: #10b981;
+    --color-warning: #f59e0b;
+    --color-danger: #ef4444;
+    --color-info: #3b82f6;
+
+    /* Semantic Colors - Light Theme */
+    --color-surface: #ffffff;
+    --color-surface-2: #f8fafc;
+    --color-surface-3: #f1f5f9;
+    --color-text-primary: #0f172a;
+    --color-text-secondary: #475569;
+    --color-text-tertiary: #64748b;
+
+    /* Specific UI Colors - Light Theme */
+    --color-button-primary: #2563eb;
+    --color-button-secondary: #f1f5f9;
+    --color-button-destructive: #ef4444;
+    --color-link: #2563eb;
+    --color-border-light: #e2e8f0;
+    --color-border-medium: #cbd5e1;
+    --color-border-heavy: #94a3b8;
+
+    /* Additional semantic colors - Light Theme */
+    --color-purple: #8b5cf6;
+    --color-purple-dark: #7c3aed;
+    --color-orange: #f97316;
+    --color-orange-dark: #ea580c;
+    --color-blue: #0ea5e9;
+    --color-blue-dark: #0284c7;
+    --color-light-secondary: #f8f9fa;
+
+    /* Gradient Colors */
+    --gradient-primary: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    --gradient-danger: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+
+    /* Shadow */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .dark {
+    /* Dark Theme - Deep Blue/Gray */
+    --background: #0f172a;
+    --foreground: #f8fafc;
+    --card: #1e293b;
+    --card-foreground: #f8fafc;
+    --popover: #1e293b;
+    --popover-foreground: #f8fafc;
+    --primary: #3b82f6;
+    --primary-foreground: #ffffff;
+    --secondary: #334155;
+    --secondary-foreground: #f8fafc;
+    --muted: #1e293b;
+    --muted-foreground: #94a3b8;
+    --accent: #334155;
+    --accent-foreground: #f8fafc;
+    --destructive: #f87171;
+    --destructive-foreground: #ffffff;
+    --border: #334155;
+    --input: #1e293b;
+    --input-background: #1e293b;
+    --ring: #475569;
+
+    /* Functional Colors - Dark Theme */
+    --color-success: #34d399;
+    --color-warning: #fbbf24;
+    --color-danger: #f87171;
+    --color-info: #60a5fa;
+
+    /* Semantic Colors - Dark Theme */
+    --color-surface: #1e293b;
+    --color-surface-2: #0f172a;
+    --color-surface-3: #334155;
+    --color-text-primary: #f8fafc;
+    --color-text-secondary: #e2e8f0;
+    --color-text-tertiary: #cbd5e1;
+
+    /* Specific UI Colors - Dark Theme */
+    --color-button-primary: #3b82f6;
+    --color-button-secondary: #334155;
+    --color-button-destructive: #f87171;
+    --color-link: #60a5fa;
+    --color-border-light: #334155;
+    --color-border-medium: #475569;
+    --color-border-heavy: #64748b;
+
+    /* Additional semantic colors - Dark Theme */
+    --color-purple: #a78bfa;
+    --color-purple-dark: #c4b5fd;
+    --color-orange: #fb923c;
+    --color-orange-dark: #f97316;
+    --color-blue: #38bdf8;
+    --color-blue-dark: #0ea5e9;
+    --color-light-secondary: #334155;
+
+    /* Gradient Colors - Dark Theme */
+    --gradient-primary: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    --gradient-success: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+    --gradient-warning: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    --gradient-danger: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+
+    /* Shadow - Dark Theme */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.25);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.25);
+  }
 </style>
+
+<script>
+  // Execute immediately to prevent Flash of Unstyled Content (FOUC)
+  (function () {
+    try {
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      document.documentElement.classList.toggle('dark', savedTheme === 'dark');
+      // Since body might not exist yet, we only set documentElement here
+      document.addEventListener('DOMContentLoaded', () => {
+        document.body.setAttribute('data-theme', savedTheme);
+      });
+    } catch (e) { }
+  })();
+</script>

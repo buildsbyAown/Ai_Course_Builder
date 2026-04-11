@@ -6,36 +6,34 @@
 
 # Weekly Course Outline
 ## Week 1
-- Introduction and Revision of Basic Concepts
-## Week 2
 - Finite Automata: DFA
-## Week 3
+## Week 2
 - Finite Automata: NFA
-## Week 4
+## Week 3
 - Finite Automata: NFA-DFA Conversion
-## Week 5
+## Week 4
 - Regular Languages: Regular Expressions, Equivalence with FA
-## Week 6
+## Week 5
 - Regular Languages: Pumping Lemma
-## Week 7
+## Week 6
 - Context-Free Languages: CFGs
-## Week 8
+## Week 7
 - Context-Free Languages: PDA
-## Week 9
+## Week 8
 - Context-Free Languages: PDA-CFG Equivalence
-## Week 10
+## Week 9
 - Context-Free Languages: Pumping Lemma
+## Week 10
+- Context-Free Languages: DCFLs
 ## Week 11
 - Context-Free Languages: DCFLs
 ## Week 12
-- Context-Free Languages: DCFLs
-## Week 13
 - Turing Machines: Introduction
-## Week 14
+## Week 13
 - Turing Machines: Variants
-## Week 15
+## Week 14
 - Decidability
-## Week 16
+## Week 15
 - Decidability
 
 # Recommended Books

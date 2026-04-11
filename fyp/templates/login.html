@@ -7,8 +7,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     {% include '_theme_vars.html' %}
     <style>
-        
-
         body {
             background: linear-gradient(to bottom right, var(--background), var(--background), rgba(241, 245, 249, 0.1));
             color: var(--foreground);
@@ -28,20 +26,25 @@
             background-color: rgba(241, 245, 249, 0.3);
         }
 
+        [data-theme="dark"] .bg-secondary-30 {
+            background-color: rgba(30, 41, 59, 0.3);
+        }
+
         .card-custom {
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(226, 232, 240, 0.5);
+            border: 1px solid var(--border);
             border-radius: 0.75rem;
+            background-color: var(--background);
         }
 
         .header-custom {
             backdrop-filter: blur(8px);
             background-color: rgba(255, 255, 255, 0.95);
             border-bottom: 1px solid var(--border);
-        [data-theme="dark"] .header-custom {
-            background-color: rgba(15, 23, 42, 0.95);
         }
 
+        [data-theme="dark"] .header-custom {
+            background-color: rgba(15, 23, 42, 0.95);
         }
 
         .gradient-icon {
@@ -56,6 +59,7 @@
 
         .btn-custom-primary:hover {
             background-color: var(--primary);
+            opacity: 0.9;
         }
 
         .btn-custom-outline {
@@ -67,7 +71,7 @@
         .btn-custom-outline:hover {
             background-color: var(--secondary);
         }
-        
+
         .theme-toggle {
             background: none;
             border: none;
@@ -79,22 +83,29 @@
             align-items: center;
             justify-content: center;
         }
-        
+
         .theme-toggle:hover {
             opacity: 0.7;
         }
 
         .form-control-custom {
             background-color: var(--input);
-            border: 1px solid rgba(226, 232, 240, 0.5);
+            border: 1px solid var(--border);
             border-radius: 0.5rem;
             padding-left: 2.5rem;
             padding-right: 2.5rem;
+            color: var(--foreground);
+        }
+
+        .form-control-custom::placeholder {
+            color: var(--muted-foreground);
         }
 
         .form-control-custom:focus {
-            box-shadow: 0 0 0 2px rgba(3, 2, 19, 0.2);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
             border-color: var(--primary);
+            background-color: var(--input);
+            color: var(--foreground);
         }
 
         .feature-item {
@@ -104,6 +115,11 @@
             padding: 0.75rem;
             background-color: rgba(241, 245, 249, 0.3);
             border-radius: 0.5rem;
+            color: var(--foreground);
+        }
+
+        [data-theme="dark"] .feature-item {
+            background-color: rgba(30, 41, 59, 0.3);
         }
 
         .feature-dot {
@@ -146,6 +162,14 @@
             background-color: var(--background);
         }
 
+        a.text-decoration-none {
+            color: var(--primary);
+        }
+
+        a.text-decoration-none:hover {
+            text-decoration: underline;
+        }
+
         @media (min-width: 992px) {
             .right-column {
                 display: block !important;
@@ -178,8 +202,7 @@
                 <div class="row align-items-center">
                     <!-- Left Column - Form -->
                     <div class="col-lg-6 mb-5 mb-lg-0">
-                        <a href="#" style="color: var(--foreground);"
-                            class="btn btn-link text-decoration-none p-0 mb-4 d-inline-flex align-items-center">
+                        <a href="#" class="btn btn-link text-decoration-none p-0 mb-4 d-inline-flex align-items-center">
                             <i class="fas fa-arrow-left me-2"></i> Back to Home
                         </a>
 
@@ -199,7 +222,6 @@
                                     </div>
                                     {% endif %}
 
-                                    <!-- Username/Email Field -->
                                     <div class="mb-3">
                                         <label for="username" class="form-label fw-medium">Email</label>
                                         <div class="position-relative">
@@ -210,7 +232,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- Password Field -->
                                     <div class="mb-3">
                                         <label for="password" class="form-label fw-medium">Password</label>
                                         <div class="position-relative">
@@ -226,7 +247,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- Remember Me & Forgot Password -->
                                     <div class="d-flex justify-content-between align-items-center mb-4">
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" id="remember">
@@ -237,17 +257,14 @@
                                         <a href="#" class="text-decoration-none">Forgot password?</a>
                                     </div>
 
-                                    <!-- Submit Button -->
                                     <button type="submit" class="btn btn-custom-primary w-100 py-2 fw-medium">Sign
                                         In</button>
                                 </form>
 
-                                <!-- Divider -->
                                 <div class="separator">
                                     <span class="separator-text">Or continue with</span>
                                 </div>
 
-                                <!-- Social Login -->
                                 <div class="row g-2 mb-4">
                                     <div class="col-4">
                                         <button class="btn btn-custom-outline w-100 py-2">
@@ -266,7 +283,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Sign Up Link -->
                                 <div class="text-center">
                                     <span class="text-muted">Don't have an account?</span>
                                     <a href="#" class="text-decoration-none ms-1">Sign up</a>
@@ -337,6 +353,7 @@
                 passwordIcon.classList.add('fa-eye');
             }
         });
+
     </script>
     {% include 'theme_toggle.html' %}
 </body>

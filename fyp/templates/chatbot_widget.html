@@ -337,8 +337,9 @@
             <div class="chatbot-title">
                 <i class="fas fa-robot me-2"></i>
                 <strong>Learning Assistant</strong>
-                <span class="chatbot-context-badge" id="chatbot-context">
-                    Week <span id="week-number-display"></span>, Day <span id="day-number-display"></span>
+                <span style = "margin: 5
+                px;" class="chatbot-context-badge" id="chatbot-context">
+                    Course: <span id="course-title-display"></span>
                 </span>
             </div>
             <div class="chatbot-actions">
@@ -361,10 +362,9 @@
                 <div class="assistant-message">
                     <div class="message-content">
                         <strong>Hello! I'm your Learning Assistant 🤖</strong>
-                        <p id="welcome-week-day"></p>
-                        <p id="welcome-topic"></p>
-                        <p>Ask me anything about today's lessons, exercises, or concepts!</p>
-                        <small><i class="fas fa-lightbulb"></i> Tip: I'm aware of your current week and day context.</small>
+                        <p id="welcome-course"></p>
+                        <p>Ask me anything about the course material or concepts.</p>
+                        <small><i class="fas fa-lightbulb"></i></small>
                     </div>
                 </div>
             </div>
@@ -397,33 +397,15 @@
     // Configuration
     const config = {
         courseId: null,
-        weekNumber: null,
-        dayNumber: null,
-        dayTitle: null
+        courseTitle: null
     };
     
-    // Expose function to update chatbot context from external scripts
-    window.updateChatbotContext = function(dayNumber, dayTitle) {
-        config.dayNumber = dayNumber;
-        config.dayTitle = dayTitle;
-        
-        // Update UI displays
-        const dayNumberDisplay = document.getElementById('day-number-display');
-        const weekNumberDisplay = document.getElementById('week-number-display');
-        const welcomeWeekDay = document.getElementById('welcome-week-day');
-        const welcomeTopic = document.getElementById('welcome-topic');
-        
-        if (dayNumberDisplay) dayNumberDisplay.textContent = dayNumber;
-        if (welcomeWeekDay) {
-            const weekNum = config.weekNumber;
-            welcomeWeekDay.innerHTML = `I'm here to help you with <strong>Week ${weekNum}, Day ${dayNumber}</strong>.`;
-        }
-        if (welcomeTopic) welcomeTopic.innerHTML = `Today's topic: <strong>${dayTitle}</strong>`;
-        
-        console.log('Chatbot context updated - Day:', dayNumber, 'Title:', dayTitle);
+    // We no longer track week/day for generic responses
+    window.updateChatbotContext = function(/* no args */) {
+        // Intentionally left blank; context is static
+        console.log('Chatbot context update skipped (generic course-only)');
     };
-    
-    // State
+
     let chatbotOpen = false;
     let messageCount = 0;
     
@@ -441,10 +423,19 @@
         const dataElement = document.getElementById('chatbot-data');
         if (dataElement) {
             config.courseId = dataElement.dataset.courseId;
-            config.weekNumber = dataElement.dataset.weekNumber;
-            config.dayNumber = dataElement.dataset.dayNumber;
-            config.dayTitle = dataElement.dataset.dayTitle;
+            config.courseTitle = dataElement.dataset.courseTitle;
             console.log('Chatbot config loaded:', config);
+
+            // update welcome message immediately
+            const welcomeCourse = document.getElementById('welcome-course');
+            if (welcomeCourse) {
+                welcomeCourse.innerHTML = `You're exploring the course: <strong>${config.courseTitle}</strong>`;
+            }
+            // update header context badge
+            const courseBadge = document.getElementById('course-title-display');
+            if (courseBadge) {
+                courseBadge.textContent = config.courseTitle;
+            }
         } else {
             console.error('Chatbot data element not found');
             return;
@@ -460,16 +451,8 @@
         chatbotMinimize = document.getElementById('chatbot-minimize');
         chatbotClear = document.getElementById('chatbot-clear');
         chatbotNotification = document.getElementById('chatbot-notification');
-        weekNumberDisplay = document.getElementById('week-number-display');
-        dayNumberDisplay = document.getElementById('day-number-display');
-        welcomeWeekDay = document.getElementById('welcome-week-day');
-        welcomeTopic = document.getElementById('welcome-topic');
         
-        // Set up UI
-        if (weekNumberDisplay) weekNumberDisplay.textContent = config.weekNumber;
-        if (dayNumberDisplay) dayNumberDisplay.textContent = config.dayNumber;
-        if (welcomeWeekDay) welcomeWeekDay.innerHTML = `I'm here to help you with <strong>Week ${config.weekNumber}, Day ${config.dayNumber}</strong>.`;
-        if (welcomeTopic) welcomeTopic.innerHTML = `Today's topic: <strong>${config.dayTitle || 'Today\'s lesson'}</strong>`;
+        // UI is mostly static now; the welcome message was set earlier in init
         
         // Set up event listeners
         setupEventListeners();
@@ -564,12 +547,12 @@
     
     async function loadConversation() {
         try {
-            if (!config.courseId || !config.weekNumber || !config.dayNumber) {
-                console.error('Missing configuration for conversation');
+            if (!config.courseId) {
+                console.error('Missing courseId for conversation');
                 return;
             }
             
-            const response = await fetch(`/chatbot/conversation/?course_id=${config.courseId}&week_number=${config.weekNumber}&day_number=${config.dayNumber}`);
+            const response = await fetch(`/chatbot/conversation/?course_id=${config.courseId}`);
             const data = await response.json();
             
             if (data.success && data.messages && data.messages.length > 0) {
@@ -630,9 +613,7 @@
                     'X-CSRFToken': getCsrfToken()
                 },
                 body: JSON.stringify({
-                    course_id: config.courseId,
-                    week_number: config.weekNumber,
-                    day_number: config.dayNumber
+                    course_id: config.courseId
                 })
             });
             
@@ -687,8 +668,8 @@
                 body: JSON.stringify({
                     message: message,
                     course_id: config.courseId,
-                    week_number: config.weekNumber,
-                    day_number: config.dayNumber
+                    // still send title for clarity if needed
+                    course_title: config.courseTitle
                 })
             });
             

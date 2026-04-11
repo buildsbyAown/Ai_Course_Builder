@@ -510,10 +510,30 @@ def get_youtube_thumbnail(video_url):
         print(f"Error in get_youtube_thumbnail: {e}")
         return None
 
-def search_youtube_video(topic, course_title=None):
+
+def extract_youtube_id(video_url):
+    """Return the YouTube video ID for a given URL or None if not a valid YouTube link."""
+    try:
+        parsed = urlparse(video_url)
+        vid = None
+        if parsed.hostname in ['www.youtube.com', 'youtube.com']:
+            if parsed.path == '/watch':
+                vid = parse_qs(parsed.query).get('v', [None])[0]
+            elif parsed.path.startswith('/embed/') or parsed.path.startswith('/v/'):
+                vid = parsed.path.split('/')[-1].split('?')[0]
+        elif parsed.hostname in ['www.youtu.be', 'youtu.be']:
+            vid = parsed.path[1:]
+        if vid:
+            return vid.split('?')[0].split('#')[0].strip()
+    except Exception:
+        pass
+    return None
+
+def search_youtube_video(topic, course_title=None, exclude_ids=None):
     """
-    Search YouTube for a relevant educational video on the given topic
-    Returns: (video_url, thumbnail_url) or (None, None) if no results
+    Search YouTube for a relevant educational video on the given topic.
+    Optionally avoid videos whose IDs are in `exclude_ids`.
+    Returns: (video_url, thumbnail_url) or (None, None) if no suitable result.
     """
     try:
         api_key = os.getenv("YOUTUBE_API_KEY")
@@ -531,7 +551,7 @@ def search_youtube_video(topic, course_title=None):
             'part': 'snippet',
             'q': search_query,
             'type': 'video',
-            'maxResults': 1,
+            'maxResults': 5,  # fetch a small batch so we can skip duplicates
             'key': api_key,
             'videoDuration': 'medium',
             'relevanceLanguage': 'en',
@@ -543,22 +563,90 @@ def search_youtube_video(topic, course_title=None):
         response.raise_for_status()
         
         data = response.json()
-        print("Data in search_youtube_video: ", data)
+        # print("Data in search_youtube_video: ", data)
         
         if data.get('items'):
-            video_id = data['items'][0]['id']['videoId']
-            watch_url = f"https://www.youtube.com/watch?v={video_id}"
-            thumbnail_url = data['items'][0]['snippet']['thumbnails']['high']['url']
-            
-            print(f" Found YouTube video for topic: {topic}")
-            return watch_url, thumbnail_url
+            for item in data['items']:
+                vid = item['id'].get('videoId')
+                if not vid:
+                    continue
+                if exclude_ids and vid in exclude_ids:
+                    continue
+                watch_url = f"https://www.youtube.com/watch?v={vid}"
+                thumbnail_url = item['snippet']['thumbnails']['high']['url']
+                print(f"Found YouTube video for topic: {topic}, id={vid}")
+                return watch_url, thumbnail_url
         
-        print(f"No YouTube results for topic: {topic}")
+        print(f"No non-duplicate YouTube results for topic: {topic}")
         return None, None
         
     except Exception as e:
         print(f"YouTube API error for topic '{topic}': {str(e)}")
         return None, None
+
+def adjust_predefined_outline(outline_content, target_weeks, title, data):
+    """
+    Adjusts a predefined outline to match the target number of weeks requested by the user.
+    If target_weeks < current_weeks, truncates the outline.
+    If target_weeks > current_weeks, uses LLM to prolong the outline.
+    """
+    weeks = split_weeks(outline_content)
+    current_weeks = len(weeks)
+    
+    if target_weeks == current_weeks:
+        return outline_content
+        
+    if target_weeks < current_weeks:
+        # Truncate outline
+        # We need to find the start of Week {target_weeks + 1} and slice the string
+        pattern = rf"(##\s*Week\s*{target_weeks + 1}\b)"
+        match = re.search(pattern, outline_content, re.IGNORECASE)
+        if match:
+            return outline_content[:match.start()].strip()
+        
+        # Fallback: recreate outline from parsed weeks if regex fails for some reason
+        truncated_content = ""
+        count = 1
+        for week_title, week_content in weeks.items():
+            if count > target_weeks:
+                break
+            truncated_content += f"{week_title}\n{week_content}\n\n"
+            count += 1
+        return truncated_content.strip()
+        
+    if target_weeks > current_weeks:
+        # Prolong outline using LLM
+        client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+        missing_weeks = target_weeks - current_weeks
+        prompt = f"""
+        You are an expert course creator.
+        I have an existing course outline for "{title}" that currently goes up to Week {current_weeks}.
+        I need you to extend this outline from Week {current_weeks + 1} up to Week {target_weeks} (a total of {missing_weeks} additional weeks).
+
+        Here is the existing outline for context:
+        {outline_content}
+
+        Please generate ONLY the new weeks (Week {current_weeks + 1} to Week {target_weeks}).
+        
+        Format requirements:
+        - Use clear headings in the exact format: ## Week X
+        - Provide exactly 6 bullet points per week (Day 1 to Day 6)
+        - Each day MUST have a specific, descriptive title related to the week's theme.
+        - The pacing should match exactly {data.hours_per_day} hours per day at a {data.level_required} level.
+        - Output ONLY the newly generated weeks in Markdown, nothing else. Do not include any intro or outro text.
+        """
+        
+        try:
+            response = client.chat.completions.create(
+                messages=[{"role": "user", "content": prompt}],
+                model="llama-3.3-70b-versatile",
+                temperature=0.7,
+            )
+            new_weeks = response.choices[0].message.content.strip()
+            return f"{outline_content}\n\n{new_weeks}"
+        except Exception as e:
+            print(f"Error extending outline: {e}")
+            return outline_content # Fallback to original if API fails
 
 def gen_outline(data, use_predefined=True):
     """
@@ -567,13 +655,19 @@ def gen_outline(data, use_predefined=True):
     """
     title = data.title
     logger = get_function_logger("gen_outline")
+    total_weeks = int(data.duration) * 4
+    
     # First check for predefined outline
     if use_predefined:
         matched_name, outline_content = search_predefined_outline(title)
         if outline_content:
             logger.info(f"Using predefined outline: {matched_name}")
-            logger.debug(f"Predefined outline content: {outline_content}")
-            return outline_content, matched_name, True  # True indicates predefined outline
+            
+            # Adjust the predefined outline to match requested duration
+            adjusted_outline = adjust_predefined_outline(outline_content, total_weeks, matched_name, data)
+            
+            logger.debug(f"Predefined outline content adjusted to {total_weeks} weeks")
+            return adjusted_outline, matched_name, True  # True indicates predefined outline
     
     logger.info("No predefined outline found. Generating using LLM.")
     # If no predefined outline found, generate new one
@@ -752,13 +846,13 @@ def get_daily_detail(week_number, day_number, topic, hours_per_day, course_title
         model="llama-3.3-70b-versatile",
         temperature=0.6,
     )
-    print("Response in get_daily_detail: ", response.choices[0].message.content)
+    # print("Response in get_daily_detail: ", response.choices[0].message.content)
 
     return response.choices[0].message.content
 
 def get_weekly_detail(week_content, week_number, hours_per_day):
     client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
-    
+    print(f"Generating weekly detail for Week {week_number} with content: {week_content} and hours/day: {hours_per_day}")
     chat_completion = client.chat.completions.create(
         messages=[
             {
@@ -863,19 +957,27 @@ def get_weekly_detail(week_content, week_number, hours_per_day):
     )
 
     response = chat_completion.choices[0].message.content
-    print(f"Week {week_number} generated content:")
-    print("Response in get_weekly_detail: ", response)
+    # print(f"Week {week_number} generated content:")
+    # print("Response in get_weekly_detail: ", response)
     return response
 
-def parse_daily_content(weekly_detail):
-    """Parse the weekly detail into individual days with video URLs"""
+def parse_daily_content(weekly_detail, used_ids=None):
+    """Parse the weekly detail into individual days with video URLs.
+
+    If `used_ids` is provided (a set) then any YouTube video whose ID
+    already exists in that set will be skipped (URL and thumbnail emptied)
+    and the ID will not be added again. This lets callers enforce course‑wide
+    uniqueness.
+    """
+    if used_ids is None:
+        used_ids = set()
     days = []
     
     day_pattern = r"## Day\s*(\d+):\s*([^\n]+)(?:\n\*\*Video Resource:\*\*\s*([^\n]*))?(?:\n\*\*Content:\*\*\s*([\s\S]*?))(?=## Day\s*\d+:|$)"
     
     matches = re.findall(day_pattern, weekly_detail, re.IGNORECASE)
     
-    print(f"Found {len(matches)} days in weekly detail")
+    # print(f"Found {len(matches)} days in weekly detail")
     
     for match in matches:
         try:
@@ -893,6 +995,15 @@ def parse_daily_content(weekly_detail):
                 elif 'youtu.be/' in video_url:
                     video_id = video_url.split('youtu.be/')[1].split('?')[0]
                     video_url = f'https://www.youtube.com/embed/{video_id}'
+                vid = extract_youtube_id(video_url)
+                if vid and vid in used_ids:
+                    # skip duplicate
+                    video_url = ""
+                    video_thumbnail = ""
+                else:
+                    used_ids.add(vid) if vid else None
+            else:
+                video_thumbnail = ""
             
             video_thumbnail = get_youtube_thumbnail(video_url) if video_url else ""
             
@@ -904,7 +1015,7 @@ def parse_daily_content(weekly_detail):
                 'content': content
             })
             
-            print(f"Parsed Day {day_number}: {title}")
+            # print(f"Parsed Day {day_number}: {title}")
             
         except Exception as e:
             print(f"Error parsing day: {e}")
@@ -1105,8 +1216,6 @@ def course_input(request):
             )
             
             messages.success(request, f"Course '{course.title}' created successfully!")
-            if is_predefined:
-                messages.info(request, "✓ Used predefined outline")
             return redirect('course_detail', course_id=course.id)
         
         except Exception as e:
@@ -1187,6 +1296,9 @@ def course_detail(request, course_id):
             total_hours_learned += len(cdays) * hrs
         except Exception:
             continue
+            
+    # Convert markdown outline to HTML
+    outline_html = beautify_response(course.outline) if course.outline else ""
 
     return render(request, 'course_detail.html', {
         'course': course,
@@ -1195,6 +1307,7 @@ def course_detail(request, course_id):
         'user_name': user_name,
         'course_hours_learned': course_hours_learned,
         'hours_learned_total': total_hours_learned,
+        'outline_html': outline_html,
     })
 
 @login_required
@@ -1311,28 +1424,67 @@ def week_detail(request, course_id, week_number):
                     if len(topics) >= 6:
                         break
             
-            # Ensure we have at least 5-6 topics (use generic ones if needed)
-            default_topics = [
-                "Introduction and Fundamentals",
-                "Core Concepts and Theory",
-                "Practical Applications",
-                "Advanced Techniques",
-                "Project Work and Review",
-                "Assessment and Reflection"
-            ]
-            
-            while len(topics) < 5:
-                if len(topics) < len(default_topics):
-                    topics.append(default_topics[len(topics)])
-                else:
-                    topics.append(f"Topic {len(topics) + 1}")
+            # If we still don't have enough topics, use AI to generate specific ones from the week content
+            if len(topics) < 5:
+                try:
+                    client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+                    topic_prompt = f"""Based on this week's content for the course "{course.title}", Week {week_number}:
+
+                    {week.content}
+
+                    Generate exactly {6 - len(topics)} specific day topic titles that break this week's content into daily lessons.
+                    Each topic should be a concise, descriptive title (5-10 words) directly related to the week's material.
+                    Output ONLY the topic titles, one per line, no numbering, no bullets, no extra text."""
+
+                    topic_response = client.chat.completions.create(
+                        messages=[{"role": "user", "content": topic_prompt}],
+                        model="llama-3.3-70b-versatile",
+                        temperature=0.4,
+                    )
+                    
+                    ai_topics = [
+                        line.strip() for line in topic_response.choices[0].message.content.strip().split("\n")
+                        if line.strip() and len(line.strip()) > 3
+                    ]
+                    topics.extend(ai_topics)
+                except Exception:
+                    # Last resort: use week title as context for generic topics
+                    week_title = week.title or f"Week {week_number}"
+                    fallback = [
+                        f"Introduction to {week_title}",
+                        f"Core Concepts of {week_title}",
+                        f"Practical Applications in {week_title}",
+                        f"Advanced {week_title} Techniques",
+                        f"{week_title} - Review and Practice",
+                        f"{week_title} - Assessment"
+                    ]
+                    while len(topics) < 5:
+                        topics.append(fallback[len(topics)] if len(topics) < len(fallback) else f"{week_title} Topic {len(topics) + 1}")
             
             topics = topics[:6]  # Limit to 6 days
+            
+            # build set of already-used YouTube IDs for this course (all weeks)
+            used_video_ids = set()
+            existing_days = Day.objects.filter(week__course=course).exclude(video_url="").values_list('video_url', flat=True)
+            for url in existing_days:
+                vid = extract_youtube_id(url)
+                if vid:
+                    used_video_ids.add(vid)
             
             def generate_day(day_number, topic):
                 daily_content = get_daily_detail(week_number, day_number, topic, course.hours_per_day, course.title)
                 
-                video_url, video_thumbnail = search_youtube_video(topic, course.title)
+                video_url, video_thumbnail = search_youtube_video(topic, course.title, exclude_ids=used_video_ids)
+                
+                # avoid repeating the same YouTube video
+                if video_url:
+                    vid = extract_youtube_id(video_url)
+                    if vid and vid in used_video_ids:
+                        # duplicate found; drop this video
+                        video_url = ""
+                        video_thumbnail = ""
+                    elif vid:
+                        used_video_ids.add(vid)
                 
                 content_html = markdown.markdown(daily_content, extensions=["extra", "nl2br", "sane_lists"])
                 
@@ -1510,18 +1662,19 @@ def chatbot_send_message(request):
         data = json.loads(request.body)
         message = data.get('message', '').strip()
         course_id = data.get('course_id')
-        week_number = data.get('week_number')
-        day_number = data.get('day_number')
+        # incoming course_title is informational only
+        course_title_sent = data.get('course_title')
+        # older versions may send week/day but they're optional now
+        week_number = data.get('week_number') or 0
+        day_number = data.get('day_number') or 0
         
         if not message:
             return JsonResponse({'success': False, 'error': 'Message is required'})
         
         # Get course and validate
         course = get_object_or_404(Course, id=course_id)
-        week = get_object_or_404(Week, course=course, week_number=week_number)
-        day = get_object_or_404(Day, week=week, day_number=day_number)
         
-        # Get or create conversation
+        # Use a generic conversation key (week/day may be zero)
         conversation, created = ChatbotConversation.objects.get_or_create(
             user=request.user,
             course=course,
@@ -1537,19 +1690,12 @@ def chatbot_send_message(request):
             'timestamp': timezone.now().isoformat()
         })
         
-        # Prepare context for AI
+        # Prepare context for AI using only course title
         context = f"""
-        Week: {week_number}
-        Day: {day_number}
         Course: {course.title}
-        Day Topic: {day.title}
-        Week Content: {week.content[:500]}...
-        Day Content: {day.content[:500]}...
         
-        The student is currently studying Week {week_number}, Day {day_number} of the course "{course.title}".
-        Today's topic is: "{day.title}".
-        
-        Please provide helpful guidance specific to this day's content.
+        The student is interacting with the chatbot for the course "{course.title}".
+        Provide general, course‑level guidance without referencing specific weeks or days.
         """
         
         # Call Groq API with context
@@ -1559,17 +1705,16 @@ def chatbot_send_message(request):
         ai_messages = [
             {
                 "role": "system",
-                "content": f"""You are a helpful learning assistant for an online course platform. 
-                You are currently helping a student with Week {week_number}, Day {day_number} of the course: "{course.title}".
-                Today's specific topic is: "{day.title}".
+                "content": f"""You are a helpful learning assistant for an online course platform.
+                You are providing assistance for the course: "{course.title}".
                 
                 Guidelines:
-                1. Be specific to today's learning material
-                2. Provide practical help related to the day's topic
-                3. Encourage and motivate the student
-                4. If the question is not related to the course, politely redirect to course topics
-                5. Keep responses concise but helpful
-                6. Use examples from the course content when possible
+                1. Provide general course-level guidance using the course title.
+                2. Avoid mentioning specific weeks or days.
+                3. Encourage and motivate the student.
+                4. If the question is unrelated to course material, politely redirect to relevant topics.
+                5. Keep responses concise but helpful.
+                6. Use examples from the general course content when possible.
                 """
             }
         ]
@@ -1628,21 +1773,21 @@ def chatbot_send_message(request):
 @login_required
 @csrf_exempt
 def chatbot_get_conversation(request):
-    """Get chatbot conversation for a specific day"""
+    """Get chatbot conversation for a course (formerly per day)."""
     try:
         course_id = request.GET.get('course_id')
-        week_number = request.GET.get('week_number')
-        day_number = request.GET.get('day_number')
+        # week/day may still be passed but are ignored
+        # week_number = request.GET.get('week_number')
+        # day_number = request.GET.get('day_number')
         
-        if not all([course_id, week_number, day_number]):
-            return JsonResponse({'success': False, 'error': 'Missing parameters'})
+        if not course_id:
+            return JsonResponse({'success': False, 'error': 'Missing course_id'})
         
+        # retrieve the most recent conversation for this user/course
         conversation = ChatbotConversation.objects.filter(
             user=request.user,
-            course_id=course_id,
-            week_number=week_number,
-            day_number=day_number
-        ).first()
+            course_id=course_id
+        ).order_by('-week_number', '-day_number').first()
         
         messages = conversation.messages if conversation else []
         
@@ -1676,18 +1821,18 @@ def chatbot_get_conversation(request):
 @login_required
 @csrf_exempt
 def chatbot_clear_conversation(request):
-    """Clear chatbot conversation for a specific day"""
+    """Clear chatbot conversation for a course (ignores week/day)."""
     try:
         data = json.loads(request.body)
         course_id = data.get('course_id')
-        week_number = data.get('week_number')
-        day_number = data.get('day_number')
+        # week/day ignored if provided
+        
+        if not course_id:
+            return JsonResponse({'success': False, 'error': 'Missing course_id'})
         
         ChatbotConversation.objects.filter(
             user=request.user,
-            course_id=course_id,
-            week_number=week_number,
-            day_number=day_number
+            course_id=course_id
         ).delete()
         
         return JsonResponse({'success': True})

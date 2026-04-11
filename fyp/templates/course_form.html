@@ -5,72 +5,8 @@
     <title>Create Course - LearnPath AI</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    {% include '_theme_vars.html' %}
     <style>
-        :root {
-            /* Light Theme Variables */
-            --background: #ffffff;
-            --foreground: #020817;
-            --card: #ffffff;
-            --card-foreground: #020817;
-            --primary: #3b82f6;
-            --primary-foreground: #ffffff;
-            --secondary: #f1f5f9;
-            --secondary-foreground: #0f172a;
-            --muted: #f8fafc;
-            --muted-foreground: #64748b;
-            --accent: #f1f5f9;
-            --accent-foreground: #0f172a;
-            --border: #e2e8f0;
-            --radius: 12px;
-            --input: #ffffff;
-            
-            /* Custom Colors */
-            --color-orange: #ff6b35;
-            --color-orange-dark: #f5931e;
-            --color-warning: #f59e0b;
-            --color-success: #10b981;
-            --color-danger: #ef4444;
-            
-            /* Chart Colors */
-            --chart-1: #3b82f6;
-            --chart-2: #8b5cf6;
-            --chart-3: #ec4899;
-            --chart-4: #10b981;
-            --chart-5: #f59e0b;
-        }
-
-        [data-theme="dark"] {
-            /* Dark Theme Variables */
-            --background: #020817;
-            --foreground: #f8fafc;
-            --card: #1e293b;
-            --card-foreground: #f1f5f9;
-            --primary: #60a5fa;
-            --primary-foreground: #020817;
-            --secondary: #334155;
-            --secondary-foreground: #f1f5f9;
-            --muted: #1e293b;
-            --muted-foreground: #94a3b8;
-            --accent: #334155;
-            --accent-foreground: #f1f5f9;
-            --border: #334155;
-            --input: #1e293b;
-            
-            /* Dark Theme Custom Colors */
-            --color-orange: #fb923c;
-            --color-orange-dark: #f97316;
-            --color-warning: #fbbf24;
-            --color-success: #34d399;
-            --color-danger: #f87171;
-            
-            /* Dark Chart Colors */
-            --chart-1: #60a5fa;
-            --chart-2: #a78bfa;
-            --chart-3: #f472b6;
-            --chart-4: #34d399;
-            --chart-5: #fbbf24;
-        }
-
         body {
             background: var(--background);
             color: var(--foreground);
@@ -270,7 +206,7 @@
                 transform: translateY(0);
             }
         }
-        
+
         .theme-toggle {
             background: var(--secondary);
             border: 1px solid var(--border);
@@ -284,7 +220,7 @@
             border-radius: 0.375rem;
             transition: all 0.3s ease;
         }
-        
+
         .theme-toggle:hover {
             background-color: var(--accent);
             border-color: var(--primary);
@@ -377,11 +313,11 @@
         .autocomplete-suggestions {
             background-color: var(--card);
             border: 1px solid var(--border);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         [data-theme="dark"] .autocomplete-suggestions {
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
 
         .suggestion-item {
@@ -631,26 +567,6 @@
     </div>
 
     <script>
-        // Theme Toggle Functionality
-        const themeToggle = document.getElementById('themeToggle');
-        const themeIcon = document.getElementById('themeIcon');
-        const body = document.body;
-
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = body.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-
-            body.setAttribute('data-theme', newTheme);
-            themeIcon.className = newTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
-
-            localStorage.setItem('theme', newTheme);
-        });
-
-        // Load saved theme
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        body.setAttribute('data-theme', savedTheme);
-        themeIcon.className = savedTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
-
         // Update hours value display
         function updateHoursValue(value) {
             document.getElementById('hoursValue').textContent = value + ' hr' + (value > 1 ? 's' : '');
@@ -667,13 +583,6 @@
             // Update on slider change
             slider.addEventListener('input', function () {
                 updateHoursValue(this.value);
-            });
-
-            // Form submission loading state
-            document.querySelector('form').addEventListener('submit', function () {
-                const button = document.getElementById('submitButton');
-                button.disabled = true;
-                button.innerHTML = '<div class="spinner-border spinner-border-sm me-2" role="status"></div> Generating Your Course...';
             });
         });
 
@@ -728,7 +637,7 @@
                                     <div style="font-weight: 500;">${result.name}</div>
                                     <small style="color: var(--muted-foreground); font-size: 0.85em;">
                                         <i class="fas fa-check-circle me-1"></i>
-                                        ${result.match_type} match - Predefined outline available
+                                        ${result.match_type} match
                                     </small>
                                 `;
 
@@ -794,14 +703,34 @@
 
             // Preview button handler
             previewButton.addEventListener('click', function () {
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return;
+                }
                 showOutlineInput.value = 'true';
+
+                // Add loading state
+                this.disabled = true;
+                this.innerHTML = '<div class="spinner-border spinner-border-sm me-2" role="status"></div> Generating Preview...';
+                submitButton.disabled = true;
+
                 form.submit();
             });
 
             // Submit button handler
             submitButton.addEventListener('click', function (e) {
                 e.preventDefault();
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return;
+                }
                 showOutlineInput.value = 'false';
+
+                // Add loading state
+                this.disabled = true;
+                this.innerHTML = '<div class="spinner-border spinner-border-sm me-2" role="status"></div> Generating Your Course...';
+                previewButton.disabled = true;
+
                 form.submit();
             });
         });
@@ -817,8 +746,6 @@
             message.className = 'predefined-message alert alert-info mt-2';
             message.innerHTML = `
             <i class="fas fa-info-circle me-2"></i>
-            <strong>Predefined outline found!</strong> 
-            Using existing outline for "${courseName}". 
             Click "Preview Outline First" to review it.
         `;
 
@@ -833,6 +760,7 @@
             }, 10000);
         }
     </script>
+    {% include 'theme_toggle.html' %}
 </body>
 
 </html>

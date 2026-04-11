@@ -1,42 +1,61 @@
 {% comment %} Universal Theme Toggle Script - Include this in all templates {% endcomment %}
 <script>
-    // Initialize theme from localStorage
-    document.addEventListener('DOMContentLoaded', function() {
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        const htmlElement = document.documentElement;
-        const bodyElement = document.body;
-        
-        // Apply theme to both html and body
-        htmlElement.setAttribute('data-theme', savedTheme);
-        bodyElement.setAttribute('data-theme', savedTheme);
-        htmlElement.classList.toggle('dark', savedTheme === 'dark');
-        
-        // Update theme toggle icons
-        const themeIcon = document.getElementById('themeIcon');
-        if (themeIcon) {
-            themeIcon.className = savedTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
-        }
-    });
-
     // Theme toggle button handler
     function toggleTheme() {
         const htmlElement = document.documentElement;
         const bodyElement = document.body;
-        const currentTheme = bodyElement.getAttribute('data-theme') || 'light';
+        const currentTheme = htmlElement.getAttribute('data-theme') || 'light';
         const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-        
+
         // Update elements
         htmlElement.setAttribute('data-theme', newTheme);
         bodyElement.setAttribute('data-theme', newTheme);
         htmlElement.classList.toggle('dark', newTheme === 'dark');
-        
-        // Update icon
-        const themeIcon = document.getElementById('themeIcon');
-        if (themeIcon) {
-            themeIcon.className = newTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+
+        // Update Font Awesome icons (used by most pages)
+        const themeIcons = document.querySelectorAll('#themeIcon, .theme-icon');
+        themeIcons.forEach(icon => {
+            icon.className = newTheme === 'light' ? 'fas fa-moon theme-icon' : 'fas fa-sun theme-icon';
+        });
+
+        // Update SVG icons (used by landing page)
+        const sunIcon = document.getElementById('sun-icon');
+        const moonIcon = document.getElementById('moon-icon');
+        if (sunIcon && moonIcon) {
+            if (newTheme === 'dark') {
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+            } else {
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            }
         }
-        
-        // Save preference
+
+        // Save preference universally
         localStorage.setItem('theme', newTheme);
     }
+
+    // Ensure initial icon state matches the loaded theme (from _theme_vars)
+    document.addEventListener('DOMContentLoaded', function () {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+
+        // Font Awesome icons
+        const themeIcons = document.querySelectorAll('#themeIcon, .theme-icon');
+        themeIcons.forEach(icon => {
+            icon.className = savedTheme === 'light' ? 'fas fa-moon theme-icon' : 'fas fa-sun theme-icon';
+        });
+
+        // SVG icons (landing page)
+        const sunIcon = document.getElementById('sun-icon');
+        const moonIcon = document.getElementById('moon-icon');
+        if (sunIcon && moonIcon) {
+            if (savedTheme === 'dark') {
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+            } else {
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            }
+        }
+    });
 </script>

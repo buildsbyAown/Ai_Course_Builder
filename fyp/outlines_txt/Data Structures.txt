@@ -4,28 +4,26 @@
 
 # Weekly Course Outline
 ## Week 1
-- Introduction
-## Week 2
 - Time Complexity Analysis and Asymptotic Bounds
-## Week 3
+## Week 2
 - Review of Pointers and class Templates
 - Linked Lists: Singly linked lists, doubly linked lists, circular lists and corresponding iterators
 - Skip List (optional)
-## Week 4
+## Week 3
 - Stacks (Expression Evaluation), Queues
-## Week 5
+## Week 4
 - Recursion with Time complexity Analysis
-## Week 6
+## Week 5
 - Trees: Binary trees and their traversals, Binary search trees (Insertion, Deletion and Search)
-## Week 7
+## Week 6
 - Height Balanced Binary Search Trees (AVL Trees)
 - Priority Queues Or Heaps and heap sort
-## Week 8
+## Week 7
 - Data compression and Huffman coding
-## Week 9
+## Week 8
 - Hashing: Hash tables and hash functions, Collision resolution methods, Universal hashing
 - Bit vectors and bloom filters
-## Week 10
+## Week 9
 - Graph: Breadth first search and Depth first search, Finding Paths, Cycles
 
 # Recommended Books

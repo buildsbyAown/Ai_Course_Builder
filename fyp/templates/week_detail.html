@@ -15,63 +15,8 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+    {% include '_theme_vars.html' %}
     <style>
-        :root {
-            /* Light Theme Variables */
-            --background: #ffffff;
-            --foreground: #020817;
-            --card: #ffffff;
-            --card-foreground: #020817;
-            --primary: #3b82f6;
-            --primary-foreground: #ffffff;
-            --secondary: #f1f5f9;
-            --secondary-foreground: #0f172a;
-            --muted: #f8fafc;
-            --muted-foreground: #64748b;
-            --accent: #f1f5f9;
-            --accent-foreground: #0f172a;
-            --border: #e2e8f0;
-            --radius: 12px;
-            
-            /* Custom Colors */
-            --color-orange: #ff6b35;
-            --color-orange-dark: #f5931e;
-            --color-warning: #f59e0b;
-            --color-success: #10b981;
-            --color-danger: #ef4444;
-            
-            /* Chart Colors */
-            --chart-1: #3b82f6;
-            --chart-2: #8b5cf6;
-            --chart-3: #ec4899;
-            --chart-4: #10b981;
-            --chart-5: #f59e0b;
-        }
-
-        [data-theme="dark"] {
-            /* Dark Theme Variables */
-            --background: #020817;
-            --foreground: #f8fafc;
-            --card: #1e293b;
-            --card-foreground: #f1f5f9;
-            --primary: #60a5fa;
-            --primary-foreground: #020817;
-            --secondary: #334155;
-            --secondary-foreground: #f1f5f9;
-            --muted: #1e293b;
-            --muted-foreground: #94a3b8;
-            --accent: #334155;
-            --accent-foreground: #f1f5f9;
-            --border: #334155;
-            
-            /* Dark Theme Custom Colors */
-            --color-orange: #5479f3;
-            --color-orange-dark: #3c16f9;
-            --color-warning: #fbbf24;
-            --color-success: #34d399;
-            --color-danger: #f87171;
-        }
-
         * {
             margin: 0;
             padding: 0;
@@ -1080,8 +1025,8 @@
                 </div>
 
                 <div class="d-flex align-items-center gap-3">
-                    <button class="theme-toggle" id="themeToggle">
-                        <i class="fas fa-moon" id="themeIcon"></i>
+                    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+                        <i class="fas fa-moon theme-icon" id="themeIcon"></i>
                     </button>
                     <a href="{% url 'dashboard' %}" class="btn-custom-outline">
                         <i class="fas fa-user"></i>
@@ -1100,58 +1045,6 @@
         </div>
     </header>
 
-    <!-- Week Header -->
-    <div class="week-header">
-        <div class="container">
-            <nav aria-label="breadcrumb" class="breadcrumb-custom">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="{% url 'course_detail' course.id %}">{{ course.title }}</a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">{{ week.title }}</li>
-                </ol>
-            </nav>
-
-            <h1 class="display-5 fw-bold mb-3">{{ week.title }}</h1>
-            <p class="lead mb-0 opacity-90">{{ course.description }}</p>
-
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="icon">
-                        <i class="fas fa-calendar-alt"></i>
-                    </div>
-                    <div class="label">Timeline</div>
-                    <div class="value">{{ days|length }} days</div>
-                </div>
-                <div class="stat-card">
-                    <div class="icon">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <div class="label">Total Duration</div>
-                    <div class="value">{{ days|length|add:"1" }} hours</div>
-                </div>
-                <div class="stat-card">
-                    <div class="icon">
-                        <i class="fas fa-book"></i>
-                    </div>
-                    <div class="label">Modules</div>
-                    <div class="value">{{ days|length }} modules</div>
-                </div>
-                <div class="stat-card">
-                    <div class="icon">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div class="label">Completed</div>
-                    <div class="value">
-                        {% with completed_count=user_progress.completed_days|length %}
-                        {{ completed_count }}/{{ days|length }}
-                        {% endwith %}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="container-fluid">
         <div class="main-content-wrapper">
             <!-- Left Panel - Days List -->
@@ -1165,13 +1058,12 @@
                                 Complete lessons to increase your progress
                             </div>
                         </div>
-                        <span class="progress-percentage" id="week-progress-percentage">{{ week_progress_percentage|floatformat:0 }}%</span>
+                        <span class="progress-percentage" id="week-progress-percentage">{{ week_progress_percentage|default:0|floatformat:0 }}%</span>
                     </div>
                     <div class="progress">
-                        <div class="progress-bar" role="progressbar"
-                            style="width: {{ week_progress_percentage }}%"
-                            aria-valuenow="{{ week_progress_percentage }}" aria-valuemin="0"
-                            aria-valuemax="100" id="week-progress-bar">
+                        <div class="progress-bar" role="progressbar" style="width: {{ week_progress_percentage|default:0 }}%"
+                            aria-valuenow="{{ week_progress_percentage|default:0 }}" aria-valuemin="0" aria-valuemax="100"
+                            id="week-progress-bar">
                         </div>
                     </div>
                 </div>
@@ -1367,25 +1259,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Theme Toggle
-        const themeToggle = document.getElementById('themeToggle');
-        const themeIcon = document.getElementById('themeIcon');
-        const body = document.body;
-
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = body.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-
-            body.setAttribute('data-theme', newTheme);
-            themeIcon.className = newTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
-
-            localStorage.setItem('theme', newTheme);
-        });
-
-        // Load saved theme
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        body.setAttribute('data-theme', savedTheme);
-        themeIcon.className = savedTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
 
         // Store days data for JavaScript
         const daysData = [
@@ -1393,11 +1266,11 @@
         {
             id: {{ day.id }},
             title: "{{ day.title|escapejs }}",
-            duration: "{{ day.duration|default:'2-3 hours'|escapejs }}",
-            video_url: "{{ day.video_url|default:''|escapejs }}",
-            video_thumbnail: "{{ day.video_thumbnail|default:''|escapejs }}",
-            content: `{{ day.content|safe|escapejs }}`,
-            completed: {% if day.id in user_progress.completed_days %}true{% else %}false{% endif %}
+                duration: "{{ day.duration|default:'2-3 hours'|escapejs }}",
+                    video_url: "{{ day.video_url|default:''|escapejs }}",
+                        video_thumbnail: "{{ day.video_thumbnail|default:''|escapejs }}",
+                            content: `{{ day.content|safe|escapejs }}`,
+                                completed: {% if day.id in user_progress.completed_days %} true{% else %} false{% endif %}
         },
         {% endfor %}
         ];
@@ -1407,29 +1280,29 @@
         // Function to load day content
         function loadDayContent(dayId, index) {
             currentDayIndex = index;
-            
+
             // Guard against invalid index
             if (index < 0 || index >= daysData.length) {
                 console.error('Invalid day index:', index);
                 return;
             }
-            
+
             const day = daysData[index];
 
             // Calculate day number (1-indexed)
             const dayNumber = index + 1;
-            
+
             // Update chatbot context with current day information
             const chatbotData = document.getElementById('chatbot-data');
             if (chatbotData) {
                 chatbotData.dataset.dayNumber = dayNumber;
                 chatbotData.dataset.dayTitle = day.title;
             }
-            
+
             // Call the global chatbot context update function
             if (typeof window.updateChatbotContext === 'function') {
                 window.updateChatbotContext(dayNumber, day.title);
-                
+
                 // Also reload the conversation for the new day
                 if (typeof window.loadChatbotConversation === 'function') {
                     window.loadChatbotConversation();
@@ -1445,7 +1318,7 @@
             // Update right panel content
             const titleElement = document.querySelector('.day-content-title');
             const metaElement = document.querySelector('.day-content-meta');
-            
+
             if (titleElement) titleElement.textContent = day.title;
             if (metaElement) {
                 metaElement.innerHTML = `
@@ -1530,7 +1403,7 @@
             // Update navigation buttons
             const prevBtn = document.getElementById('prev-day-btn');
             const nextBtn = document.getElementById('next-day-btn');
-            
+
             if (prevBtn) prevBtn.style.visibility = index > 0 ? 'visible' : 'hidden';
             if (nextBtn) nextBtn.style.visibility = index < daysData.length - 1 ? 'visible' : 'hidden';
 
@@ -1542,7 +1415,7 @@
         // Navigation button handlers
         const prevDayBtn = document.getElementById('prev-day-btn');
         const nextDayBtn = document.getElementById('next-day-btn');
-        
+
         if (prevDayBtn) {
             prevDayBtn.addEventListener('click', () => {
                 if (currentDayIndex > 0) {
@@ -1669,7 +1542,7 @@
                 progressBar.style.width = `${newPercentage}%`;
                 progressBar.setAttribute('aria-valuenow', newPercentage);
             }
-            
+
             if (progressPercentage) {
                 progressPercentage.textContent = `${newPercentage}%`;
             }
@@ -1695,19 +1568,17 @@
         });
     </script>
     <!-- In week_detail.html, update the data attributes section -->
-<div id="chatbot-data" 
-     data-course-id="{{ course.id }}"
-     data-week-number="{{ week.week_number }}"
-     {% if day.day_number %}
-     data-day-number="{{ day.day_number }}"
-     data-day-title="{{ day.title|escapejs }}"
-     {% else %}
-     data-day-number="1"
-     data-day-title="Today's Lesson"
-     {% endif %}
-     style="display: none;">
-</div>
+    <div id="chatbot-data" 
+        data-course-id="{{ course.id }}" 
+        data-course-title="{{ course.title|escapejs }}" 
+        data-week-number="{{ week.week_number }}" 
+        data-day-number="{{ first_day.day_number|default:1 }}" 
+        data-day-title="{{ first_day.title|default:" Today's
+        Lesson"|escapejs }}" 
+        style="display: none;">
+    </div>
     {% include 'chatbot_widget.html' %}
+    {% include 'theme_toggle.html' %}
 </body>
 
 </html>

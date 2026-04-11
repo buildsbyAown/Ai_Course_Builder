@@ -235,7 +235,7 @@
                         together!</small>
                 </div>
                 <div class="ms-auto">
-                    <span style="font-size: 1.5rem;">🔥 🔥 🔥</span>
+                    <span style="font-size: 1.5rem;"></span>
                 </div>
             </div>
         </div>
@@ -255,8 +255,7 @@
             </div>
 
             <h1>{{ course.title }}</h1>
-            <p class="text-muted mb-4">Your personalized learning path • {{ course.duration }} weeks • {{
-                course.hours_per_day }} hours per day total hours</p>
+            <p class="text-muted mb-4">Your personalized learning path • {{ course.duration }} weeks • {{ course.hours_per_day }} hours per day total hours</p>
 
             <div class="stats-grid">
                 <div class="stat-card">
@@ -298,9 +297,17 @@
 
         <!-- Curriculum Section -->
         <div class="curriculum-section">
-            <div class="curriculum-header">
-                <h2><i class="fas fa-graduation-cap me-2"></i> Course Curriculum</h2>
-                <span class="modules-badge">{{ weeks|length }} Modules</span>
+            <div class="curriculum-header d-flex justify-content-between align-items-center mb-4">
+                <div class="d-flex align-items-center gap-3">
+                    <h2 class="mb-0"><i class="fas fa-graduation-cap me-2"></i> Course Curriculum</h2>
+                    <span class="modules-badge">{{ weeks|length }} Modules</span>
+                </div>
+                {% if outline_html %}
+                <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"
+                    data-bs-target="#outlineModal">
+                    <i class="fas fa-list me-1"></i> Show Outline
+                </button>
+                {% endif %}
             </div>
 
             <p class="text-muted mb-4">Follow these modules in order to achieve your learning goals</p>
@@ -312,8 +319,6 @@
                         <div class="week-number">{{ week.week_number }}</div>
                         <div class="week-content">
                             <h5>Week {{ week.week_number }}</h5>
-                            <div class="week-hours">{{ week.week_number|add:1 }}-{{ week.week_number|add:2 }} hours
-                            </div>
                         </div>
                     </div>
                     <i class="fas fa-arrow-right week-chevron" aria-hidden="true"></i>
@@ -342,8 +347,68 @@
         </div>
     </div>
 
+    <!-- Outline Modal -->
+    <div class="modal fade" id="outlineModal" tabindex="-1" aria-labelledby="outlineModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content"
+                style="background-color: var(--card); color: var(--foreground); border: 1px solid var(--border);">
+                <div class="modal-header" style="border-bottom: 1px solid var(--border);">
+                    <h5 class="modal-title" id="outlineModalLabel">
+                        <i class="fas fa-list-alt me-2 text-primary"></i>Course Outline
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                        style="filter: var(--theme-filter-invert, none);"></button>
+                </div>
+                <div class="modal-body" style="padding: 2rem;">
+                    {% if outline_html %}
+                    {{ outline_html|safe }}
+                    {% else %}
+                    <div class="text-center text-muted p-5">
+                        <i class="fas fa-file-alt fa-3x mb-3"></i>
+                        <p>No outline available for this course.</p>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid var(--border);">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <!-- If needed, a download or print button could go here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     {% include 'theme_toggle.html' %}
+    <script>
+        // Update close button style based on theme
+        document.addEventListener('DOMContentLoaded', function () {
+            const updateModalCloseBtn = () => {
+                const isDark = document.body.getAttribute('data-theme') === 'dark';
+                const closeBtns = document.querySelectorAll('.btn-close');
+                closeBtns.forEach(btn => {
+                    btn.style.filter = isDark ? 'invert(1)' : 'none';
+                });
+            };
+
+            // Initial call
+            updateModalCloseBtn();
+
+            // Watch for theme changes
+            const originalToggleTheme = window.toggleTheme;
+            window.toggleTheme = function () {
+                if (typeof originalToggleTheme === 'function') {
+                    originalToggleTheme();
+                }
+                setTimeout(updateModalCloseBtn, 50);
+            };
+
+            // In case the theme toggle button exists in the dom
+            const themeBtn = document.getElementById('themeToggle');
+            if (themeBtn) {
+                themeBtn.addEventListener('click', () => { setTimeout(updateModalCloseBtn, 50); });
+            }
+        });
+    </script>
 </body>
 
 </html>

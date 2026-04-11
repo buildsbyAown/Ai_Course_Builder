@@ -4,7 +4,7 @@ from .models import Course, Week, Day, UserProgress
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
     list_display = ['title', 'duration', 'level_has', 'level_required', 'language', 'created_at']
-    list_filter = ['level_has', 'level_required', 'language']
+    list_filter = ['level_has', 'level_required', 'language', 'title']
     search_fields = ['title']
 
 @admin.register(Week)
