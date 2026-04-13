@@ -128,3 +128,6 @@ LOGIN_URL = 'login'
 
 # Expire session when the user closes their browser
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+
+
