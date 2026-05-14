@@ -57,6 +57,27 @@
             border-bottom: 1px solid var(--border);
         }
 
+        .selection-panel {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .week-select-card {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: var(--background);
+        }
+
+        .topic-check {
+            margin-left: 1.75rem;
+            margin-top: 0.5rem;
+        }
+
         .action-buttons {
             display: flex;
             gap: 1rem;
@@ -185,13 +206,49 @@
             <h3 class="mb-4"><i class="fas fa-list-alt me-2"></i>Course Outline Preview</h3>
             <p class="text-muted mb-4">This is the outline that will be used for your course. Review it below:</p>
 
+            {% if outline_weeks %}
+            <div class="selection-panel">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Choose Topics and Weeks</h5>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="selectAllBtn">Select all</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="clearAllBtn">Clear all</button>
+                    </div>
+                </div>
+                <p class="text-muted mb-3">Uncheck any week or topic you want to skip. Only selected items will be used in the generated course.</p>
+
+                {% for week in outline_weeks %}
+                <div class="week-select-card" data-week="{{ week.week_number }}">
+                    <div class="form-check">
+                        <input class="form-check-input week-checkbox" type="checkbox" id="week-{{ week.week_number }}"
+                            data-week="{{ week.week_number }}" checked>
+                        <label class="form-check-label fw-semibold" for="week-{{ week.week_number }}">
+                            Week {{ week.week_number }}
+                        </label>
+                    </div>
+                    <div>
+                        {% for topic in week.topics %}
+                        <div class="form-check topic-check">
+                            <input class="form-check-input topic-checkbox" type="checkbox"
+                                id="week-{{ week.week_number }}-topic-{{ forloop.counter0 }}"
+                                data-week="{{ week.week_number }}" data-topic="{{ topic|escape }}" checked>
+                            <label class="form-check-label"
+                                for="week-{{ week.week_number }}-topic-{{ forloop.counter0 }}">{{ topic }}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
             <div class="outline-preview">
                 {{ outline|safe }}
             </div>
         </div>
 
         <div class="action-buttons">
-            <form method="POST" action="{% url 'course_create' %}" style="display: inline;">
+            <form method="POST" action="{% url 'course_create' %}" style="display: inline;" id="confirmForm">
                 {% csrf_token %}
                 <input type="hidden" name="title" value="{{ form_data.title }}">
                 <input type="hidden" name="duration" value="{{ form_data.duration }}">
@@ -200,6 +257,10 @@
                 <input type="hidden" name="level_required" value="{{ form_data.level_required }}">
                 <input type="hidden" name="language" value="{{ form_data.language }}">
                 <input type="hidden" name="use_predefined" value="{{ form_data.use_predefined }}">
+                <textarea name="outline_raw" hidden>{{ outline_raw }}</textarea>
+                <input type="hidden" name="matched_name" value="{{ matched_name }}">
+                <input type="hidden" name="is_predefined" value="{{ is_predefined|yesno:'true,false' }}">
+                <input type="hidden" name="selected_topics" id="selectedTopicsInput" value="">
                 <input type="hidden" name="show_outline" value="false">
                 <button type="submit" class="btn-confirm">
                     <i class="fas fa-check-circle me-2"></i>Confirm & Create Course
@@ -231,6 +292,107 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function syncWeekSelection(weekNumber) {
+            const weekCheckbox = document.querySelector(`.week-checkbox[data-week="${weekNumber}"]`);
+            const topicCheckboxes = Array.from(document.querySelectorAll(`.topic-checkbox[data-week="${weekNumber}"]`));
+            const checkedTopics = topicCheckboxes.filter(cb => cb.checked).length;
+
+            if (checkedTopics === 0) {
+                weekCheckbox.checked = false;
+                weekCheckbox.indeterminate = false;
+            } else if (checkedTopics === topicCheckboxes.length) {
+                weekCheckbox.checked = true;
+                weekCheckbox.indeterminate = false;
+            } else {
+                weekCheckbox.checked = true;
+                weekCheckbox.indeterminate = true;
+            }
+        }
+
+        function updateSelectedTopicsPayload() {
+            const payload = {};
+            const weekCheckboxes = document.querySelectorAll('.week-checkbox');
+
+            weekCheckboxes.forEach((weekCheckbox) => {
+                const weekNumber = weekCheckbox.dataset.week;
+                const topicCheckboxes = Array.from(document.querySelectorAll(`.topic-checkbox[data-week="${weekNumber}"]`));
+                const selectedTopics = topicCheckboxes
+                    .filter(cb => cb.checked)
+                    .map(cb => cb.dataset.topic);
+
+                if (selectedTopics.length > 0) {
+                    payload[weekNumber] = selectedTopics;
+                }
+            });
+
+            const selectedTopicsInput = document.getElementById('selectedTopicsInput');
+            if (selectedTopicsInput) {
+                selectedTopicsInput.value = JSON.stringify(payload);
+            }
+            return payload;
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const weekCheckboxes = document.querySelectorAll('.week-checkbox');
+            const topicCheckboxes = document.querySelectorAll('.topic-checkbox');
+            const confirmForm = document.getElementById('confirmForm');
+            const selectAllBtn = document.getElementById('selectAllBtn');
+            const clearAllBtn = document.getElementById('clearAllBtn');
+
+            weekCheckboxes.forEach((weekCheckbox) => {
+                weekCheckbox.addEventListener('change', function () {
+                    const weekNumber = this.dataset.week;
+                    const weekTopics = document.querySelectorAll(`.topic-checkbox[data-week="${weekNumber}"]`);
+                    weekTopics.forEach((topicCb) => {
+                        topicCb.checked = this.checked;
+                    });
+                    this.indeterminate = false;
+                    updateSelectedTopicsPayload();
+                });
+            });
+
+            topicCheckboxes.forEach((topicCheckbox) => {
+                topicCheckbox.addEventListener('change', function () {
+                    syncWeekSelection(this.dataset.week);
+                    updateSelectedTopicsPayload();
+                });
+            });
+
+            if (selectAllBtn) {
+                selectAllBtn.addEventListener('click', function () {
+                    document.querySelectorAll('.week-checkbox, .topic-checkbox').forEach((cb) => {
+                        cb.checked = true;
+                        cb.indeterminate = false;
+                    });
+                    updateSelectedTopicsPayload();
+                });
+            }
+
+            if (clearAllBtn) {
+                clearAllBtn.addEventListener('click', function () {
+                    document.querySelectorAll('.week-checkbox, .topic-checkbox').forEach((cb) => {
+                        cb.checked = false;
+                        cb.indeterminate = false;
+                    });
+                    updateSelectedTopicsPayload();
+                });
+            }
+
+            if (confirmForm) {
+                confirmForm.addEventListener('submit', function (e) {
+                    const payload = updateSelectedTopicsPayload();
+                    if (Object.keys(payload).length === 0) {
+                        e.preventDefault();
+                        alert('Please keep at least one topic selected to create the course.');
+                    }
+                });
+            }
+
+            document.querySelectorAll('.week-checkbox').forEach((weekCb) => syncWeekSelection(weekCb.dataset.week));
+            updateSelectedTopicsPayload();
+        });
+    </script>
     {% include 'theme_toggle.html' %}
 </body>
 

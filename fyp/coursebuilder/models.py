@@ -125,12 +125,22 @@ class UserProgress(models.Model):
 
     def get_progress_percentage(self):
         """Calculate overall course progress percentage (for entire course)"""
-        # Count total days across all weeks
-        total_days = sum(week.days.count() for week in self.course.weeks.all())
-        total_quizzes = sum(week.quizzes.count() for week in self.course.weeks.all())
-        total_assignments = sum(week.assignments.count() for week in self.course.weeks.all())
+        week_count = self.course.weeks.count()
+        # Course structure is fixed: each week has 6 study days, 1 quiz, 1 assignment.
+        total_days = week_count * 6
+        total_quizzes = week_count
+        total_assignments = week_count
 
-        completed_count = len(self.completed_days) + len(self.completed_quizzes) + len(self.completed_assignments)
+        # Filter out stale IDs and duplicates to keep progress accurate.
+        completed_day_ids = {int(day_id) for day_id in (self.completed_days or []) if str(day_id).isdigit()}
+        completed_quiz_ids = {int(quiz_id) for quiz_id in (self.completed_quizzes or []) if str(quiz_id).isdigit()}
+        completed_assignment_ids = {int(assign_id) for assign_id in (self.completed_assignments or []) if str(assign_id).isdigit()}
+
+        completed_count = (
+            len(completed_day_ids)
+            + len(completed_quiz_ids)
+            + len(completed_assignment_ids)
+        )
         total_items = total_days + total_quizzes + total_assignments
 
         if total_items == 0:
@@ -138,27 +148,19 @@ class UserProgress(models.Model):
         return min(100, (completed_count / total_items) * 100)
     
     def get_week_progress_percentage(self, week):
-        """Calculate progress for a specific week"""
-        total_days = week.days.count()
-        total_quizzes = week.quizzes.count()
-        total_assignments = week.assignments.count()
+        """Calculate progress for a specific week (days only)."""
+        week_day_ids = set(week.days.values_list('id', flat=True))
+
+        total_days = len(week_day_ids)
         
-        # Get all day IDs in this week
-        week_day_ids = set(d.id for d in week.days.all())
-        week_quiz_ids = set(q.id for q in week.quizzes.all())
-        week_assignment_ids = set(a.id for a in week.assignments.all())
+        completed_day_ids = {int(day_id) for day_id in (self.completed_days or []) if str(day_id).isdigit()}
         
-        # Count completed items in this week
-        completed_days = sum(1 for day_id in self.completed_days if int(day_id) in week_day_ids)
-        completed_quizzes = sum(1 for quiz_id in self.completed_quizzes if int(quiz_id) in week_quiz_ids)
-        completed_assignments = sum(1 for assign_id in self.completed_assignments if int(assign_id) in week_assignment_ids)
+        # Week progress is based only on day completion.
+        completed_days = len(completed_day_ids.intersection(week_day_ids))
         
-        completed_count = completed_days + completed_quizzes + completed_assignments
-        total_items = total_days + total_quizzes + total_assignments
-        
-        if total_items == 0:
+        if total_days == 0:
             return 0
-        return min(100, (completed_count / total_items) * 100)
+        return min(100, (completed_days / total_days) * 100)
 
 class ChatbotConversation(models.Model):
     """Store chatbot conversations for each user per day"""

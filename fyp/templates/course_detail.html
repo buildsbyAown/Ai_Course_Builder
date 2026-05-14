@@ -118,6 +118,11 @@
             box-shadow: var(--shadow-sm);
         }
 
+        .week-item.week-completed {
+            border-color: var(--color-success);
+            background: rgba(16, 185, 129, 0.08);
+        }
+
         .week-number {
             background: var(--color-surface-2);
             width: 45px;
@@ -314,14 +319,18 @@
 
             <div class="weeks-container">
                 {% for week in weeks %}
-                <div class="week-item" onclick="location.href='{% url 'week_detail' course.id week.week_number %}'">
+                <div class="week-item {% if week.week_number in completed_week_numbers %}week-completed{% endif %}" onclick="location.href='{% url 'week_detail' course.id week.week_number %}'">
                     <div class="week-item-left">
                         <div class="week-number">{{ week.week_number }}</div>
                         <div class="week-content">
                             <h5>Week {{ week.week_number }}</h5>
                         </div>
                     </div>
+                    {% if week.week_number in completed_week_numbers %}
+                    <i class="fas fa-check-circle text-success week-chevron" aria-hidden="true"></i>
+                    {% else %}
                     <i class="fas fa-arrow-right week-chevron" aria-hidden="true"></i>
+                    {% endif %}
                 </div>
                 {% endfor %}
             </div>

@@ -161,7 +161,8 @@ def quiz_detail(request, course_id, week_number, quiz_id=None):
             user_progress = get_object_or_404(UserProgress, user=request.user, course=course)
             if str(quiz.id) not in user_progress.completed_quizzes:
                 user_progress.completed_quizzes.append(str(quiz.id))
-                user_progress.save()
+            user_progress.is_completed = user_progress.get_progress_percentage() >= 100
+            user_progress.save()
         
         return redirect('quiz_result', course_id=course_id, week_number=week_number, quiz_id=quiz.id)
     
@@ -327,7 +328,8 @@ def assignment_detail(request, course_id, week_number, assignment_id=None):
             user_progress = get_object_or_404(UserProgress, user=request.user, course=course)
             if str(assignment.id) not in user_progress.completed_assignments:
                 user_progress.completed_assignments.append(str(assignment.id))
-                user_progress.save()
+            user_progress.is_completed = user_progress.get_progress_percentage() >= 100
+            user_progress.save()
         
         messages.success(request, "Assignment submitted successfully!")
         return redirect('assignment_detail', course_id=course_id, week_number=week_number, assignment_id=assignment.id)
@@ -375,6 +377,14 @@ def generate_assignment_description(week_content, week_number):
     
     # Fallback assignment
     return f"Apply the concepts learned in Week {week_number} by completing a practical exercise related to the topics covered."
+
+def is_week_completed_for_user(user_progress, week):
+    """Return True only when all days in this week are completed by the user."""
+    week_day_ids = {str(day_id) for day_id in week.days.values_list('id', flat=True)}
+    if not week_day_ids:
+        return False
+    completed_day_ids = set(user_progress.completed_days or [])
+    return week_day_ids.issubset(completed_day_ids)
 
 @login_required
 def grade_assignment(request, submission_id):
@@ -475,6 +485,93 @@ def split_weeks(content: str) -> dict:
         week_content = match[1].strip()
         weeks[week_title] = week_content
     return weeks
+
+def parse_outline_structure(content: str) -> List[Dict]:
+    """Parse markdown outline into week blocks with topic lists."""
+    week_pattern = r"##\s*Week\s*(\d+)[^\n]*\n?([\s\S]*?)(?=##\s*Week\s*\d+|\Z)"
+    bullet_pattern = r"^\s*[-*•]\s*(.+)$"
+    numbered_pattern = r"^\s*\d+[\)\.\:-]\s*(.+)$"
+    day_pattern = r"^\s*(Day\s*\d+\s*[:\.\-]\s*.+)$"
+    matches = re.findall(week_pattern, content, re.IGNORECASE)
+    weeks = []
+
+    for match in matches:
+        week_number = int(match[0])
+        week_body = match[1].strip()
+        topics = []
+        for line in week_body.splitlines():
+            stripped_line = line.strip()
+            if not stripped_line:
+                continue
+
+            # Prefer explicit day labels so Day 1..Day 5 stay individually selectable.
+            day_match = re.match(day_pattern, stripped_line, re.IGNORECASE)
+            if day_match:
+                topics.append(day_match.group(1).strip())
+                continue
+
+            topic_match = re.match(bullet_pattern, stripped_line)
+            if topic_match:
+                topic = topic_match.group(1).strip()
+                if topic:
+                    topics.append(topic)
+                continue
+
+            number_match = re.match(numbered_pattern, stripped_line)
+            if number_match:
+                topic = number_match.group(1).strip()
+                if topic:
+                    topics.append(topic)
+
+        # Some outlines put all day items on one long line.
+        if not topics:
+            inline_days = re.findall(
+                r"(Day\s*\d+\s*:\s*.*?)(?=(?:\s+Day\s*\d+\s*:)|$)",
+                week_body,
+                re.IGNORECASE | re.DOTALL
+            )
+            for day_item in inline_days:
+                cleaned = " ".join(day_item.split()).strip()
+                if cleaned:
+                    topics.append(cleaned)
+
+        weeks.append({
+            "week_number": week_number,
+            "title": f"Week {week_number}",
+            "topics": topics,
+        })
+
+    return weeks
+
+def build_outline_from_weeks(weeks: List[Dict]) -> str:
+    """Build markdown outline from parsed/filtered week blocks."""
+    sections = []
+    for index, week in enumerate(weeks, start=1):
+        topics = week.get("topics", [])
+        if not topics:
+            continue
+        topic_lines = "\n".join([f"- {topic}" for topic in topics])
+        sections.append(f"## Week {index}\n{topic_lines}")
+    return "\n\n".join(sections).strip()
+
+def filter_outline_by_selected_topics(outline: str, selected_topics_map: Dict[str, List[str]]) -> str:
+    """Keep only selected topics by week, dropping fully unselected weeks."""
+    parsed_weeks = parse_outline_structure(outline)
+    filtered_weeks = []
+
+    for week in parsed_weeks:
+        week_key = str(week["week_number"])
+        selected_topics = set(selected_topics_map.get(week_key, []))
+        if not selected_topics:
+            continue
+
+        kept_topics = [topic for topic in week["topics"] if topic in selected_topics]
+        if kept_topics:
+            filtered_weeks.append({
+                "topics": kept_topics
+            })
+
+    return build_outline_from_weeks(filtered_weeks)
 
 def beautify_response(content: str) -> str:
     html_output = markdown.markdown(
@@ -1146,6 +1243,22 @@ def course_input(request):
                 level_required=level_required,
                 language=language
             )
+
+            selected_topics_json = request.POST.get("selected_topics", "").strip()
+            selected_topics_map = {}
+            if selected_topics_json:
+                try:
+                    loaded = json.loads(selected_topics_json)
+                    if isinstance(loaded, dict):
+                        selected_topics_map = {
+                            str(k): v for k, v in loaded.items() if isinstance(v, list)
+                        }
+                except json.JSONDecodeError:
+                    selected_topics_map = {}
+
+            submitted_outline = request.POST.get("outline_raw", "").strip()
+            submitted_matched_name = request.POST.get("matched_name", "").strip()
+            submitted_is_predefined = request.POST.get("is_predefined", "").lower() == "true"
             
             # If just showing outline, render it without creating course
             if show_outline:
@@ -1153,11 +1266,14 @@ def course_input(request):
                 
                 # Beautify the outline for display
                 html_outline = beautify_response(outline)
+                outline_weeks = parse_outline_structure(outline)
                 
                 return render(request, "course_preview.html", {
                     'title': title,
                     'matched_name': matched_name if is_predefined else title,
                     'outline': html_outline,
+                    'outline_raw': outline,
+                    'outline_weeks': outline_weeks,
                     'is_predefined': is_predefined,
                     'duration': duration,
                     'hours_per_day': hours_per_day,
@@ -1175,8 +1291,24 @@ def course_input(request):
                     }
                 })
             
-            # Generate or get outline
-            outline, matched_name, is_predefined = gen_outline(data, use_predefined)
+            # Reuse previewed outline when submitted from preview page
+            if submitted_outline:
+                outline = submitted_outline
+                matched_name = submitted_matched_name or title
+                is_predefined = submitted_is_predefined
+            else:
+                outline, matched_name, is_predefined = gen_outline(data, use_predefined)
+
+            # Apply learner-selected week/topic filtering, if provided
+            if selected_topics_json and not selected_topics_map:
+                messages.error(request, "Please keep at least one topic selected.")
+                return redirect('course_create')
+
+            if selected_topics_map:
+                filtered_outline = filter_outline_by_selected_topics(outline, selected_topics_map)
+                if filtered_outline.strip():
+                    outline = filtered_outline
+
             weeks_content = split_weeks(outline)
             
             # Evaluate outline quality
@@ -1299,11 +1431,16 @@ def course_detail(request, course_id):
             
     # Convert markdown outline to HTML
     outline_html = beautify_response(course.outline) if course.outline else ""
+    completed_week_numbers = []
+    for week in weeks:
+        if user_progress.get_week_progress_percentage(week) >= 100:
+            completed_week_numbers.append(week.week_number)
 
     return render(request, 'course_detail.html', {
         'course': course,
         'user_progress': user_progress,
         'weeks': weeks,
+        'completed_week_numbers': completed_week_numbers,
         'user_name': user_name,
         'course_hours_learned': course_hours_learned,
         'hours_learned_total': total_hours_learned,
@@ -1397,6 +1534,11 @@ def week_detail(request, course_id, week_number):
         user=request.user, 
         assignment=assignment
     ).first()
+
+    week_day_ids = {str(day_id) for day_id in week.days.values_list('id', flat=True)}
+    completed_week_day_count = len(week_day_ids.intersection(set(user_progress.completed_days or [])))
+    total_week_day_count = len(week_day_ids)
+    activities_unlocked = total_week_day_count > 0 and completed_week_day_count == total_week_day_count
     
     # Generate/update day content if they have placeholder content
     # Check if any day still has the placeholder content
@@ -1528,6 +1670,7 @@ def week_detail(request, course_id, week_number):
     
     # Get all days for the week
     days = week.days.all().order_by('day_number')
+    has_next_week = course.weeks.filter(week_number=week_number + 1).exists()
     
     # If current_day_obj is still None and we have days, use the first day
     if not current_day_obj and days.exists():
@@ -1554,7 +1697,12 @@ def week_detail(request, course_id, week_number):
         'quiz': quiz,
         'assignment': assignment,
         'quiz_submission': quiz_submission,
-        'assignment_submission': assignment_submission
+        'assignment_submission': assignment_submission,
+        'activities_unlocked': activities_unlocked,
+        'completed_week_day_count': completed_week_day_count,
+        'total_week_day_count': total_week_day_count,
+        'has_next_week': has_next_week,
+        'next_week_number': week_number + 1,
     })
     
     
@@ -1571,15 +1719,14 @@ def update_progress(request):
             day = get_object_or_404(Day, id=day_id)
             user_progress = get_object_or_404(UserProgress, user=request.user, course=course)
             
-            if str(day_id) not in user_progress.completed_days:
-                user_progress.completed_days.append(str(day_id))
+            completed_days_set = set(user_progress.completed_days or [])
+            completed_days_set.add(str(day_id))
+            user_progress.completed_days = list(completed_days_set)
             
             user_progress.current_week = day.week.week_number
             user_progress.current_day = day.day_number
             
-            total_days = course.weeks.count() * 6
-            if len(user_progress.completed_days) >= total_days:
-                user_progress.is_completed = True
+            user_progress.is_completed = user_progress.get_progress_percentage() >= 100
             
             user_progress.save()
             
